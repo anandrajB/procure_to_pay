@@ -284,7 +284,11 @@ class Programcreateserializer(serializers.Serializer):
     # record_datas = serializers.JSONField()
     from_party = serializers.PrimaryKeyRelatedField(queryset=Parties.objects.all(),required  = False)
     to_party = serializers.PrimaryKeyRelatedField(queryset=Parties.objects.all(),required = False)
-    file = serializers.FileField(required = False , validators = [validate_file_extension])
+    file = serializers.ListField(
+        child=serializers.FileField(
+            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
+        )
+    )   
     
 
     def create(self, validated_data):
@@ -318,7 +322,7 @@ class Programcreateserializer(serializers.Serializer):
         event_user = validated_data.pop('event_user')
         # sign = validated_data.pop('sign')
         # record_datas = validated_data.pop('record_datas')
-
+        for file_iter in file:
         # program = Programs.objects.create(**validated_data,
         #     party=party, program_type=program_type, finance_request_type=finance_request_type,
         #     limit_currency=limit_currency, total_limit_amount=total_limit_amount, finance_currency=finance_currency,
@@ -329,22 +333,22 @@ class Programcreateserializer(serializers.Serializer):
         #     grace_period=grace_period, interest_rate=interest_rate, interest_rate_type=interest_rate_type,
         #     interest_type=interest_type, margin=margin , comments = comments
         # )
-        program = Programs.objects.create(**validated_data,
-            party=party, program_type=program_type, finance_request_type=finance_request_type,
-            limit_currency=limit_currency, total_limit_amount=total_limit_amount, 
-            settlement_currency=settlement_currency, expiry_date=expiry_date, max_finance_percentage=max_finance_percentage,
-            max_invoice_age_for_funding=max_invoice_age_for_funding,  maximum_amount=maximum_amount,
-            grace_period=grace_period, interest_rate_type=interest_rate_type, attached_file = file , 
-            interest_type=interest_type, margin=margin , comments = comments , is_locked = True
-        )
+            program = Programs.objects.create(**validated_data,
+                party=party, program_type=program_type, finance_request_type=finance_request_type,
+                limit_currency=limit_currency, total_limit_amount=total_limit_amount, 
+                settlement_currency=settlement_currency, expiry_date=expiry_date, max_finance_percentage=max_finance_percentage,
+                max_invoice_age_for_funding=max_invoice_age_for_funding,  maximum_amount=maximum_amount,
+                grace_period=grace_period, interest_rate_type=interest_rate_type, attached_file = file_iter , 
+                interest_type=interest_type, margin=margin , comments = comments , is_locked = True
+            )
         
-        program.save()
-        work = workflowitems.objects.create(
-            program=program, current_from_party=from_party,current_to_party=to_party, user = user ,  type = 'PROGRAM' )
-        work.save()
-        
-        event = workevents.objects.create( event_user = event_user,workitems=work, from_party=from_party, to_party=to_party , type = "PROGRAM")
-        event.save()
+            program.save()
+            work = workflowitems.objects.create(
+                program=program, current_from_party=from_party,current_to_party=to_party, user = user ,  type = 'PROGRAM' )
+            work.save()
+            
+            event = workevents.objects.create( event_user = event_user,workitems=work, from_party=from_party, to_party=to_party , type = "PROGRAM")
+            event.save()
         return program
 
     
@@ -476,11 +480,14 @@ class InvoiceUploadserializer(serializers.Serializer):
     wf_item_id = serializers.SerializerMethodField()
     program_type = serializers.ChoiceField(choices = program_type)
     invoices = serializers.JSONField()
-    file = serializers.FileField(required = False , validators = [validate_file_extension])
     event_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),required=False)
     to_party = serializers.PrimaryKeyRelatedField(queryset = Parties.objects.all(),required = False)
     from_party = serializers.PrimaryKeyRelatedField(queryset = Parties.objects.all(),required = False)
-
+    file = serializers.ListField(
+        child=serializers.FileField(
+            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
+        )
+    )
 
     def create(self, validated_data):
         program_type = validated_data.pop('program_type')
@@ -489,15 +496,15 @@ class InvoiceUploadserializer(serializers.Serializer):
         from_party = validated_data.pop('from_party')
         to_party = validated_data.pop('to_party')
         file = validated_data.pop('attached_file')
-        
-        uploads = Invoiceuploads.objects.create(program_type = program_type , invoices = invoices ,attached_file = file,**validated_data )
-        work = workflowitems.objects.create(
-            uploads=uploads, current_from_party=from_party,current_to_party=to_party, user=event_user , type="UPLOAD")
-        event = workevents.objects.create( event_user = event_user , type = "UPLOAD",
-            workitems=work, from_party=from_party, to_party=to_party) 
-        uploads.save()
-        work.save()
-        event.save()
+        for file_iter in file:
+            uploads = Invoiceuploads.objects.create(program_type = program_type , invoices = invoices ,attached_file = file_iter,**validated_data )
+            work = workflowitems.objects.create(
+                uploads=uploads, current_from_party=from_party,current_to_party=to_party, user=event_user , type="UPLOAD")
+            event = workevents.objects.create( event_user = event_user , type = "UPLOAD",
+                workitems=work, from_party=from_party, to_party=to_party) 
+            uploads.save()
+            work.save()
+            event.save()
         return uploads
 
     def get_wf_item_id(self,obj):
@@ -588,7 +595,11 @@ class CounterPartySerializer(serializers.Serializer):
     margin = serializers.IntegerField()
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
-    file = serializers.FileField(required = False ,  validators = [validate_file_extension])
+    file = serializers.ListField(
+        child=serializers.FileField(
+            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
+        )
+    ) 
     
     def create(self, validated_data):
         customer_id = validated_data.pop('customer_id')
@@ -618,7 +629,6 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
-
         if pg_type == "APF":
             party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
             address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "SELLER" ,**validated_data)
@@ -631,13 +641,13 @@ class CounterPartySerializer(serializers.Serializer):
         # creating  a user 
         users = User.objects.create(phone = counterparty_mobile , email = counterparty_email , party = party , first_name = "null" , last_name = "null" , display_name = "null") 
         users.save()
-
+        for file_iter in file:
         # creating a pairing 
-        pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = party , total_limit = limit_amount , grace_period = grace_period ,
-        maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type  , attached_file = file ,
-        minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
-        
-        pairs.save()
+            pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = party , total_limit = limit_amount , grace_period = grace_period ,
+            maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type  , attached_file = file_iter ,
+            minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
+
+            pairs.save()
         return pairs
 
 
