@@ -367,7 +367,7 @@ class workevents(models.Model):
 
 class File(models.Model):
     file_path = models.FileField(upload_to=manage_scf_attachments)
-    program = models.ForeignKey(Programs, on_delete=models.CASCADE)
-    pairing = models.ForeignKey(Pairings, on_delete=models.CASCADE)
-    invoice_upload = models.ForeignKey(Invoiceuploads, on_delete=models.CASCADE)
+    program = models.ForeignKey(Programs, on_delete=models.CASCADE,blank=True, null=True)
+    pairing = models.ForeignKey(Pairings, on_delete=models.CASCADE,blank=True, null=True)
+    invoice_upload = models.ForeignKey(Invoiceuploads, on_delete=models.CASCADE,blank=True, null=True)
 
