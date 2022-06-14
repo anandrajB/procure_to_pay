@@ -338,7 +338,7 @@ class Programcreateserializer(serializers.Serializer):
         #     grace_period=grace_period, interest_rate=interest_rate, interest_rate_type=interest_rate_type,
         #     interest_type=interest_type, margin=margin , comments = comments
         # )
-        program = Programs.objects.create(**validated_data,
+        program = Programs.objects.create(
                 party=party, program_type=program_type, finance_request_type=finance_request_type,
                 limit_currency=limit_currency, total_limit_amount=total_limit_amount, 
                 settlement_currency=settlement_currency, expiry_date=expiry_date, max_finance_percentage=max_finance_percentage,
