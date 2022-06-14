@@ -236,8 +236,12 @@ class ProgramListserializer(serializers.ModelSerializer):
         return obj.workflowitems.user.email
     
     def get_attachments(self,obj):
-        files = File.objects.filter(program = obj.id)
-        return {"files": files}
+        return None
+        # try:
+        #     files = File.objects.filter(program = obj.id)
+        # except:
+        #     return None
+        # return {"files": files}
 
     def get_wf_item_id(self,obj):
         return obj.workflowitems.id
@@ -290,12 +294,11 @@ class Programcreateserializer(serializers.Serializer):
     # record_datas = serializers.JSONField()
     from_party = serializers.PrimaryKeyRelatedField(queryset=Parties.objects.all(),required  = False)
     to_party = serializers.PrimaryKeyRelatedField(queryset=Parties.objects.all(),required = False)
-    file = serializers.ListField(
-        child=serializers.FileField(
-            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
-        )
-    )   
-    
+    # file = serializers.ListField(
+    #     child=serializers.FileField(validators = [validate_file_extension]
+    #     )
+    # )   
+    file = serializers.FileField()
 
     def create(self, validated_data):
         party = validated_data.pop('party')
@@ -347,16 +350,16 @@ class Programcreateserializer(serializers.Serializer):
                 interest_type=interest_type, margin=margin , comments = comments , is_locked = True
         )
 
-        program.save()
+        
         work = workflowitems.objects.create(
             program=program, current_from_party=from_party,current_to_party=to_party, user = user ,  type = 'PROGRAM' )
         work.save()
             
         event = workevents.objects.create( event_user = event_user,workitems=work, from_party=from_party, to_party=to_party , type = "PROGRAM")
         event.save()
-        for file_iter in file:
-            files = File.objects.create(file_path = file_iter , program = program)
-            files.save()
+        program.save()
+        print(program)
+        File.objects.create(file_path = file ,program = program)
         return program
 
     
