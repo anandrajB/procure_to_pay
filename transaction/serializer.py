@@ -4,6 +4,7 @@ from transaction.custom_validators import (
     validate_invoice_extension
 )
 from .models import (
+    File,
     InterestChoice,
     InterestRateType,
     Invoices,
@@ -193,6 +194,7 @@ class ProgramListserializer(serializers.ModelSerializer):
     wf_item_id = serializers.SerializerMethodField()
     interest_type = serializers.SlugRelatedField(read_only=True, slug_field='description')
     interest_rate_type = serializers.SlugRelatedField(read_only=True, slug_field='description')
+    attachments = serializers.SerializerMethodField()
 
     class Meta:
         model = Programs
@@ -218,7 +220,6 @@ class ProgramListserializer(serializers.ModelSerializer):
             "minimum_amount",
             "financed_amount",
             "grace_period",
-            "attached_file",
             "comments",
             "interest_type",
             'interest_rate_type',
@@ -226,12 +227,17 @@ class ProgramListserializer(serializers.ModelSerializer):
             'margin',
             'status',
             'is_locked',
+            'attachments',
             'workflowitems',
             'workevents',
         ]
 
     def get_created_by(self,obj):
         return obj.workflowitems.user.email
+    
+    def get_attachments(self,obj):
+        files = File.objects.filter(program = obj.id)
+        return {"files": files}
 
     def get_wf_item_id(self,obj):
         return obj.workflowitems.id
@@ -322,7 +328,6 @@ class Programcreateserializer(serializers.Serializer):
         event_user = validated_data.pop('event_user')
         # sign = validated_data.pop('sign')
         # record_datas = validated_data.pop('record_datas')
-        for file_iter in file:
         # program = Programs.objects.create(**validated_data,
         #     party=party, program_type=program_type, finance_request_type=finance_request_type,
         #     limit_currency=limit_currency, total_limit_amount=total_limit_amount, finance_currency=finance_currency,
@@ -333,22 +338,25 @@ class Programcreateserializer(serializers.Serializer):
         #     grace_period=grace_period, interest_rate=interest_rate, interest_rate_type=interest_rate_type,
         #     interest_type=interest_type, margin=margin , comments = comments
         # )
-            program = Programs.objects.create(**validated_data,
+        program = Programs.objects.create(**validated_data,
                 party=party, program_type=program_type, finance_request_type=finance_request_type,
                 limit_currency=limit_currency, total_limit_amount=total_limit_amount, 
                 settlement_currency=settlement_currency, expiry_date=expiry_date, max_finance_percentage=max_finance_percentage,
                 max_invoice_age_for_funding=max_invoice_age_for_funding,  maximum_amount=maximum_amount,
-                grace_period=grace_period, interest_rate_type=interest_rate_type, attached_file = file_iter , 
+                grace_period=grace_period, interest_rate_type=interest_rate_type,  
                 interest_type=interest_type, margin=margin , comments = comments , is_locked = True
-            )
-        
-            program.save()
-            work = workflowitems.objects.create(
-                program=program, current_from_party=from_party,current_to_party=to_party, user = user ,  type = 'PROGRAM' )
-            work.save()
+        )
+
+        program.save()
+        work = workflowitems.objects.create(
+            program=program, current_from_party=from_party,current_to_party=to_party, user = user ,  type = 'PROGRAM' )
+        work.save()
             
-            event = workevents.objects.create( event_user = event_user,workitems=work, from_party=from_party, to_party=to_party , type = "PROGRAM")
-            event.save()
+        event = workevents.objects.create( event_user = event_user,workitems=work, from_party=from_party, to_party=to_party , type = "PROGRAM")
+        event.save()
+        for file_iter in file:
+            files = File.objects.create(file_path = file_iter , program = program)
+            files.save()
         return program
 
     
@@ -495,16 +503,18 @@ class InvoiceUploadserializer(serializers.Serializer):
         event_user = validated_data.pop('event_user')
         from_party = validated_data.pop('from_party')
         to_party = validated_data.pop('to_party')
-        file = validated_data.pop('attached_file')
+        file = validated_data.pop('file')
+        uploads = Invoiceuploads.objects.create(program_type = program_type , invoices = invoices ,**validated_data )
+        work = workflowitems.objects.create(
+            uploads=uploads, current_from_party=from_party,current_to_party=to_party, user=event_user , type="UPLOAD")
+        event = workevents.objects.create( event_user = event_user , type = "UPLOAD",
+            workitems=work, from_party=from_party, to_party=to_party) 
+        uploads.save()
+        work.save()
+        event.save()
         for file_iter in file:
-            uploads = Invoiceuploads.objects.create(program_type = program_type , invoices = invoices ,attached_file = file_iter,**validated_data )
-            work = workflowitems.objects.create(
-                uploads=uploads, current_from_party=from_party,current_to_party=to_party, user=event_user , type="UPLOAD")
-            event = workevents.objects.create( event_user = event_user , type = "UPLOAD",
-                workitems=work, from_party=from_party, to_party=to_party) 
-            uploads.save()
-            work.save()
-            event.save()
+            files = File.objects.create(file_path = file_iter , invoice_upload = uploads)
+            files.save()
         return uploads
 
     def get_wf_item_id(self,obj):
@@ -512,7 +522,7 @@ class InvoiceUploadserializer(serializers.Serializer):
 
 
 
-# INVOICE UPLOAD SERIALIZER 
+# INVOICE UPLOAD LIST SERIALIZER 
 
 class InvoiceUploadlistserializer(serializers.ModelSerializer):
     workflowitems = Workitemserializer(read_only=True)
@@ -520,6 +530,7 @@ class InvoiceUploadlistserializer(serializers.ModelSerializer):
     created_by = serializers.SerializerMethodField()
     wf_item_id = serializers.SerializerMethodField()
     final = serializers.SerializerMethodField()
+    attachments = serializers.SerializerMethodField()
 
     class Meta:
         model = Invoiceuploads
@@ -527,10 +538,10 @@ class InvoiceUploadlistserializer(serializers.ModelSerializer):
             'id',
             'wf_item_id',
             'program_type',
-            'attached_file',
             'is_finished',
             'final',
             'created_by',
+            'attachments',
             'invoices',
             'workflowitems',
             'workevents'
@@ -542,6 +553,10 @@ class InvoiceUploadlistserializer(serializers.ModelSerializer):
 
     def get_wf_item_id(self,obj):
         return obj.workflowitems.id
+
+    def get_attachments(self,obj):
+        files = File.objects.filter(invoice_upload = obj.id)
+        return {"files": files}
 
     def get_final(self,obj):
         queryset = workevents.objects.filter(workitems = obj.workflowitems.id).last()
@@ -641,13 +656,14 @@ class CounterPartySerializer(serializers.Serializer):
         # creating  a user 
         users = User.objects.create(phone = counterparty_mobile , email = counterparty_email , party = party , first_name = "null" , last_name = "null" , display_name = "null") 
         users.save()
-        for file_iter in file:
         # creating a pairing 
-            pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = party , total_limit = limit_amount , grace_period = grace_period ,
-            maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type  , attached_file = file_iter ,
-            minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
-
-            pairs.save()
+        pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = party , total_limit = limit_amount , grace_period = grace_period ,
+        maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type ,
+        minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
+        pairs.save()
+        for file_iter in file:
+            files = File.objects.create(file_path = file_iter , pairing = pairs)
+            files.save()
         return pairs
 
 
@@ -689,6 +705,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
     program_type = serializers.SerializerMethodField()
     user_detail = serializers.SerializerMethodField()
     details = serializers.SerializerMethodField()
+    attachments = serializers.SerializerMethodField()
 
     class Meta:
         model = Parties
@@ -710,6 +727,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'party_type',
             'pairings',
             'limit',
+            'attachments',
             'max_Invoice_Amount',
             'grace_period',
             'Interest_Rate_Type',
@@ -728,6 +746,10 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             return {"user_email": user.email, "user_phone": user.phone,"pairing":pair}
         except:
             return None
+
+    def get_attachments(self,obj):
+        files = File.objects.filter(pairing = obj.pairings.id)
+        return {"files": files}
 
     def get_user_detail(self,obj):
         user = User.objects.get(party__name__contains = obj.name)

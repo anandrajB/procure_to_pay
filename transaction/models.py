@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 from datetime import date
 from django.contrib.postgres.fields import ArrayField
+from accounts.models import Models
 from transaction.states import StateChoices
 
 
@@ -21,6 +22,8 @@ def invoice_upload_file_path(instance,filename):
     return 'scf/invoice_attachements/{0}'.format(filename)
 
 
+def manage_scf_attachments(instance,filename):
+    return 'scf/media/attachments/{0}'.format(filename)
 
 
 #  MODELS RELATED TO TRANSACTION
@@ -61,6 +64,9 @@ class InterestChoice(models.Model):
         verbose_name_plural = "InterestChoice"
 
 
+
+
+
 # PROGRAM MODEL
 
 class Programs(models.Model):
@@ -97,7 +103,6 @@ class Programs(models.Model):
     financed_amount = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
     balance_amount = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
     grace_period = models.IntegerField(blank=True, null=True)
-    attached_file = models.FileField(upload_to=program_file_path)
     interest_type = models.ForeignKey(InterestChoice,on_delete=models.DO_NOTHING)
     interest_rate_type = models.ForeignKey(InterestRateType,on_delete=models.DO_NOTHING)
     interest_rate = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
@@ -167,7 +172,6 @@ class Pairings(models.Model):
     financed_amount = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
     balance_amount = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
     grace_period = models.IntegerField(blank=True, null=True)
-    attached_file = models.FileField(upload_to=pairing_file_path)
     interest_type = models.ForeignKey(InterestChoice,on_delete=models.DO_NOTHING)
     interest_rate_type = models.ForeignKey(InterestRateType,on_delete=models.DO_NOTHING)
     interest_rate = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
@@ -234,7 +238,6 @@ class Invoiceuploads(models.Model):
     program_type = models.CharField(choices=program_type, default='*', max_length=15)
     # user = models.OneToOneField("accounts.User", on_delete=models.CASCADE, related_name='customername')
     invoices = models.JSONField()
-    attached_file = models.FileField(upload_to=invoice_upload_file_path)
     is_finished = models.BooleanField(default=None,blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
@@ -360,3 +363,11 @@ class workevents(models.Model):
             return super(workevents, self).save( *args, **kwargs)
     
         
+
+
+class File(models.Model):
+    file_path = models.FileField(upload_to=manage_scf_attachments)
+    program = models.ForeignKey(Programs, on_delete=models.CASCADE)
+    pairing = models.ForeignKey(Pairings, on_delete=models.CASCADE)
+    invoice_upload = models.ForeignKey(Invoiceuploads, on_delete=models.CASCADE)
+
