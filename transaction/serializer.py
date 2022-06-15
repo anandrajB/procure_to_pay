@@ -1093,12 +1093,18 @@ class FileSerializer(serializers.Serializer):
         child=serializers.FileField(
             max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
         )
-    )   
+    )
+    program = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())   
+    pairing = serializers.PrimaryKeyRelatedField(queryset = Pairings.objects.all())   
+    invoice = serializers.PrimaryKeyRelatedField(queryset = Invoiceuploads.objects.all())   
 
     def create(self, validated_data):
         files = validated_data.pop("files")
+        program = validated_data.pop('program')
+        pairing = validated_data.pop('pairing')
+        invoice = validated_data.pop('invoice')
         for file_iter in files:
-            file = File.objects.create(file_path=file_iter)
+            file = File.objects.create(file_path=file_iter,program = program ,pairing = pairing , invoice_upload = invoice )
         return file
 
     
