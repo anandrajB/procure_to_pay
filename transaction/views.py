@@ -714,4 +714,4 @@ class FileUploadApiView(CreateAPIView):
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "success"},status=status.HTTP_200_OK)
-        return Response({"status": "failure"},status=status.HTTP_204_NO_CONTENT)
+        return Response({"status": "failure"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
