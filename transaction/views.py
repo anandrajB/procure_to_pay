@@ -711,7 +711,7 @@ class FileUploadApiView(CreateAPIView):
 
     def create(self, request):
         serializer = FileSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception= True):
             serializer.save()
             return Response({"status": "success"},status=status.HTTP_200_OK)
         return Response({"status": "failure"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

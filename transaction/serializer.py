@@ -1094,9 +1094,9 @@ class FileSerializer(serializers.Serializer):
             max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
         )
     )
-    program = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())   
-    pairing = serializers.PrimaryKeyRelatedField(queryset = Pairings.objects.all())   
-    invoice = serializers.PrimaryKeyRelatedField(queryset = Invoiceuploads.objects.all())   
+    program = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all(), required=False,allow_null=True, default=None)   
+    pairing = serializers.PrimaryKeyRelatedField(queryset = Pairings.objects.all(), required=False,allow_null=True, default=None)   
+    invoice = serializers.PrimaryKeyRelatedField(queryset = Invoiceuploads.objects.all(), required=False,allow_null=True, default=None)   
 
     def create(self, validated_data):
         files = validated_data.pop("files")
