@@ -236,12 +236,12 @@ class ProgramListserializer(serializers.ModelSerializer):
         return obj.workflowitems.user.email
     
     def get_attachments(self,obj):
-        return None
-        # try:
-        #     files = File.objects.filter(program = obj.id)
-        # except:
-        #     return None
-        # return {"files": files}
+        try:
+            files = File.objects.filter(program = obj.id).values()
+            return {"file":files}
+        except:
+            return None
+        
 
     def get_wf_item_id(self,obj):
         return obj.workflowitems.id
@@ -294,11 +294,6 @@ class Programcreateserializer(serializers.Serializer):
     # record_datas = serializers.JSONField()
     from_party = serializers.PrimaryKeyRelatedField(queryset=Parties.objects.all(),required  = False)
     to_party = serializers.PrimaryKeyRelatedField(queryset=Parties.objects.all(),required = False)
-    # file = serializers.ListField(
-    #     child=serializers.FileField(validators = [validate_file_extension]
-    #     )
-    # )   
-    file = serializers.FileField()
 
     def create(self, validated_data):
         party = validated_data.pop('party')
@@ -311,7 +306,6 @@ class Programcreateserializer(serializers.Serializer):
         expiry_date = validated_data.pop('expiry_date')
         max_finance_percentage = validated_data.pop('max_finance_percentage')
         max_invoice_age_for_funding = validated_data.pop('max_invoice_age_for_funding')
-        file = validated_data.pop('file')
         # max_age_for_repayment = validated_data.pop('max_age_for_repayment')
         # minimum_period = validated_data.pop('minimum_period')
         # maximum_period = validated_data.pop('maximum_period')
@@ -358,8 +352,6 @@ class Programcreateserializer(serializers.Serializer):
         event = workevents.objects.create( event_user = event_user,workitems=work, from_party=from_party, to_party=to_party , type = "PROGRAM")
         event.save()
         program.save()
-        print(program)
-        File.objects.create(file_path = file ,program = program)
         return program
 
     
@@ -494,11 +486,7 @@ class InvoiceUploadserializer(serializers.Serializer):
     event_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),required=False)
     to_party = serializers.PrimaryKeyRelatedField(queryset = Parties.objects.all(),required = False)
     from_party = serializers.PrimaryKeyRelatedField(queryset = Parties.objects.all(),required = False)
-    file = serializers.ListField(
-        child=serializers.FileField(
-            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
-        )
-    )
+    
 
     def create(self, validated_data):
         program_type = validated_data.pop('program_type')
@@ -506,7 +494,6 @@ class InvoiceUploadserializer(serializers.Serializer):
         event_user = validated_data.pop('event_user')
         from_party = validated_data.pop('from_party')
         to_party = validated_data.pop('to_party')
-        file = validated_data.pop('file')
         uploads = Invoiceuploads.objects.create(program_type = program_type , invoices = invoices ,**validated_data )
         work = workflowitems.objects.create(
             uploads=uploads, current_from_party=from_party,current_to_party=to_party, user=event_user , type="UPLOAD")
@@ -515,9 +502,6 @@ class InvoiceUploadserializer(serializers.Serializer):
         uploads.save()
         work.save()
         event.save()
-        for file_iter in file:
-            files = File.objects.create(file_path = file_iter , invoice_upload = uploads)
-            files.save()
         return uploads
 
     def get_wf_item_id(self,obj):
@@ -558,8 +542,11 @@ class InvoiceUploadlistserializer(serializers.ModelSerializer):
         return obj.workflowitems.id
 
     def get_attachments(self,obj):
-        files = File.objects.filter(invoice_upload = obj.id)
-        return {"files": files}
+        try:
+            files = File.objects.filter(invoice_upload = obj.id).values()
+            return {"file":files}
+        except:
+            return None
 
     def get_final(self,obj):
         queryset = workevents.objects.filter(workitems = obj.workflowitems.id).last()
@@ -613,11 +600,7 @@ class CounterPartySerializer(serializers.Serializer):
     margin = serializers.IntegerField()
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
-    file = serializers.ListField(
-        child=serializers.FileField(
-            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
-        )
-    ) 
+   
     
     def create(self, validated_data):
         customer_id = validated_data.pop('customer_id')
@@ -627,7 +610,6 @@ class CounterPartySerializer(serializers.Serializer):
         address_line_2 = validated_data.pop('address_line_2')
         base_currency = validated_data.pop('base_currency')
         city = validated_data.pop('city')
-        file = validated_data.pop('file')
         state = validated_data.pop('state')
         zipcode = validated_data.pop('zipcode')
         country_code  = validated_data.pop('country_code')
@@ -664,9 +646,6 @@ class CounterPartySerializer(serializers.Serializer):
         maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type ,
         minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
         pairs.save()
-        for file_iter in file:
-            files = File.objects.create(file_path = file_iter , pairing = pairs)
-            files.save()
         return pairs
 
 
@@ -751,8 +730,11 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             return None
 
     def get_attachments(self,obj):
-        files = File.objects.filter(pairing = obj.pairings.id)
-        return {"files": files}
+        try:
+            files = File.objects.filter(pairing = obj.pairings.id)
+            return {"file":files}
+        except:
+            return None
 
     def get_user_detail(self,obj):
         user = User.objects.get(party__name__contains = obj.name)
@@ -1103,3 +1085,20 @@ class Interestratetypechoiceserializer(serializers.ModelSerializer):
     class Meta:
         model = InterestRateType
         fields = '__all__'
+
+
+
+class FileSerializer(serializers.Serializer):
+    files = serializers.ListField(
+        child=serializers.FileField(
+            max_length=100000, allow_empty_file=False, use_url=False , validators = [validate_file_extension]
+        )
+    )   
+
+    def create(self, validated_data):
+        files = validated_data.pop("files")
+        for file_iter in files:
+            file = File.objects.create(file_path=file_iter)
+        return file
+
+    

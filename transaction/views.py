@@ -2,7 +2,6 @@ from rest_framework.pagination import PageNumberPagination
 from accounts.models import Currencies, Parties
 import datetime
 from accounts.permission.base_permission import Is_Buyer, Is_Bank
-from transaction.FSM.Invoice import InvoiceFlow
 from transaction.FSM.invoice_bank import InvoiceBankFlow 
 from .models import (
     InterestChoice,
@@ -21,6 +20,7 @@ from accounts.permission.program_permission import *
 from accounts.permission.upload_permissions import *
 from rest_framework.generics import (
     ListAPIView,
+    CreateAPIView,
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
     RetrieveUpdateAPIView
@@ -29,6 +29,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from .serializer import (
+    FileSerializer,
     CounterPartyListSerializer,
     CounterPartySerializer,
     Interestchoiceserializer,
@@ -683,6 +684,8 @@ class WorkEventsUpdateApi(RetrieveUpdateDestroyAPIView):
         return Response({"status": "failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
 
+### INTEREST AND INTEREST RATE API LIST 
+
 
 class MiscApiView(APIView):
     permission_classes = [IsAuthenticated]
@@ -696,3 +699,18 @@ class MiscApiView(APIView):
             qs = InterestRateType.objects.all()
             ser = Interestratetypechoiceserializer(qs, many=True)
         return Response({"Status": "Success", "data": ser.data}, status=status.HTTP_200_OK)
+
+
+
+## FILE ATTACHEMENT API VIEW
+
+class FileUploadApiView(CreateAPIView):
+    serializer_class = FileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        serializer = FileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "success"},status=status.HTTP_200_OK)
+        return Response({"status": "failure"},status=status.HTTP_204_NO_CONTENT)

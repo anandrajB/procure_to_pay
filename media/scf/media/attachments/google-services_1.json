@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "642377465042",
+    "project_id": "devtraining-2ec83",
+    "storage_bucket": "devtraining-2ec83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642377465042:android:a390eda77942d4f1a8c10b",
+        "android_client_info": {
+          "package_name": "com.wordwiremobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642377465042-na9boglp7pemut4ja7fd8jvh25q4lkm1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQZbaBufQiq-Tf9zLAj1ZAWef0P6Payes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642377465042-na9boglp7pemut4ja7fd8jvh25q4lkm1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "642377465042-3a4hk8uuavf39ga4ds2ljd6ipplersim.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wordwiremobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
