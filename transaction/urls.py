@@ -28,7 +28,6 @@ from .views import (
     InboxNotificationCountApiView,
     InterestApiview,
     FileUploadApiView
- 
 )
 from transaction.api.InvoiceUploadTransition import (
     InvoiceUploadReturnTransitionview, 

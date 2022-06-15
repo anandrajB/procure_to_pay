@@ -275,7 +275,7 @@ class InboxListApiview(APIView, PageNumberPagination):
 
 # SENT API
 
-class SentListApiview(ListAPIView):
+class SentListApiview(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self, request):
@@ -298,15 +298,16 @@ class SentListApiview(ListAPIView):
 
         return queryset.filter(from_party__name__contains=user.party.name, final="YES").exclude(interim_state='DRAFT').order_by('created_date')
 
-    def list(self, request, *args, **kwargs):
-        var = self.get_queryset(request)
-        serializer = Workeventsmessageserializer(var, many=True)
+    def get(self, request, *args, **kwargs):
+        datas = self.get_queryset(request)
+        results = self.paginate_queryset(datas, request)
+        serializer = Workeventsmessageserializer(results, many=True)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
 
 # SENT AWAITING SIGN API
 
-class SentAwaitingSignApiview(ListAPIView):
+class SentAwaitingSignApiview(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self, request):
@@ -327,9 +328,10 @@ class SentAwaitingSignApiview(ListAPIView):
 
         return queryset.filter(current_from_party__name__contains=user.party.name, next_available_transitions__isnull='').exclude(interim_state='DRAFT').order_by('created_date')
 
-    def list(self, request, *args, **kwargs):
-        var = self.get_queryset(request)
-        serializer = Workitemsmessagesawapserializer(var, many=True)
+    def get(self, request, *args, **kwargs):
+        datas = self.get_queryset(request)
+        results = self.paginate_queryset(datas, request)
+        serializer = Workitemsmessagesawapserializer(results, many=True)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
 
