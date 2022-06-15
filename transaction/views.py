@@ -44,7 +44,6 @@ from .serializer import (
     WorkEventHistorySerializer,
     Workeventsmessageserializer,
     Workeventsserializer,
-    Workflowitemsupdateserializer,
     Workitemsmessagesawapserializer,
     WorkFlowitemsEnquirySerializer,
     Workitemserializer,

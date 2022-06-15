@@ -1037,41 +1037,41 @@ class csvserializer(serializers.Serializer):
 # WORKFLOW ITEM UPDATE SERIALIZER
 
 
-class Workflowitemsupdateserializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    invoice = serializers.PrimaryKeyRelatedField(queryset = Invoices.objects.all(),required = False)
-    # initial_state = serializers.CharField(required=False)
-    # interim_state = serializers.CharField(required=False)
-    # final_state = serializers.CharField(required=False)
-    # action = serializers.CharField(required=False)
-    # subaction = serializers.CharField(required=False)
-    # type = serializers.CharField(required=False)
-    interest_rate = serializers.CharField(required=False)
-    is_read = serializers.BooleanField(required=False)
-    financed_amount = serializers.CharField(required=False)
-    finance_currency_type = serializers.PrimaryKeyRelatedField(queryset = Currencies.objects.all(),required = False)
-    settlement_currency_type = serializers.PrimaryKeyRelatedField(queryset = Currencies.objects.all(),required = False)
+# class Workflowitemsupdateserializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only=True)
+#     invoice = serializers.PrimaryKeyRelatedField(queryset = Invoices.objects.all(),required = False)
+#     # initial_state = serializers.CharField(required=False)
+#     # interim_state = serializers.CharField(required=False)
+#     # final_state = serializers.CharField(required=False)
+#     # action = serializers.CharField(required=False)
+#     # subaction = serializers.CharField(required=False)
+#     # type = serializers.CharField(required=False)
+#     interest_rate = serializers.CharField(required=False)
+#     is_read = serializers.BooleanField(required=False)
+#     financed_amount = serializers.CharField(required=False)
+#     finance_currency_type = serializers.PrimaryKeyRelatedField(queryset = Currencies.objects.all(),required = False)
+#     settlement_currency_type = serializers.PrimaryKeyRelatedField(queryset = Currencies.objects.all(),required = False)
     
 
-    def update(self, instance, validated_data):
-        instance.invoice = validated_data.get("invoice", instance.invoice)
-        # instance.initial_state = validated_data.get("initial_state", instance.initial_state)
-        # instance.interim_state = validated_data.get("interim_state", instance.interim_state)
-        # instance.final_state = validated_data.get("final_state", instance.final_state)
-        # instance.action = validated_data.get("action", instance.action)
-        # instance.subaction = validated_data.get("subaction", instance.subaction)
-        # instance.type = validated_data.get("type", instance.type)
-        instance.is_read = validated_data.get("is_read", instance.is_read)
-        financed_amount = validated_data.get('financed_amount')
-        interest_rate = validated_data.get('interest_rate')
-        finance_currency_type = validated_data.get('finance_currency_type')
-        settlement_currency_type = validated_data.get('settlement_currency_type')
-        try:
-            Invoices.objects.filter(id = instance.invoice.id).update(financed_amount = financed_amount , interest_rate =interest_rate , finance_currency_type = finance_currency_type, settlement_currency_type = settlement_currency_type)
-            instance.save()
-        except:
-            instance.save()
-        return instance
+#     def update(self, instance, validated_data):
+#         instance.invoice = validated_data.get("invoice", instance.invoice)
+#         # instance.initial_state = validated_data.get("initial_state", instance.initial_state)
+#         # instance.interim_state = validated_data.get("interim_state", instance.interim_state)
+#         # instance.final_state = validated_data.get("final_state", instance.final_state)
+#         # instance.action = validated_data.get("action", instance.action)
+#         # instance.subaction = validated_data.get("subaction", instance.subaction)
+#         # instance.type = validated_data.get("type", instance.type)
+#         instance.is_read = validated_data.get("is_read", instance.is_read)
+#         financed_amount = validated_data.get('financed_amount')
+#         interest_rate = validated_data.get('interest_rate')
+#         finance_currency_type = validated_data.get('finance_currency_type')
+#         settlement_currency_type = validated_data.get('settlement_currency_type')
+#         try:
+#             Invoices.objects.filter(id = instance.invoice.id).update(financed_amount = financed_amount , interest_rate =interest_rate , finance_currency_type = finance_currency_type, settlement_currency_type = settlement_currency_type)
+#             instance.save()
+#         except:
+#             instance.save()
+#         return instance
 
 
 class Interestchoiceserializer(serializers.ModelSerializer):

@@ -2,28 +2,11 @@ from django.db import models
 from django.db.models import Q
 from datetime import date
 from django.contrib.postgres.fields import ArrayField
-from accounts.models import Models
 from transaction.states import StateChoices
+from accounts.file_path import manage_scf_attachments
 
 
 
-
-## FILE PATH DIRECTORY  -- ATTACHEMENT FILES -- 
-
-def program_file_path(instance,filename):
-    return 'scf/program/{0}/{1}'.format(instance.party.name , filename)
-
-
-def pairing_file_path(instance,filename):
-    return 'scf/pairing/user_{0}/{1}/{2}'.format(instance.counterparty_id.id , instance.counterparty_id.name , filename)
-
-
-def invoice_upload_file_path(instance,filename):
-    return 'scf/invoice_attachements/{0}'.format(filename)
-
-
-def manage_scf_attachments(instance,filename):
-    return 'scf/media/attachments/{0}'.format(filename)
 
 
 #  MODELS RELATED TO TRANSACTION
