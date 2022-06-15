@@ -26,7 +26,7 @@ from .views import (
     WorkFlowItemUpdateApi,
     WorkEventsUpdateApi,
     InboxNotificationCountApiView,
-    MiscApiView,
+    InterestApiview,
     FileUploadApiView
  
 )
@@ -84,7 +84,7 @@ urlpatterns = [
     path('workflowitem/<int:pk>/',WorkFlowItemUpdateApi.as_view(),name='workflowitem-update-api'),
     path('workevents/<int:pk>/',WorkEventsUpdateApi.as_view() , name = 'workevent_update_api'),
     path('notification/',InboxNotificationCountApiView.as_view(),name='notification-api-unread-messages-count'),
-    path('choices/',MiscApiView.as_view(),name = 'interest and rate_type list api '),
+    path('choices/',InterestApiview.as_view(),name = 'interest and rate_type list api '),
     path('file/',FileUploadApiView.as_view(),name= 'file-upload-api-view'),
 
     #### TRANSITIONS ####

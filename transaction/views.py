@@ -687,7 +687,7 @@ class WorkEventsUpdateApi(RetrieveUpdateDestroyAPIView):
 ### INTEREST AND INTEREST RATE API LIST 
 
 
-class MiscApiView(APIView):
+class InterestApiview(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
