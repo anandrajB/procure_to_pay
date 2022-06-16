@@ -4,6 +4,7 @@ from datetime import date
 from django.contrib.postgres.fields import ArrayField
 from transaction.states import StateChoices
 from accounts.file_path import manage_scf_attachments
+from datetime import date, datetime
 
 
 
@@ -294,7 +295,7 @@ class workevents(models.Model):
                     "total_limit_amount":str(qs.total_limit_amount),
                     "finance_currency" : qs.finance_currency,
                     "settlement_currency" : qs.settlement_currency,
-                    # "expiry_date" : qs.expiry_date,
+                    "expiry_date" : qs.expiry_date,
                     "max_finance_percentage":str(qs.max_finance_percentage),
                     "max_invoice_age_for_funding" : qs.max_invoice_age_for_funding,
                     "max_age_for_repayment" : qs.max_age_for_repayment,

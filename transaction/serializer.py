@@ -696,6 +696,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'name',
             'user_detail',
             'pairing_details',
+            'attachments',
             'customer_id',
             'address_line_1',
             'address_line_2',
@@ -730,7 +731,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
 
     def get_attachments(self,obj):
         try:
-            files = File.objects.filter(pairing = obj.pairings.id)
+            files = File.objects.filter(pairing = obj.pairings.id).values()
             return {"file":files}
         except:
             return None
