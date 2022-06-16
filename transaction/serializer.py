@@ -95,7 +95,6 @@ class Workitemserializer(serializers.ModelSerializer):
             'subaction',
             'type',
             'workflowevent'
-
         ]
         extra_kwargs = {"type": {"required": False}}
 
@@ -1021,9 +1020,6 @@ class WorkFlowitemsEnquirySerializer(serializers.ModelSerializer):
             return {"model": qs, "pairing": pair}
         except:
             return None
-
-
-
 
 
 
