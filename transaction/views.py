@@ -662,7 +662,7 @@ class InboxNotificationCountApiView(APIView):
     def get(self, request):
         model1 = workflowitems.objects.filter(current_from_party = request.user.party,is_read = True).count()
         model2 = workflowitems.objects.filter(current_from_party = request.user.party,is_read = True , interim_state = "DRAFT" ).count()
-        model3 = workevents.objects.filter(from_party = request.user.party,is_read = True).count()
+        model3 = workevents.objects.filter(from_party = request.user.party,is_read = True,final = 'YES').count()
         return Response({"status": "success", "inbox_count": model1 , "draft_count" : model2,"sent_count": model3}, status=status.HTTP_200_OK)
 
 
