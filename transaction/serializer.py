@@ -97,10 +97,7 @@ class Workitemserializer(serializers.ModelSerializer):
             'workflowevent'
 
         ]
-        extra_kwargs = {
-		"type": {"required": False},
-        }
-        # read_only_fields = ['workflowevent']
+        extra_kwargs = {"type": {"required": False}}
 
     def get_wf_item_id(self,obj):
         return obj.id
