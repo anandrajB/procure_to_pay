@@ -64,7 +64,7 @@ class Banks(models.Model):
         verbose_name_plural = "Bank"
 
 
-# COMPANY OR PARTIES 
+# PARTIES 
 
 class Parties(models.Model):
 
@@ -119,7 +119,7 @@ class Partyaccounts(models.Model):
 
 
 
-# CUSTOM USER MODEL SETUP  ( PHONE / EMAIL ) 
+# CUSTOM USER MODEL SETUP  ( PHONE / EMAIL )  - AUTHENTICATION
 
 class UserManager(BaseUserManager):
     use_in_migrations = True
@@ -156,12 +156,11 @@ class UserManager(BaseUserManager):
         )
 
 
-# MY USER MODEL -- updated master_admin settings on 1-3-2022
+# MY USER MODEL -- updated master
 
 class User(AbstractBaseUser,PermissionsMixin):
     phone = models.CharField(max_length=16, unique=True)
     email = models.EmailField(unique=True)
-    # make party models are required false -- 4/5/2022
     party = models.ForeignKey(Parties,on_delete=models.CASCADE,blank=True, null=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -201,7 +200,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     def is_superuser(self):
         return self.is_master_admin
 
-    ## for admin panel user
+    ## for admin panel showing profile_img
     def profile_tags(self):
             return mark_safe('<img src="/media/%s" width="150" height="150" />' % (self.profile_img))
 
@@ -267,7 +266,7 @@ class signatures(models.Model):
 
     def __str__(self):
         return "%s -> %s of action -> %s "%(self.model , self.party , self.action)
-
+    
     class Meta:
         verbose_name_plural = "Signatures"
         indexes = [

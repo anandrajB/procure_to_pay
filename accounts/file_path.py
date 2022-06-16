@@ -1,5 +1,7 @@
 
 
+### FILE ROOT DIRECTORY HANDLER FUNCTION
+
 
 
 def profile_img_path(instance, filename):
@@ -10,7 +12,8 @@ def profile_img_path(instance, filename):
 
 
 
-## MANAGE SCF - FILE DIRECTORY 
+# TRANSACTION - APP
+
 
 def program_file_path(instance,filename):
     return 'scf/program/{0}/{1}'.format(instance.party.name , filename)

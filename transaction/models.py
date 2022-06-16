@@ -278,14 +278,6 @@ class workevents(models.Model):
     class Meta:
         verbose_name_plural = "WorkEvent"
         ordering = ['id']
-
-    # def save(self, *args, **kwargs):
-    #     program = Programs.objects.filter(id=self.workitems.program.id).values()
-    #     jsoni = json.dumps(list(program),sort_keys = True,default = None, use_decimal = True)
-    #     print(jsoni)
-    #     self.record_datas = "anand"
-    #     return super(workevents, self).save(*args, **kwargs)
-
     
     def save(self, *args, **kwargs):
         try:

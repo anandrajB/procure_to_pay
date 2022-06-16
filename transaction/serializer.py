@@ -686,7 +686,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
     interest_type = serializers.SerializerMethodField()
     program_type = serializers.SerializerMethodField()
     user_detail = serializers.SerializerMethodField()
-    details = serializers.SerializerMethodField()
+    pairing_details = serializers.SerializerMethodField()
     attachments = serializers.SerializerMethodField()
 
     class Meta:
@@ -695,7 +695,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'user_detail',
-            'details',
+            'pairing_details',
             'customer_id',
             'address_line_1',
             'address_line_2',
@@ -721,11 +721,10 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'program_type'
         ]
 
-    def get_details(self,obj):
+    def get_pairing_details(self,obj):
         try:
-            user = User.objects.get(party__name__contains = obj.name)
             pair = Pairings.objects.filter(id = obj.pairings.id).values()
-            return {"user_email": user.email, "user_phone": user.phone,"pairing":pair}
+            return {"pairing":pair}
         except:
             return None
 

@@ -52,7 +52,7 @@ class ProgramSubmitTransitionApiview(APIView):
             obj.save()
             return Response({"status": "success",  "data": "SUBMIT : sign_C transition done"},status= status.HTTP_200_OK)
 
-        return Response({"status": "failure", "data": "can't do this transition                 "},status= status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        return Response({"status": "failure", "data": "can't do this transition"},status= status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
    
 # -----------------------------------#

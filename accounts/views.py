@@ -80,7 +80,7 @@ def error_404_view(request, exception):
     return render(request,'404.html')
 
 
-# CUSTOM 404 PAGE ( USE IN PRODUCTION  )
+# CUSTOM 500 PAGE ( USE IN PRODUCTION  )
 def error_500_view(request, *args, **argv):
     return render(request,'500.html')
 
@@ -113,7 +113,6 @@ class BankCreateApiview(ListCreateAPIView):
 
 
 # PARTIES CREATE
-
 
 class PartiesSignupApiview(ListAPIView):
     queryset = Parties.objects.all()
