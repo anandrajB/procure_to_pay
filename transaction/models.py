@@ -4,8 +4,6 @@ from datetime import date
 from django.contrib.postgres.fields import ArrayField
 from transaction.states import StateChoices
 from accounts.file_path import manage_scf_attachments
-from datetime import date, datetime
-
 
 
 
@@ -255,7 +253,7 @@ class workflowitems(models.Model):
         verbose_name_plural = "Workflowitem"
 
         
-
+from datetime import datetime
 # WORKEVENTS
 class workevents(models.Model):
 
@@ -286,6 +284,7 @@ class workevents(models.Model):
             # qs2 = Programs.objects.get(id = self.workitems.invoice.pairing.program_id.id)
             # qs1 = Invoices.objects.get(id = self.workitems.invoices)
             # qs2 = Invoiceuploads.objects.get(id = self.workitems.uploads)
+            
             program_data_template = {
                     "party" : qs.party.name,
                     "party_type" : qs.party.party_type,
@@ -295,7 +294,7 @@ class workevents(models.Model):
                     "total_limit_amount":str(qs.total_limit_amount),
                     "finance_currency" : qs.finance_currency,
                     "settlement_currency" : qs.settlement_currency,
-                    # "expiry_date" : qs.expiry_date,
+                    "expiry_date" : str(qs.expiry_date),
                     "max_finance_percentage":str(qs.max_finance_percentage),
                     "max_invoice_age_for_funding" : qs.max_invoice_age_for_funding,
                     "max_age_for_repayment" : qs.max_age_for_repayment,
@@ -312,7 +311,7 @@ class workevents(models.Model):
                     "margin" : str(qs.margin),
                     "status" : qs.status,
                     "is_locked" : qs.is_locked,
-                    # "created_date" : qs.created_date
+                    # "created_date" : str(qs.created_date)
             }
             # invoice_data_template = {
             #     "party" : qs1.party.name,

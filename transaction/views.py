@@ -362,12 +362,17 @@ class AwaitingApprovalMessageApiView(APIView):
 
 
 # TEST PURPOSE
-
 class TestApiview(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response({"data":"FINFLO TESTING"})
+        qs = Programs.objects.get(id = 1)
+        program_data_template = {
+                    "progam" : qs.id,
+                    "expiry_date" : qs.expiry_date,
+                    "created_date" : qs.created_date
+            }
+        return Response({"data":program_data_template})
 
 
 
