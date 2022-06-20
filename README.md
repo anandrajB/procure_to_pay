@@ -99,4 +99,4 @@
 
 2. TESTING_2    :  https://scftestenv.herokuapp.com/
 
-2. PRODUCTION   :  http://206.189.129.55/
+2. PRODUCTION   :  http://167.71.238.26/

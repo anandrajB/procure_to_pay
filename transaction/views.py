@@ -4,6 +4,7 @@ import datetime
 from accounts.permission.base_permission import Is_Buyer, Is_Bank
 from transaction.FSM.invoice_bank import InvoiceBankFlow 
 from .models import (
+    File,
     InterestChoice,
     InterestRateType,
     Invoices,
@@ -29,6 +30,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from .serializer import (
+    FileListSerailzier,
     FileSerializer,
     CounterPartyListSerializer,
     CounterPartySerializer,
@@ -710,9 +712,25 @@ class InterestApiview(APIView):
 
 ## FILE ATTACHEMENT API VIEW
 
-class FileUploadApiView(CreateAPIView):
+class FileUploadApiView(APIView):
     serializer_class = FileSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self, request):
+        program = self.request.query_params.get('program')
+        pairing = self.request.query_params.get('pairing')
+        invoice = self.request.query_params.get('invoice')
+        if program and pairing and invoice  is not None:
+            qs = File.objects.filter(Q(program=program) | Q(pairing=pairing) | Q(invoice_upload=invoice))
+        else:
+            qs = File.objects.all()
+        return qs
+
+    def get(self, request):
+        queryset = self.get_queryset(self)
+        ser = FileListSerailzier(queryset, many=True)
+        return Response({"Status": "Success", "data": ser.data}, status=status.HTTP_200_OK)
+
 
     def create(self, request):
         serializer = FileSerializer(data=request.data)

@@ -797,6 +797,7 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
     created_by = serializers.SerializerMethodField()
     next_transition = serializers.SerializerMethodField()
 
+
     class Meta:
         model = workevents
         fields = [
@@ -839,8 +840,8 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
             return {"model": qs, "pairing": pair}
         except:
             return None
-        
 
+ 
     def get_next_transition(self,obj):
         return obj.workitems.next_available_transitions
 
@@ -952,6 +953,7 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
 
     def get_record_datas(self,obj):
         try:
+            
             pair = Pairings.objects.filter(program_id = obj.program).values()
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = obj.id).values()
@@ -959,7 +961,7 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
                 qs = Invoices.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = obj.id).values()
-            return {"model": qs, "pairing": pair}
+            return {"model": qs, "pairing": pair }
         except:
             return None
     
@@ -1103,4 +1105,9 @@ class FileSerializer(serializers.Serializer):
             file = File.objects.create(file_path=file_iter,program = program ,pairing = pairing , invoice_upload = invoice )
         return file
 
-    
+
+
+class FileListSerailzier(serializers.ModelSerializer):
+    class Meta:
+        model = File
+        fields = '__all__'
