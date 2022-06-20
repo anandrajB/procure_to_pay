@@ -712,7 +712,7 @@ class InterestApiview(APIView):
 
 ## FILE ATTACHEMENT API VIEW
 
-class FileUploadApiView(APIView):
+class FileUploadApiView(ListCreateAPIView):
     serializer_class = FileSerializer
     permission_classes = [IsAuthenticated]
 
@@ -726,7 +726,7 @@ class FileUploadApiView(APIView):
             qs = File.objects.all()
         return qs
 
-    def get(self, request):
+    def list(self, request):
         queryset = self.get_queryset(self)
         ser = FileListSerailzier(queryset, many=True)
         return Response({"Status": "Success", "data": ser.data}, status=status.HTTP_200_OK)
