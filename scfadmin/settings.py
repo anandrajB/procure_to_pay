@@ -24,6 +24,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
+# os.path.normpath(os.path.join(BASE_DIRECTORY, 'SECRET.key'))
+
 AUTH_USER_MODEL = 'accounts.User'
 
 
