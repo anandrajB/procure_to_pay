@@ -27,7 +27,8 @@ from .views import (
     WorkEventsUpdateApi,
     InboxNotificationCountApiView,
     InterestApiview,
-    FileUploadApiView
+    FileUploadApiView,
+    FileListApiView
 )
 from transaction.api.InvoiceUploadTransition import (
     InvoiceUploadReturnTransitionview, 
@@ -85,6 +86,7 @@ urlpatterns = [
     path('notification/',InboxNotificationCountApiView.as_view(),name='notification-api-unread-messages-count'),
     path('choices/',InterestApiview.as_view(),name = 'interest and rate_type list api '),
     path('file/',FileUploadApiView.as_view(),name= 'file-upload-api-view'),
+    path('filelist/',FileListApiView.as_view(),name = 'file-list-api-for-scf-model'),
 
     #### TRANSITIONS ####
 
