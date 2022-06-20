@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import dotenv
+import cloudinary
 
 
 # –––––––––––––––––––––--#
@@ -61,7 +62,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'accounts',
     'transaction',
     'rest_framework',
@@ -322,6 +325,26 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # MEDIA_URL = "http://127.0.0.1:8000/media/"
 
 MEDIA_URL = '/media/'
+
+
+
+
+
+### CLOUDINARY SETTINGS
+
+cloudinary.config( 
+  cloud_name = "hm2cfpi5i", 
+  api_key = "655774237492385", 
+  api_secret = "skrVV_L4gwB62T4vArlhpnc2Oiw" 
+)
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': 'YOUR CLOUDINARY CLOUD NAME',
+#     'API_KEY': 'YUOR CLOUDINARY API KEY',
+#     'API_SECRET': 'YOUR CLOUDINARY API SECRET KEY',
+# }
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # –––––––––––––––––––––#
 #     AUTH BACKEND     #

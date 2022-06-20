@@ -5,6 +5,7 @@ charset-normalizer==2.0.9
 coreapi==2.3.3
 python-dotenv==0.19.2
 coreschema==0.0.4
+cloudinary==1.29.0
 python-dotenv==0.19.2
 Django==3.2.5
 django-viewflow==2.0.0a2
@@ -15,6 +16,7 @@ django-material-admin==1.8.5
 django-rest-swagger==2.2.0
 django-tenants==3.4.0
 djangorestframework==3.12.4
+dj3-cloudinary-storage==0.0.6
 graphene==2.1.9
 graphene-django==2.15.0
 graphql-core==2.3.2
