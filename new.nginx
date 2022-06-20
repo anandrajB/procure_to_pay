@@ -1,0 +1,18 @@
+server {
+    listen 80;
+    server_name 204.214.2.1;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        root /home/anand/scf;
+    }
+
+    location /media/ {
+        root /home/anand/scf/;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/anand/scf.sock;
+    }
+}
