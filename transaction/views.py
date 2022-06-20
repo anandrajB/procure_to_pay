@@ -720,8 +720,12 @@ class FileUploadApiView(ListCreateAPIView):
         program = self.request.query_params.get('program')
         pairing = self.request.query_params.get('pairing')
         invoice = self.request.query_params.get('invoice')
-        if program and pairing and invoice  is not None:
-            qs = File.objects.filter(Q(program=program) | Q(pairing=pairing) | Q(invoice_upload=invoice))
+        if program is not None:
+            qs = File.objects.filter(program = program)
+        elif pairing is not None:
+            qs = File.objects.filter(pairing  = pairing)
+        elif invoice is not None:
+            qs = File.objects.filter(invoice_upload  = invoice)
         else:
             qs = File.objects.all()
         return qs
