@@ -345,8 +345,6 @@ class File(models.Model):
     program = models.ForeignKey(Programs, on_delete=models.CASCADE,blank=True, null=True)
     pairing = models.ForeignKey(Pairings, on_delete=models.CASCADE,blank=True, null=True)
     invoice_upload = models.ForeignKey(Invoiceuploads, on_delete=models.CASCADE,blank=True, null=True)
-    created_date = models.DateTimeField(auto_now_add= True)
-
 
 
 

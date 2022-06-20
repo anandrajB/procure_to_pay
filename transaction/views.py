@@ -712,24 +712,10 @@ class InterestApiview(APIView):
 
 ## FILE ATTACHEMENT API VIEW
 
-class FileUploadApiView(CreateAPIView):
+class FileUploadApiView(ListCreateAPIView):
     serializer_class = FileSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request):
-        serializer = FileSerializer(data=request.data)
-        if serializer.is_valid(raise_exception= True):
-            serializer.save()
-            return Response({"status": "success"},status=status.HTTP_200_OK)
-        return Response({"status": "failure"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-
-
-class FileListApiView(ListAPIView):
-    queryset = File.objects.all()
-    serializer_class = FileListSerailzier
-    permission_classes = [IsAuthenticated]
-
-    
     def get_queryset(self, request):
         program = self.request.query_params.get('program')
         pairing = self.request.query_params.get('pairing')
@@ -744,3 +730,11 @@ class FileListApiView(ListAPIView):
         queryset = self.get_queryset(self)
         ser = FileListSerailzier(queryset, many=True)
         return Response({"Status": "Success", "data": ser.data}, status=status.HTTP_200_OK)
+
+
+    def create(self, request):
+        serializer = FileSerializer(data=request.data)
+        if serializer.is_valid(raise_exception= True):
+            serializer.save()
+            return Response({"status": "success"},status=status.HTTP_200_OK)
+        return Response({"status": "failure"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
