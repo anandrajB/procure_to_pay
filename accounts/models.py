@@ -167,7 +167,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     display_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True, blank = False)
     is_supervisor = models.BooleanField(default=False)
-    profile_img = models.FileField(upload_to = profile_img_path)
+    profile_img = models.ImageField(upload_to = profile_img_path ,blank = True ,  null = True)
     is_administrator = models.BooleanField(default=False)
     is_master_admin = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)

@@ -2,6 +2,16 @@ import os
 from django.core.exceptions import ValidationError
 
 
+
+
+def profile_img_validator(value):
+    ext = os.path.splitext(value.name)[1]  
+    profile = ['.jpg','.png']
+    if not ext.lower() in profile:
+        raise ValidationError('Unsupported file extension. Must be in .jpg or .png format')
+
+
+
 # CUSTOM FILE VALIDATOR FOR INVOICE CSV UPLOAD 
 
 def validate_invoice_extension(value):

@@ -160,7 +160,7 @@ class PartyDetailsUpdateDeleteApiview(RetrieveUpdateDestroyAPIView):
 
 # USER SIGNUP API 
 
-class UserSignUpApiView(CreateAPIView):
+class UserSignUpApiView(APIView):
     queryset = User.objects.all()
     serializer_class = UserSignupSerializer
     permission_classes = [AllowAny]

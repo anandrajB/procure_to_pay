@@ -334,16 +334,16 @@ MEDIA_URL = '/media/'
 
 ### CLOUDINARY SETTINGS
 
-cloudinary.config( 
-  cloud_name = "hm2cfpi5i", 
-  api_key = "655774237492385", 
-  api_secret = "skrVV_L4gwB62T4vArlhpnc2Oiw" 
-)
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'YOUR CLOUDINARY CLOUD NAME',
-#     'API_KEY': 'YUOR CLOUDINARY API KEY',
-#     'API_SECRET': 'YOUR CLOUDINARY API SECRET KEY',
-# }
+# cloudinary.config( 
+#   cloud_name = "hm2cfpi5i", 
+#   api_key = "655774237492385", 
+#   api_secret = "skrVV_L4gwB62T4vArlhpnc2Oiw" 
+# )
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'hm2cfpi5i',
+    'API_KEY': '655774237492385',
+    'API_SECRET': 'skrVV_L4gwB62T4vArlhpnc2Oiw',
+}
 
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
