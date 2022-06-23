@@ -56,6 +56,9 @@ class Workeventsserializer(serializers.ModelSerializer):
             'event_user',
             'display_name',
             'created_date',
+            'action',
+            'subaction',
+            'final',
             'type'
         ]
         read_only_fields = ['action','subaction','final']
