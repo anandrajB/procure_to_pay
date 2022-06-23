@@ -695,7 +695,6 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'name',
             'user_detail',
             'pairing_details',
-            'attachments',
             'customer_id',
             'address_line_1',
             'address_line_2',

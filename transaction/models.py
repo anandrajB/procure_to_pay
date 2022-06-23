@@ -309,6 +309,7 @@ class workevents(models.Model):
                     "interest_rate_type" : qs.interest_rate_type.description,
                     "interest_rate": str(qs.interest_rate),
                     "margin" : str(qs.margin),
+                    "comments" : qs.comments,
                     "status" : qs.status,
                     "is_locked" : qs.is_locked,
                     # "created_date" : str(qs.created_date)
