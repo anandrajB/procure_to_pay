@@ -39,6 +39,7 @@ class Workeventsserializer(serializers.ModelSerializer):
     from_party = serializers.SlugRelatedField(read_only=True, slug_field='name')
     to_party = serializers.SlugRelatedField(read_only=True, slug_field='name')
     display_name = serializers.SerializerMethodField()
+    event_user = serializers.SlugRelatedField(read_only=True, slug_field='email')
 
     class Meta:
         model = workevents
@@ -57,6 +58,8 @@ class Workeventsserializer(serializers.ModelSerializer):
             'created_date',
             'type'
         ]
+        read_only_fields = ['action','subaction','final']
+
 
     def get_display_name(self,obj):
         return obj.event_user.display_name
