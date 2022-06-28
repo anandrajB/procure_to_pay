@@ -63,7 +63,7 @@ class WorkFlow(object):
         ws = gets_wf_item_id(self.workflowitems.id)
         user = request.user
         self.workflowitems.final_state = StateChoices.STATUS_DRAFT
-        self.workflowitems.next_available_transitions = None
+        # self.workflowitems.next_available_transitions = None
         self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.RETURN , StateChoices.INITIAL_STATE
         workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_DRAFT, event_user=user, type = 'PROGRAM' , action = StateChoices.RETURN,subaction = StateChoices.INITIAL_STATE, 
