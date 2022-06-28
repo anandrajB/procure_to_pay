@@ -164,8 +164,11 @@ class PairingSerializer(serializers.ModelSerializer):
         
 
     def get_user_detail(self,obj):
-        user = User.objects.get(party = obj.counterparty_id.id)
-        return {"user_email": user.email, "user_phone": user.phone}
+        try:
+            user = User.objects.filter(party = obj.counterparty_id.id).first()
+            return {"user_email": user.email, "user_phone": user.phone}
+        except:
+            return None
 
 
     def get_buyer_name(self,obj):
@@ -741,8 +744,11 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             return None
 
     def get_user_detail(self,obj):
-        user = User.objects.get(party__name__contains = obj.name)
-        return {"user_email": user.email, "user_phone": user.phone}
+        try:
+            user_Data = User.objects.filter(party__name__contains = obj.name).first()
+            return {"user_email": user_Data.email, "user_phone": user_Data.phone}
+        except:
+            return None
        
     def get_limit(self,obj):
         return obj.pairings.total_limit
