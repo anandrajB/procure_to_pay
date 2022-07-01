@@ -252,8 +252,7 @@ class workflowitems(models.Model):
     class Meta:
         verbose_name_plural = "Workflowitem"
 
-        
-from datetime import datetime
+
 # WORKEVENTS
 class workevents(models.Model):
 

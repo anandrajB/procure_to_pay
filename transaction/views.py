@@ -368,13 +368,11 @@ class TestApiview(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        qs = Programs.objects.get(id = 1)
-        program_data_template = {
-                    "progam" : qs.id,
-                    "expiry_date" : qs.expiry_date,
-                    "created_date" : qs.created_date
-            }
-        return Response({"data":program_data_template})
+        user = request.user
+        print(user.party.name)
+        qs = Parties.objects.get(party_type="SELLER",pairings__program_id__party__name = request.user.party.name)
+        print(qs)
+        return Response({"data":"success"})
 
 
 
@@ -448,7 +446,7 @@ class CounterPartyApiview(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        queryset = Parties.objects.filter(party_type="SELLER")
+        queryset = Parties.objects.filter(party_type="SELLER" , pairings__program_id__party__name = request.user.party.name )
         ser = CounterPartyListSerializer(queryset, many=True)
         return Response({"Status": "Success", "data": ser.data}, status=status.HTTP_200_OK)
 
