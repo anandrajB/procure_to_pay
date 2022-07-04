@@ -270,6 +270,7 @@ class workevents(models.Model):
     is_read = models.BooleanField(default=True,blank=True, null=True)
     final = models.CharField(max_length=55,blank=True, null=True)
     c_final = models.CharField(max_length=55,blank=True, null=True)
+    comments = models.CharField(max_length=500,blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=55)
     

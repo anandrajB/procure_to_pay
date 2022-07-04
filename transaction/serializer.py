@@ -55,6 +55,7 @@ class Workeventsserializer(serializers.ModelSerializer):
             'record_datas',
             'event_user',
             'display_name',
+            'comments',
             'created_date',
             'action',
             'subaction',
@@ -69,6 +70,7 @@ class Workeventsserializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.is_read = validated_data.get('is_read',instance.is_read)
+        instance.comments = validated_data.get('comments',instance.comments)
         instance.save()
         return instance
 
