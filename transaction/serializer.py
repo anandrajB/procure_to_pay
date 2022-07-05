@@ -101,6 +101,7 @@ class Workitemserializer(serializers.ModelSerializer):
             'action',
             'is_read',
             'subaction',
+            'previous_action',
             'type',
             'workflowevent'
         ]
@@ -959,6 +960,7 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
             'record_datas',
             'type',
             'subaction',
+            'previous_action',
 
         ]
 
@@ -1013,6 +1015,7 @@ class WorkFlowitemsEnquirySerializer(serializers.ModelSerializer):
             'record_datas',
             'type',
             'subaction',
+            'previous_action'
 
         ]
 

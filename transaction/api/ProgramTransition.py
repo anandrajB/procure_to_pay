@@ -34,7 +34,7 @@ class ProgramSubmitTransitionApiview(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SUBMIT',model ='PROGRAM')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = WorkFlow(obj)
         if type == "save" :
             flow.submit(request)
@@ -77,7 +77,7 @@ class ProgramRejectTransitionApiview(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='REJECT',model ='PROGRAM')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = WorkFlow(obj)
         if type == "save" :
             flow.reject(request)
@@ -121,7 +121,7 @@ class ProgramApproveTransitionApiview(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='APPROVE',model ='PROGRAM')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = WorkFlow(obj)
         if type == "save" :
             flow.approve(request)
@@ -164,7 +164,7 @@ class ProgramAcceptTransitionApiview(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='ACCEPT',model ='PROGRAM')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = WorkFlow(obj)
         if type == "save" :
             flow.accept(request)
@@ -200,7 +200,7 @@ class ProgramReturnTransitionview(APIView):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         flow = WorkFlow(obj)
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow.returns(request)
         obj.save()
         return Response({"status": "Success", "data": "RETURN"},status= status.HTTP_200_OK)
@@ -215,7 +215,7 @@ class ProgramTransitionDeleteApiview(APIView):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         flow = WorkFlow(obj)
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow.delete(request)
         obj.save()
         return Response({"status": "Success", "data": "PROGRAM DELETED"},status= status.HTTP_200_OK)

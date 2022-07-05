@@ -27,7 +27,7 @@ class InvoiceUploadTransitionApiView(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SUBMIT',model ='UPLOAD')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = UploadFlow(obj)
         if type == "save":
             flow.submit_draft(request)
@@ -63,7 +63,7 @@ class InvoiceUploadReturnTransitionview(APIView):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         flow = UploadFlow(obj)
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow.invoice_upload_returns(request)
         obj.save()
         return Response({"status": "Success", "data": "invoice RETURN success"},status= status.HTTP_200_OK)

@@ -33,7 +33,7 @@ class InvoiceSubmitTransitionApiview(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SUBMIT',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = InvoiceFlow(obj)
         pgr_type = obj.invoice.program_type
         if type == "save" :
@@ -93,7 +93,7 @@ class InvoiceRejectTransitionApiView(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='REJECT',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         if type == "save" :
             if user.party.party_type == "BANK":
                 flow = InvoiceBankFlow(obj)
@@ -159,7 +159,7 @@ class InvoiceApproveTransitionApiView(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='APPROVE',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         if type == "save" :
             if user.party.party_type == "BANK":
                 flow = InvoiceBankFlow(obj)
@@ -225,7 +225,7 @@ class InvoiceRequestFinanceTransitionApi(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='REQUEST FINANCE',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = InvoiceFlow(obj)
         if type == "save" :
             if obj.action == "REJECT":
@@ -272,7 +272,7 @@ class InvoiceArchiveTransitionApi(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='ARCHIVE',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = InvoiceFlow(obj)
         if type == "save" :
             flow.Archive_APF(request)
@@ -316,7 +316,7 @@ class InvoiceSettleTransitionApi(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SETTLE',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = InvoiceBankFlow(obj)
         if type == "save" :
             flow.settle_invoice(request)
@@ -357,7 +357,7 @@ class InvoiceOverdueTransitionApi(APIView):
         auth = userprocessauth.objects.get(user = user , action__desc__contains='OVERDUE',model ='INVOICE')
         type = self.request.query_params.get('type')
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         flow = InvoiceBankFlow(obj)
         if type == "save" :
             flow.overdue_invoice(request)
@@ -396,7 +396,7 @@ class InvoiceReturnTransitionApiView(APIView):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         user = request.user
         comments = request.data.get('comments')
-        obj.comments = comments
+        obj.comments,obj.previous_action = comments , obj.action
         if user.party.party_type == "BANK":
             flow = InvoiceBankFlow(obj)
             flow.Return_Bank_Invoice(request)
