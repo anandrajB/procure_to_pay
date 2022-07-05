@@ -43,7 +43,7 @@ class InvoiceBankFlow(object):
         self.workflowitems.final_state = StateChoices.STATUS_DRAFT
         self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.RETURN , StateChoices.INITIAL_STATE
-        cs = workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_INITIAL_STATE, type="INVOICE", event_user = user ,
+        cs = workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_INITIAL_STATE, type="INVOICE", event_user = user ,comments = self.workflowitems.comments,
                                   interim_state=StateChoices.STATUS_DRAFT, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
         cs.save()
         self.workflowitems.interim_state = StateChoices.STATUS_DRAFT
@@ -70,7 +70,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -81,7 +81,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -92,7 +92,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -110,7 +110,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
             cc = workevents.objects.create(
-                workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_FINANCE_REJECTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, 
+                workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_FINANCE_REJECTED, to_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, comments = self.workflowitems.comments,
                 from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -124,7 +124,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.REJECT , StateChoices.SIGN_A
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -134,7 +134,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.REJECT , StateChoices.SIGN_A
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -152,7 +152,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_FINANCE_REJECTED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_FINANCE_REJECTED,comments = self.workflowitems.comments,
                                            final_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -167,7 +167,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.REJECT , StateChoices.SIGN_B
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
     @stage.transition(source=StateChoices.STATUS_AWAITING_SIGN_C, target=StateChoices.STATUS_SETTLED)
@@ -185,7 +185,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_C, interim_state=StateChoices.STATUS_FINANCE_REJECTED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_C, interim_state=StateChoices.STATUS_FINANCE_REJECTED,comments = self.workflowitems.comments,
                                            final_state=StateChoices.STATUS_FINANCE_REJECTED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -216,7 +216,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -227,7 +227,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -238,7 +238,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
     @stage.transition(source=stage.ANY, target=StateChoices.STATUS_FINANCE_REQUESTED)
@@ -257,7 +257,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
             cc = workevents.objects.create(
-                workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", final = 'YES',event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
+                workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_FINANCED, type="INVOICE", final = 'YES',comments = self.workflowitems.comments,event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
                 
@@ -272,7 +272,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.SIGN_A
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -283,7 +283,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.SIGN_A
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
     @stage.transition(source=stage.ANY, target=StateChoices.STATUS_FINANCE_REQUESTED)
@@ -300,7 +300,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_FINANCED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_FINANCED,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_FINANCED, type="INVOICE", final ='YES',event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -314,7 +314,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.SIGN_B
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_FINANCED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
     @stage.transition(source=stage.ANY, target=StateChoices.STATUS_FINANCE_REQUESTED)
@@ -331,7 +331,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_FINANCED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCE_REQUESTED, interim_state=StateChoices.STATUS_FINANCED,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_FINANCED, type="INVOICE", final = 'YES',event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -361,7 +361,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_SETTLED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -372,7 +372,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_SETTLED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -383,7 +383,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_SETTLED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
     @stage.transition(source=StateChoices.STATUS_AWAITING_SIGN_A, target=StateChoices.STATUS_AWAITING_SIGN_B)
@@ -401,7 +401,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
             cc = workevents.objects.create(
-                workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_SETTLED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
+                workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_SETTLED, to_state=StateChoices.STATUS_SETTLED, type="INVOICE", comments = self.workflowitems.comments,event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
                 
@@ -415,7 +415,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SETTLE , StateChoices.SIGN_A
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -425,7 +425,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SETTLE , StateChoices.SIGN_A
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
     @stage.transition(source=StateChoices.STATUS_AWAITING_SIGN_B, target=StateChoices.STATUS_AWAITING_SIGN_C)
@@ -442,7 +442,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_SETTLED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_SETTLED,comments = self.workflowitems.comments,
                                            final_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -456,7 +456,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SETTLE , StateChoices.SIGN_B
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -474,7 +474,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_C, interim_state=StateChoices.STATUS_SETTLED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_C, interim_state=StateChoices.STATUS_SETTLED,comments = self.workflowitems.comments,
                                            final_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -506,7 +506,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_OVERDUE, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -517,7 +517,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_OVERDUE, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -528,7 +528,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_FINANCED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_OVERDUE, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -548,7 +548,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
             cc = workevents.objects.create(
-                workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_FINANCE_REJECTED, to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
+                workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_FINANCE_REJECTED, comments = self.workflowitems.comments,to_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
                 
@@ -562,7 +562,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.STATUS_OVERDUE , StateChoices.SIGN_A
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif(obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -572,7 +572,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.STATUS_OVERDUE , StateChoices.SIGN_A
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_A, interim_state=StateChoices.STATUS_AWAITING_SIGN_B,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_SETTLED, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -590,7 +590,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_FINANCE_REJECTED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_FINANCE_REJECTED,comments = self.workflowitems.comments,
                                            final_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -604,7 +604,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.STATUS_OVERDUE , StateChoices.SIGN_B
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_B, interim_state=StateChoices.STATUS_AWAITING_SIGN_C,comments = self.workflowitems.comments,
                                       final_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -622,7 +622,7 @@ class InvoiceBankFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.current_to_party = self.workflowitems.user.party
 
-            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_C, interim_state=StateChoices.STATUS_FINANCE_REJECTED,
+            cc = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AWAITING_SIGN_C, interim_state=StateChoices.STATUS_FINANCE_REJECTED,comments = self.workflowitems.comments,
                                            final_state=StateChoices.STATUS_OVERDUE, type="INVOICE", event_user=user, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":

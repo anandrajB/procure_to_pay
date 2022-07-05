@@ -52,7 +52,7 @@ class WorkFlow(object):
         self.workflowitems.next_available_transitions = None
         
         workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DELETED, to_state=StateChoices.STATUS_DELETED, action = StateChoices.STATUS_DELETED,subaction = StateChoices.STATUS_DELETED,  event_user=user, type="PROGRAM",end = 'YES',
-                                  interim_state=StateChoices.STATUS_DELETED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final="YES" )
+                                  interim_state=StateChoices.STATUS_DELETED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final="YES" ,comments = self.workflowitems.comments)
 
 # ---------------------#
 # RETURN  TRANSITION   #
@@ -66,7 +66,7 @@ class WorkFlow(object):
         # self.workflowitems.next_available_transitions = None
         self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.RETURN , StateChoices.INITIAL_STATE
-        workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_DRAFT, event_user=user, type = 'PROGRAM' , action = StateChoices.RETURN,subaction = StateChoices.INITIAL_STATE, 
+        workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_DRAFT, event_user=user, type = 'PROGRAM' , action = StateChoices.RETURN,subaction = StateChoices.INITIAL_STATE, comments = self.workflowitems.comments,
                                        interim_state=StateChoices.STATUS_DRAFT, from_party=user.party, to_party=user.party)
         self.workflowitems.interim_state = StateChoices.STATUS_DRAFT
 
@@ -88,7 +88,7 @@ class WorkFlow(object):
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.MAKER
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_AW_APPROVAL, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_AW_APPROVAL, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                            interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -96,7 +96,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.MAKER
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_AW_APPROVAL, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_AW_APPROVAL, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                            interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -104,7 +104,7 @@ class WorkFlow(object):
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.MAKER
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_AW_APPROVAL, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_AW_APPROVAL, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                            interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
 
@@ -120,7 +120,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = None
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_A
             self.workflowitems.current_from_party = user.party
-            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user, action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,
+            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user, action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_AW_APPROVAL, interim_state=StateChoices.STATUS_AW_APPROVAL, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
             
             if user.party.party_type == "BANK":
@@ -140,7 +140,7 @@ class WorkFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_AW_APPROVAL, interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -149,7 +149,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_A
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_AW_APPROVAL, interim_state=StateChoices.STATUS_AWAITING_SIGN_B, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -166,7 +166,7 @@ class WorkFlow(object):
             self.workflowitems.current_from_party = user.party
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_B
 
-            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user, action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,
+            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user, action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_AW_APPROVAL, interim_state=StateChoices.STATUS_AW_APPROVAL, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -185,7 +185,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_B
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, event_user=user,action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_AW_APPROVAL, interim_state=StateChoices.STATUS_AWAITING_SIGN_C, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
 
@@ -198,7 +198,7 @@ class WorkFlow(object):
         self.workflowitems.next_available_transitions = None
         self.workflowitems.current_from_party = user.party
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_C
-        cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT,  event_user=user, action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_C,
+        cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT,  event_user=user, action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_C,comments = self.workflowitems.comments,
                                         to_state=StateChoices.STATUS_AW_APPROVAL, interim_state=StateChoices.STATUS_AW_APPROVAL, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
         
         if request.user.party.party_type == "BANK":
@@ -229,7 +229,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A]
             self.workflowitems.action ,self.workflowitems.subaction = StateChoices.REJECT , StateChoices.MAKER
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_REJECTED, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_REJECTED, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -238,7 +238,7 @@ class WorkFlow(object):
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
             self.workflowitems.action ,self.workflowitems.subaction = StateChoices.REJECT , StateChoices.MAKER
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_REJECTED, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_REJECTED, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -247,7 +247,7 @@ class WorkFlow(object):
             self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.action ,self.workflowitems.subaction = StateChoices.REJECT , StateChoices.MAKER
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_REJECTED, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_REJECTED, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, type="PROGRAM", to_party=self.workflowitems.current_to_party)
 
 
@@ -267,7 +267,7 @@ class WorkFlow(object):
             qs.is_locked = False
             qs.save()
 
-            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_A,
+            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_REJECTED, interim_state=StateChoices.STATUS_REJECTED, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
             
             if request.user.party.party_type == "BANK":
@@ -291,7 +291,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.REJECT, StateChoices.SIGN_A
             # self.workflowitems.program.is_locked = True
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_REJECTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -300,7 +300,7 @@ class WorkFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_REJECTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -321,7 +321,7 @@ class WorkFlow(object):
             qs.is_locked = False
             qs.save()
 
-            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, action = StateChoices.REJECT,subaction = StateChoices.SIGN_B,
+            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, action = StateChoices.REJECT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_REJECTED, interim_state=StateChoices.STATUS_REJECTED, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
             
             if request.user.party.party_type == "BANK":
@@ -342,7 +342,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.REJECT, StateChoices.SIGN_B
             self.workflowitems.program.is_locked = True
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user,action = StateChoices.REJECT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_REJECTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_C, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -362,7 +362,7 @@ class WorkFlow(object):
             qs.is_locked = False
             qs.save()
             
-            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, action = StateChoices.REJECT,subaction = StateChoices.SIGN_C,
+            cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, action = StateChoices.REJECT,subaction = StateChoices.SIGN_C,comments = self.workflowitems.comments,
                                            to_state=StateChoices.STATUS_REJECTED, interim_state=StateChoices.STATUS_REJECTED, type="PROGRAM", from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
             if request.user.party.party_type == "BANK":
@@ -394,7 +394,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.MAKER
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_ACCEPTED, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_ACCEPTED, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -404,7 +404,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.MAKER
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_ACCEPTED, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_ACCEPTED, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -414,7 +414,7 @@ class WorkFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.MAKER
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_ACCEPTED, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, to_state=StateChoices.STATUS_ACCEPTED, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -431,7 +431,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.SIGN_A
             self.workflowitems.current_to_party = bank
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, final='YES', event_user=user, type="PROGRAM", end='YES',action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, final='YES', event_user=user, type="PROGRAM", end='YES',action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_ACCEPTED, interim_state=StateChoices.STATUS_ACCEPTED, from_party=self.workflowitems.current_from_party, to_party=bank)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -439,7 +439,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.SIGN_A
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_ACCEPTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -447,7 +447,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.SIGN_A
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_ACCEPTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -464,7 +464,7 @@ class WorkFlow(object):
             self.workflowitems.current_to_party = bank
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.SIGN_B
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, final='YES', event_user=user, type="PROGRAM", end = 'YES',action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, final='YES', event_user=user, type="PROGRAM", end = 'YES',action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_ACCEPTED, interim_state=StateChoices.STATUS_ACCEPTED, from_party=self.workflowitems.current_from_party, to_party=bank)
 
 
@@ -474,7 +474,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.SIGN_B
             
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, event_user=user, type="PROGRAM",action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_ACCEPTED, interim_state=StateChoices.STATUS_AWAITING_SIGN_C, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -491,7 +491,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = []
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.ACCEPT , StateChoices.SIGN_C
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, final='YES', event_user=user, type="PROGRAM", action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_C,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_ACCEPT, final='YES', event_user=user, type="PROGRAM", action = StateChoices.ACCEPT,subaction = StateChoices.SIGN_C,comments = self.workflowitems.comments,
                                       to_state=StateChoices.STATUS_ACCEPTED, interim_state=StateChoices.STATUS_ACCEPTED, from_party=self.workflowitems.current_from_party, to_party=bank)
         return None
 
@@ -514,7 +514,7 @@ class WorkFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.MAKER
             
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -524,7 +524,7 @@ class WorkFlow(object):
             self.workflowitems.current_to_party = self.workflowitems.current_from_party = user.party
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.MAKER
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -534,7 +534,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.MAKER
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -555,7 +555,7 @@ class WorkFlow(object):
             qs.is_locked = False
             qs.save()
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",  final = 'YES',action = StateChoices.APPROVE,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",  final = 'YES',action = StateChoices.APPROVE,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_APPROVED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final="YES")
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -565,7 +565,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.SIGN_A
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -575,7 +575,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.SIGN_A
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -596,7 +596,7 @@ class WorkFlow(object):
             qs.is_locked = False
             qs.save()
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",  final = 'YES',action = StateChoices.APPROVE,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",  final = 'YES',action = StateChoices.APPROVE,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_APPROVED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final='YES')
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -605,7 +605,7 @@ class WorkFlow(object):
             self.workflowitems.next_available_transitions = [StateChoices.STATUS_AWAITING_SIGN_C]
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.APPROVE , StateChoices.SIGN_B
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM",action = StateChoices.APPROVE,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_C, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -626,6 +626,6 @@ class WorkFlow(object):
             qs.is_locked = False
             qs.save()
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM" ,  final = 'YES',action = StateChoices.APPROVE,subaction = StateChoices.SIGN_C,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_AW_APPROVAL, to_state=StateChoices.STATUS_APPROVED, event_user=user, type="PROGRAM" ,  final = 'YES',action = StateChoices.APPROVE,subaction = StateChoices.SIGN_C,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_APPROVED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final='YES')
         return None

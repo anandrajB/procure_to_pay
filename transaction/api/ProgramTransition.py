@@ -27,12 +27,14 @@ class ProgramSubmitTransitionApiview(APIView):
     queryset = workflowitems.objects.all()
     permission_classes = [ Is_Buyer |  Is_Bank]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='SUBMIT', model='PROGRAM')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SUBMIT',model ='PROGRAM')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = WorkFlow(obj)
         if type == "save" :
             flow.submit(request)
@@ -68,12 +70,14 @@ class ProgramRejectTransitionApiview(APIView):
     permission_classes = [ Is_Buyer | Is_Bank]
 
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='REJECT', model='PROGRAM')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='REJECT',model ='PROGRAM')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = WorkFlow(obj)
         if type == "save" :
             flow.reject(request)
@@ -110,12 +114,14 @@ class ProgramApproveTransitionApiview(APIView):
     permission_classes = [  Is_Buyer | Is_Bank]
 
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='APPROVE', model='PROGRAM')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='APPROVE',model ='PROGRAM')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = WorkFlow(obj)
         if type == "save" :
             flow.approve(request)
@@ -151,12 +157,14 @@ class ProgramAcceptTransitionApiview(APIView):
     permission_classes = [Is_Buyer | Is_Bank]
 
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='ACCEPT', model='PROGRAM')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='ACCEPT',model ='PROGRAM')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = WorkFlow(obj)
         if type == "save" :
             flow.accept(request)
@@ -188,9 +196,11 @@ class ProgramReturnTransitionview(APIView):
     serializer_class = Workitemserializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         flow = WorkFlow(obj)
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow.returns(request)
         obj.save()
         return Response({"status": "Success", "data": "RETURN"},status= status.HTTP_200_OK)
@@ -201,9 +211,11 @@ class ProgramTransitionDeleteApiview(APIView):
     serializer_class = Workitemserializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         flow = WorkFlow(obj)
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow.delete(request)
         obj.save()
         return Response({"status": "Success", "data": "PROGRAM DELETED"},status= status.HTTP_200_OK)

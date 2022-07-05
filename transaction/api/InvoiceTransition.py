@@ -26,12 +26,14 @@ class InvoiceSubmitTransitionApiview(APIView):
     queryset = workflowitems.objects.all()
     permission_classes = [Is_Buyer | Is_Bank]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='SUBMIT', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SUBMIT',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = InvoiceFlow(obj)
         pgr_type = obj.invoice.program_type
         if type == "save" :
@@ -84,12 +86,14 @@ class InvoiceRejectTransitionApiView(APIView):
     queryset = workflowitems.objects.all()
     permission_classes = [Is_Buyer | Is_Bank]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='REJECT', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='REJECT',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         if type == "save" :
             if user.party.party_type == "BANK":
                 flow = InvoiceBankFlow(obj)
@@ -148,12 +152,14 @@ class InvoiceApproveTransitionApiView(APIView):
     queryset = workflowitems.objects.all()
     permission_classes = [Is_Buyer | Is_Bank]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='APPROVE', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='APPROVE',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         if type == "save" :
             if user.party.party_type == "BANK":
                 flow = InvoiceBankFlow(obj)
@@ -212,12 +218,14 @@ class InvoiceRequestFinanceTransitionApi(APIView):
     queryset = workflowitems.objects.all()
     permission_classes = [ IsAuthenticated,Is_Seller ]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='REQUEST FINANCE', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='REQUEST FINANCE',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = InvoiceFlow(obj)
         if type == "save" :
             if obj.action == "REJECT":
@@ -257,12 +265,14 @@ class InvoiceArchiveTransitionApi(APIView):
     permission_classes = [Is_Buyer | Is_Bank]
 
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='ARCHIVE', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='ARCHIVE',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = InvoiceFlow(obj)
         if type == "save" :
             flow.Archive_APF(request)
@@ -299,12 +309,14 @@ class InvoiceSettleTransitionApi(APIView):
     permission_classes = [ Is_Bank ]
 
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='SETTLE', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='SETTLE',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = InvoiceBankFlow(obj)
         if type == "save" :
             flow.settle_invoice(request)
@@ -338,12 +350,14 @@ class InvoiceOverdueTransitionApi(APIView):
     permission_classes = [ Is_Bank ]
 
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         user = request.user
         obj = generics.get_object_or_404(workflowitems, id=pk)
         signs = signatures.objects.get(party=user.party, action__desc__contains='OVERDUE', model='INVOICE')
         auth = userprocessauth.objects.get(user = user , action__desc__contains='OVERDUE',model ='INVOICE')
         type = self.request.query_params.get('type')
+        comments = request.data.get('comments')
+        obj.comments = comments
         flow = InvoiceBankFlow(obj)
         if type == "save" :
             flow.overdue_invoice(request)
@@ -378,9 +392,11 @@ class InvoiceReturnTransitionApiView(APIView):
     serializer_class = Workitemserializer
     permission_classes = [Is_Bank | Is_Buyer]
 
-    def get(self, request, pk, *args, **kwargs):
+    def post(self, request, pk, *args, **kwargs):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         user = request.user
+        comments = request.data.get('comments')
+        obj.comments = comments
         if user.party.party_type == "BANK":
             flow = InvoiceBankFlow(obj)
             flow.Return_Bank_Invoice(request)

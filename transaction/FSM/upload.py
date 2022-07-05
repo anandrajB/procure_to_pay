@@ -44,7 +44,7 @@ class UploadFlow(object):
         self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.RETURN , StateChoices.INITIAL_STATE
         workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_DRAFT, event_user=user, type = 'UPLOAD' , action = StateChoices.RETURN,subaction = StateChoices.INITIAL_STATE,
-                                       interim_state=StateChoices.STATUS_DRAFT, from_party=user.party, to_party=user.party)
+                                       interim_state=StateChoices.STATUS_DRAFT, from_party=user.party, to_party=user.party , comments = self.workflowitems.comments,)
         self.workflowitems.interim_state = StateChoices.STATUS_DRAFT
 
 
@@ -66,7 +66,7 @@ class UploadFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c != True):
@@ -75,7 +75,7 @@ class UploadFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -84,7 +84,7 @@ class UploadFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_A, StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.MAKER,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_A, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -99,7 +99,7 @@ class UploadFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_A
             self.workflowitems.next_available_transitions = []
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_COMPLETED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final='YES')
             
             pg_type = self.workflowitems.uploads.program_type
@@ -119,7 +119,7 @@ class UploadFlow(object):
                     work.save()
 
                     event = workevents.objects.create(
-                        workitems=work, from_party=gets_party(i['counterparty_id']), action = "SUBMIT" ,final = 'YES',to_party=gets_party(i['buyerName']), event_user=user, type="INVOICE", interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, to_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL)
+                        workitems=work, from_party=gets_party(i['counterparty_id']), action = "SUBMIT" ,final = 'YES',to_party=gets_party(i['buyerName']), event_user=user, type="INVOICE", interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, to_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
                     event.save()
 
                 else:
@@ -142,7 +142,7 @@ class UploadFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_B]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
         elif (obj.sign_a == True and obj.sign_b == True and obj.sign_c == True):
@@ -151,7 +151,7 @@ class UploadFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_B, StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_A,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_B, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -167,7 +167,7 @@ class UploadFlow(object):
             self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_B
             self.workflowitems.next_available_transitions = []
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_COMPLETED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final="YES")
             pg_type = self.workflowitems.uploads.program_type
             invoices_json = self.workflowitems.uploads.invoices
@@ -208,7 +208,7 @@ class UploadFlow(object):
             self.workflowitems.next_available_transitions = [
                 StateChoices.STATUS_AWAITING_SIGN_C]
 
-            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,
+            workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_B,comments = self.workflowitems.comments,
                                       interim_state=StateChoices.STATUS_AWAITING_SIGN_C, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
 
 
@@ -221,7 +221,7 @@ class UploadFlow(object):
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.SUBMIT , StateChoices.SIGN_C
         self.workflowitems.next_available_transitions = []
 
-        workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_C,
+        workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, event_user=user, type="UPLOAD",action = StateChoices.SUBMIT,subaction = StateChoices.SIGN_C,comments = self.workflowitems.comments,
                                   interim_state=StateChoices.STATUS_COMPLETED, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party, c_final="YES")
 
         pg_type = self.workflowitems.uploads.program_type

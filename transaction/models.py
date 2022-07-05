@@ -247,6 +247,7 @@ class workflowitems(models.Model):
     action = models.CharField(max_length=25, default='SAVE')
     subaction = models.CharField(max_length=55 , blank=True, null=True)
     type = models.CharField(max_length=55)
+    comments = models.CharField(max_length=500,blank=True, null=True)
     is_read = models.BooleanField(default=True,blank=True, null=True)
 
     class Meta:
