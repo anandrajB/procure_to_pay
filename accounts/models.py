@@ -278,6 +278,7 @@ class signatures(models.Model):
             models.Index(fields=['action',]),
             models.Index(fields=['party',]),
         ]
+        unique_together = ('model', 'action','party')       
 
         
 
