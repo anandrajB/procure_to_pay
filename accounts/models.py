@@ -304,3 +304,4 @@ class userprocessauth(models.Model):
 
     class Meta:
         verbose_name_plural = "userprocessauth"
+        unique_together = ('action', 'user','model')
