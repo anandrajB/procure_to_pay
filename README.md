@@ -66,7 +66,7 @@
 
 1. https://venzoscf.herokuapp.com/
 
-## ADMIN PANEL  
+## ADMIN PANEL 
 
 1. https://venzoscf.herokuapp.com/admin/
 
