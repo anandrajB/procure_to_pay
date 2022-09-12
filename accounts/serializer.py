@@ -295,46 +295,44 @@ class CounterpartyCreateSerializer(serializers.Serializer):
         ('REJECTED', 'REJECTED'),
     ]
 
-    c_id = serializers.CharField(required=True)
-    c_name = serializers.CharField(required=True)
-    c_address = serializers.CharField(required=True)
-    c_city = serializers.CharField(required=True)
-    c_country = serializers.CharField(required=True)
-    c_email = serializers.EmailField(required=True)
-    c_mobile = serializers.CharField(required=True)
-    c_onboarding = serializers.ChoiceField(choices=choices)
+    customer_id = serializers.CharField(required=True)
+    name = serializers.CharField(required=True)
+    address = serializers.CharField(required=True)
+    city = serializers.CharField(required=True)
+    country = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    mobile = serializers.CharField(required=True)
+    onboarding = serializers.ChoiceField(choices=choices)
     gst_no = serializers.CharField(required=True)
     pan_no = serializers.CharField(required=True)
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     def create(self, validated_data):
 
-        c_id = validated_data.pop('c_id')
-        c_name = validated_data.pop('c_name')
-        c_address = validated_data.pop('c_address')
-        c_city = validated_data.pop('c_city')
-        c_country = validated_data.pop('country')
-        c_email = validated_data.pop('c_email')
-        c_mobile = validated_data.pop('c_mobile')
-        c_onboarding = validated_data.pop('c_onboarding')
+        customer_id = validated_data.pop('customer_id')
+        name = validated_data.pop('name')
+        address = validated_data.pop('address')
+        city = validated_data.pop('city')
+        country = validated_data.pop('country')
+        email = validated_data.pop('email')
+        mobile = validated_data.pop('mobile')
+        onboarding = validated_data.pop('onboarding')
         gst_no = validated_data.pop('gst_no')
         pan_no = validated_data.pop('pan_no')
-        user = validated_data.pop('user')
 
-        counter_party = CounterParty.objects.create(c_id=c_id,
-                                                    c_name=c_name,
-                                                    c_address=c_address,
-                                                    c_city=c_city,
-                                                    c_country=c_country,
-                                                    c_email=c_email,
-                                                    c_mobile=c_mobile,
-                                                    c_onboarding=c_onboarding,
+        counter_party = CounterParty.objects.create(id=customer_id,
+                                                    name=name,
+                                                    address=address,
+                                                    city=city,
+                                                    country=country,
+                                                    email=email,
+                                                    mobile=mobile,
+                                                    onboarding=onboarding,
                                                     gst_no=gst_no,
-                                                    pan_no=pan_no, user=user)
+                                                    pan_no=pan_no)
 
         party = Parties.objects.create(
-            customer_id=c_id, name=c_name, address_line_1=c_address, city=c_city, party_type="OTHER", status="NEW")
-
+            customer_id=customer_id, name=name, address_line_1=address, city=city, party_type="OTHER")
+        # need to update status for parties 
         party.save()
         counter_party.save()
 
@@ -346,29 +344,28 @@ class CounterpartyCreateSerializer(serializers.Serializer):
                 "Party with same name already exists.")
         return value
 
-# CounterParty Update Serializer
 
 
 class CounterpartyUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CounterParty
-        fields = ['c_id', 'c_name', 'c_address', 'c_city', 'c_country',
-                  'c_email', 'c_mobile', 'c_onboarding', 'gst_no', 'pan_no']
-        read_only_fields = ['c_id']
+        fields = ['id', 'name', 'address', 'city', 'country',
+                  'email', 'mobile', 'onboarding', 'gst_no', 'pan_no']
+        read_only_fields = ['id']
 
         def update(self, instance, validated_data):
-            instance.c_name = validated_data.get('c_name', instance.c_name)
-            instance.c_address = validated_data.get(
-                'c_address', instance.c_address)
-            instance.c_city = validated_data.get('c_city', instance.c_city)
-            instance.c_country = validated_data.get(
-                'c_country', instance.c_country)
-            instance.c_email = validated_data.get('c_email', instance.c_email)
-            instance.c_mobile = validated_data.get(
-                'c_mobile', instance.c_mobile)
-            instance.c_onboarding = validated_data.get(
-                'c_onboarding', instance.c_onboarding)
+            instance.name = validated_data.get('name', instance.name)
+            instance.address = validated_data.get(
+                'address', instance.address)
+            instance.city = validated_data.get('city', instance.city)
+            instance.country = validated_data.get(
+                'country', instance.country)
+            instance.email = validated_data.get('email', instance.email)
+            instance.mobile = validated_data.get(
+                'mobile', instance.mobile)
+            instance.onboarding = validated_data.get(
+                'onboarding', instance.onboarding)
             instance.gst_no = validated_data.get('gst_no', instance.gst_no)
             instance.pan_no = validated_data.get('pan_no', instance.pan_no)
 

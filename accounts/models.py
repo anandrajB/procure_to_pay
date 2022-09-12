@@ -79,13 +79,13 @@ class Parties(models.Model):
 
     customer_id = models.CharField(max_length=18)
     name = models.CharField(max_length=35)
-    base_currency  = models.ForeignKey(Currencies,on_delete=models.CASCADE)
-    address_line_1 = models.CharField(max_length=35)
-    address_line_2 = models.CharField(max_length=35)
+    base_currency  = models.ForeignKey(Currencies,on_delete=models.CASCADE , blank=True, null=True)
+    address_line_1 = models.CharField(max_length=35 , blank=True, null=True)
+    address_line_2 = models.CharField(max_length=35 , blank=True, null=True)
     city = models.CharField(max_length=35)
     state = models.CharField(max_length=35)
-    zipcode = models.CharField(max_length=6)
-    country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING)
+    zipcode = models.CharField(max_length=6 , blank=True, null=True)
+    country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING , blank=True, null=True)
     onboarded = models.BooleanField(default=False)
     party_type = models.CharField(choices = party_type_choices , max_length=25)
 
@@ -102,6 +102,39 @@ class Parties(models.Model):
 
     
 
+
+# COUNTERPARTY 
+
+class CounterParty(models.Model):
+
+    choices = [
+        ('DRAFT', 'DRAFT'),
+        ('SENT TO BANK', 'SENT TO BANK'),
+        ('SENT TO COUNTERPARTY', 'SENT TO COUNTERPARTY'),
+        ('COMPLETED', 'COMPLETED'),
+        ('REJECTED', 'REJECTED'),
+    ]
+
+    customer_id = models.CharField(primary_key=True, unique=True, max_length=18)
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    mobile = models.CharField(max_length=10)
+    onboarding = models.CharField(choices=choices, max_length=25)
+    gst_no = models.CharField(max_length=18)
+    pan_no = models.CharField(max_length=18)
+    
+    # class Meta:
+    #     pass
+
+    def __str__(self):
+        return f"{self.name} <==> {self.email}"
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.upper()
+        return super(CounterParty, self).save(*args, **kwargs)
 
 
 
@@ -316,35 +349,3 @@ class userprocessauth(models.Model):
 
 
 
-# COUNTERPARTY 
-
-class CounterParty(models.Model):
-
-    choices = [
-        ('DRAFT', 'DRAFT'),
-        ('SENT TO BANK', 'SENT TO BANK'),
-        ('SENT TO COUNTERPARTY', 'SENT TO COUNTERPARTY'),
-        ('COMPLETED', 'COMPLETED'),
-        ('REJECTED', 'REJECTED'),
-    ]
-
-    c_id = models.CharField(primary_key=True, unique=True, max_length=18)
-    c_name = models.CharField(max_length=255)
-    c_address = models.CharField(max_length=255)
-    c_city = models.CharField(max_length=255)
-    c_country = models.CharField(max_length=255)
-    c_email = models.EmailField(unique=True)
-    c_mobile = models.CharField(max_length=10)
-    c_onboarding = models.CharField(choices=choices, max_length=25)
-    gst_no = models.CharField(max_length=18)
-    pan_no = models.CharField(max_length=18)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    # class Meta:
-    #     pass
-
-    def __str__(self):
-        return f"{self.c_name} <==> {self.c_email}"
-
-    # def save(self, *args, **kwargs):
-    #     parties = Parties.objects.get(id=self.id).exists()
