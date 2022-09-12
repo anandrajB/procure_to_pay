@@ -74,6 +74,7 @@ class Parties(models.Model):
     ('OTHER','OTHER'),
     ('SELLER','SELLER'),
     ('BUYER','BUYER'),
+    ('OTHER','OTHER'),
     ]
 
     customer_id = models.CharField(max_length=18)
@@ -100,7 +101,10 @@ class Parties(models.Model):
         return "%s   (%s)"%(self.name , self.party_type)
 
     
-        
+
+
+
+
 
 
 # PARTY ACCOUNTS_CONFIG
@@ -305,3 +309,42 @@ class userprocessauth(models.Model):
     class Meta:
         verbose_name_plural = "userprocessauth"
         unique_together = ('action', 'user','model')
+
+
+
+
+
+
+
+# COUNTERPARTY 
+
+class CounterParty(models.Model):
+
+    choices = [
+        ('DRAFT', 'DRAFT'),
+        ('SENT TO BANK', 'SENT TO BANK'),
+        ('SENT TO COUNTERPARTY', 'SENT TO COUNTERPARTY'),
+        ('COMPLETED', 'COMPLETED'),
+        ('REJECTED', 'REJECTED'),
+    ]
+
+    c_id = models.CharField(primary_key=True, unique=True, max_length=18)
+    c_name = models.CharField(max_length=255)
+    c_address = models.CharField(max_length=255)
+    c_city = models.CharField(max_length=255)
+    c_country = models.CharField(max_length=255)
+    c_email = models.EmailField(unique=True)
+    c_mobile = models.CharField(max_length=10)
+    c_onboarding = models.CharField(choices=choices, max_length=25)
+    gst_no = models.CharField(max_length=18)
+    pan_no = models.CharField(max_length=18)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # class Meta:
+    #     pass
+
+    def __str__(self):
+        return f"{self.c_name} <==> {self.c_email}"
+
+    # def save(self, *args, **kwargs):
+    #     parties = Parties.objects.get(id=self.id).exists()

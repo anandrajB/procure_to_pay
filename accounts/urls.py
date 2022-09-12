@@ -15,6 +15,8 @@ from .views import (
     UserListApiview,
     UserSignUpApiView ,
     PartiesSignupApiview ,
+    CounterPartyListCreateAPIView,
+    CounterPartynewUpdateDeleteAPIView,
     UserLoginView,
     UserDetailsUpdateDeleteApiview,
     UserLogoutView,
@@ -29,9 +31,11 @@ from .views import (
 )
 
 urlpatterns = [
-    path('bank/', BankCreateApiview.as_view() ,name = 'bank-create-api' ),
+    path('bank/', BankCreateApiview.as_view() ,name = 'bank-create-api'),
     path('party/', PartiesSignupApiview.as_view()),
     path('party/<int:pk>/',PartyDetailsUpdateDeleteApiview.as_view()),
+    path('counter_party/', CounterPartyListCreateAPIView.as_view()),
+    path('counter_party/<int:pk>/', CounterPartynewUpdateDeleteAPIView.as_view()),
     path('signup/', UserSignUpApiView.as_view() ,name='user-signup'),
     path('login/',csrf_exempt(UserLoginView.as_view()),name = 'user-login'),
     path('logout/',UserLogoutView.as_view(),name='user-logout'),

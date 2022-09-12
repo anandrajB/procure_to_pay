@@ -19,6 +19,7 @@ from accounts.models import (
     Currencies,
     Models, 
     Parties, 
+    CounterParty,
     PhoneOTP, 
     signatures, 
     userprocessauth
@@ -42,6 +43,8 @@ from .serializer import (
     signaturecreateserializer,
     signatureslistserializer,
     userprocesscreateserializer,
+    CounterpartyCreateSerializer,
+    CounterpartyUpdateSerializer
 )
 from django.contrib.auth import (
     get_user_model,
@@ -119,9 +122,16 @@ class PartiesSignupApiview(ListAPIView):
     serializer_class = PartiesSignupSerailizer
     permission_classes = [AllowAny]
     
+    def get_queryset(self):
+        party_name = self.request.query_params.get("party_name",None)
+        if party_name :
+            queryset = Parties.objects.filter(name__icontains = party_name )
+        else:
+            queryset = Parties.objects.all().order_by('id')    
+        return queryset
 
     def list(self, request):
-        queryset = Parties.objects.all()
+        queryset = self.get_queryset()
         serializer = partieserializer(queryset, many=True)
         return Response({"status": "success", "data": serializer.data},status=status.HTTP_200_OK)
     
@@ -636,6 +646,50 @@ class ModelUpdateDeleteApiview(RetrieveUpdateDestroyAPIView):
         queryset = Models.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = Modelserializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"status": "successfully updated", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response({"status": "Failed", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+
+
+
+# COUNTERPARTY API 12/9/22
+
+class CounterPartyListCreateAPIView(ListCreateAPIView):
+    queryset = CounterParty.objects.all()
+    serializer_class = CounterpartyCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        queryset = CounterParty.objects.all()
+        serializer = CounterpartyCreateSerializer(queryset, many=True)
+        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CounterpartyCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"Status": "success", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"status": "Failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+class CounterPartynewUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = CounterParty.objects.all()
+    serializer_class = CounterpartyUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, pk=None):
+        queryset = CounterParty.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CounterpartyUpdateSerializer(user)
+        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+
+    def update(self, request, pk=None):
+        queryset = CounterParty.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = CounterpartyUpdateSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({"status": "successfully updated", "data": serializer.data}, status=status.HTTP_200_OK)
