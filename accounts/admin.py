@@ -3,7 +3,8 @@ from django.contrib.auth.models import Group
 from django.contrib.admin import AdminSite
 from django.utils.translation import ugettext_lazy
 from .models import (
-    Banks, 
+    Banks,
+    CounterParty, 
     Countries, 
     Currencies, 
     Models, 
@@ -65,6 +66,7 @@ admin.site.register(Countries)
 admin.site.register(userprocessauth)
 admin.site.register(Action)
 admin.site.register(Models)
+admin.site.register(CounterParty)
 admin.site.register(signatures)
 # admin.site.unregister(Token)
 admin.site.unregister(Group)

@@ -119,7 +119,7 @@ class CounterParty(models.Model):
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
+    country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING , blank=True, null=True)
     email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=10)
     onboarding = models.CharField(choices=choices, max_length=25)
@@ -129,11 +129,16 @@ class CounterParty(models.Model):
     # class Meta:
     #     pass
 
-    def __str__(self):
-        return f"{self.name} <==> {self.email}"
+    # def __str__(self):
+    #     return f"{self.name} <==> {self.email}"
+
+    # def random_generator(self):
+    #     pass 
+
 
     def save(self, *args, **kwargs):
         self.name = self.name.upper()
+        # self.customer_id  = CounterParty.random_generator()
         return super(CounterParty, self).save(*args, **kwargs)
 
 

@@ -14,6 +14,7 @@ from .models import (
     workflowitems
 )
 from accounts.models import (
+    CounterParty,
     Countries, 
     Currencies, 
     User, 
@@ -641,9 +642,13 @@ class CounterPartySerializer(serializers.Serializer):
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
         if pg_type == "APF":
+
+            counter = CounterParty.objects.create(customer_id = customer_id , name = name , address = address_line_1 , city = city ,country_code = country_code ,
+              email = counterparty_email , mobile =  counterparty_mobile  )
+            counter.save()
             party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
             address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "SELLER" ,**validated_data)
-            party.save()
+            party.save() 
         else:
             party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
             address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)

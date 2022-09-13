@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+
+from transaction.models import Pairings
 from .models import (
     Action,
     Banks, 
@@ -48,6 +50,8 @@ class BankSerializer(serializers.ModelSerializer):
 class partieserializer(serializers.ModelSerializer):
     country_code = serializers.SlugRelatedField(read_only=True, slug_field='country')
     base_currency = serializers.SlugRelatedField(read_only=True, slug_field='description')
+    pairing_details = serializers.SerializerMethodField()
+
     class Meta:
         model = Parties
         fields = [
@@ -63,8 +67,13 @@ class partieserializer(serializers.ModelSerializer):
             'state',
             'zipcode',
             'country_code',
-            'party_type'
+            'party_type',
+            'pairing_details'
         ]
+
+    def get_pairing_details(self,obj):
+        pairs = Pairings.objects.filter(counterparty_id__name__icontains = obj.name).values()
+        return pairs 
 
 
 # PARTY SIGNUP SERIALIZERS
