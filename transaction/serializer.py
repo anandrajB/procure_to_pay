@@ -1,3 +1,4 @@
+from email.policy import default
 from rest_framework import serializers
 from transaction.custom_validators import (
     validate_file_extension , 
@@ -572,7 +573,7 @@ class InvoiceUploadlistserializer(serializers.ModelSerializer):
 
 #-------------------------------------#
 
-
+# ONBOARING FINFLOW APF - SECOND SCREEN API 
 # COUNTERPARTY CREATE SERIALIZER
 
 class CounterPartySerializer(serializers.Serializer):
@@ -641,49 +642,50 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
-        if pg_type == "APF":
 
-            counter = CounterParty.objects.create(customer_id = customer_id , name = name , address = address_line_1 , city = city ,country_code = country_code ,
-              email = counterparty_email , mobile =  counterparty_mobile  )
-            counter.save()
-            party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
-            address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "SELLER" ,**validated_data)
-            party.save() 
+        if pg_type == "APF":
+            # counter = CounterParty.objects.update_or_create(customer_id = customer_id , name = name , address = address_line_1 , city = city ,country_code = country_code ,
+            #   email = counterparty_email , mobile =  counterparty_mobile )
+            CounterParty.objects.update_or_create(defaults = {'customer_id': customer_id, 'name': name, 'address': address_line_1, 'city': city,
+            'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
+            obj, created = Parties.objects.update_or_create(customer_id = customer_id , name = name , base_currency = base_currency ,
+            address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "SELLER" ,**validated_data) 
+            print("the party_name is " , obj.id) 
+            print("the created obje is " , created)   
         else:
             party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
             address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
             party.save()
 
         # creating  a user 
-        users = User.objects.create(phone = counterparty_mobile , email = counterparty_email , party = party , first_name = "null" , last_name = "null" , display_name = "null") 
-        users.save()
+        User.objects.update_or_create(defaults = { 'phone': counterparty_mobile , 'email' : counterparty_email , 'party' : obj }) 
         # creating a pairing 
-        pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = party , total_limit = limit_amount , grace_period = grace_period ,
+        pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = obj , total_limit = limit_amount , grace_period = grace_period ,
         maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type ,
         minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
         pairs.save()
         return pairs
 
 
-    def validate_customer_id(self,value):
-        if Parties.objects.filter(customer_id = value).exists():
-            raise serializers.ValidationError("A party with this customer_id / account already exists , try with other customer_id")
-        return value
+    # def validate_customer_id(self,value):
+    #     if Parties.objects.filter(customer_id = value).exists():
+    #         raise serializers.ValidationError("A party with this customer_id / account already exists , try with other customer_id")
+    #     return value
 
-    def validate_name(self,value):
-        if Parties.objects.filter(name = value).exists():
-            raise serializers.ValidationError("A party with this name already exists , try with other name")
-        return value
+    # def validate_name(self,value):
+    #     if Parties.objects.filter(name = value).exists():
+    #         raise serializers.ValidationError("A party with this name already exists , try with other name")
+    #     return value
 
-    def validate_counterparty_email(self,value):
-        if User.objects.filter(email = value).exists():
-            raise serializers.ValidationError("A User with this email already exists ")
-        return value
+    # def validate_counterparty_email(self,value):
+    #     if User.objects.filter(email = value).exists():
+    #         raise serializers.ValidationError("A User with this email already exists ")
+    #     return value
 
-    def validate_counterparty_mobile(self,value):
-        if User.objects.filter(phone = value).exists():
-            raise serializers.ValidationError("A User with this phone number already exists ")
-        return value
+    # def validate_counterparty_mobile(self,value):
+    #     if User.objects.filter(phone = value).exists():
+    #         raise serializers.ValidationError("A User with this phone number already exists ")
+    #     return value
 
 
 # COUNTER PARTY LIST SERIALIZERS
@@ -710,8 +712,6 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'user_detail',
-            'pairing_details',
             'customer_id',
             'address_line_1',
             'address_line_2',
@@ -725,7 +725,6 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'party_type',
             'pairings',
             'limit',
-            'attachments',
             'max_Invoice_Amount',
             'grace_period',
             'Interest_Rate_Type',
@@ -734,7 +733,10 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'max_invoice_pct',
             'max_tenor',
             'interest_type',
-            'program_type'
+            'program_type',
+            'attachments',
+            'user_detail',
+            'pairing_details',
         ]
 
     def get_pairing_details(self,obj):

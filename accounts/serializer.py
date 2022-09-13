@@ -50,7 +50,7 @@ class BankSerializer(serializers.ModelSerializer):
 class partieserializer(serializers.ModelSerializer):
     country_code = serializers.SlugRelatedField(read_only=True, slug_field='country')
     base_currency = serializers.SlugRelatedField(read_only=True, slug_field='description')
-    pairing_details = serializers.SerializerMethodField()
+    counter_party_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Parties
@@ -68,12 +68,15 @@ class partieserializer(serializers.ModelSerializer):
             'zipcode',
             'country_code',
             'party_type',
-            'pairing_details'
+            'counter_party_details'
         ]
 
-    def get_pairing_details(self,obj):
-        pairs = Pairings.objects.filter(counterparty_id__name__icontains = obj.name).values()
-        return pairs 
+    def get_counter_party_details(self,obj):
+        try:
+            users = User.objects.get(party__name = obj.name)
+            return {"email" : users.email, "phone" : users.phone}
+        except:
+            return None
 
 
 # PARTY SIGNUP SERIALIZERS

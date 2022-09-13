@@ -100,6 +100,10 @@ class Parties(models.Model):
     def __str__(self):
         return "%s   (%s)"%(self.name , self.party_type)
 
+    @property
+    def party_id(self):
+        return self.id
+
     
 
 
@@ -115,7 +119,7 @@ class CounterParty(models.Model):
         ('REJECTED', 'REJECTED'),
     ]
 
-    customer_id = models.CharField(primary_key=True, unique=True, max_length=18)
+    customer_id = models.CharField(max_length=18 , blank=True, null=True)
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
