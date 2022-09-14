@@ -74,7 +74,7 @@ class partieserializer(serializers.ModelSerializer):
     def get_counter_party_details(self,obj):
         try:
             users = User.objects.get(party__name = obj.name)
-            return {"email" : users.email, "phone" : users.phone}
+            return {"id" : users.id ,"email" : users.email, "phone" : users.phone}
         except:
             return None
 
