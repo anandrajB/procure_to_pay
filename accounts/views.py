@@ -694,3 +694,13 @@ class CounterPartynewUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
             serializer.save()
             return Response({"status": "successfully updated", "data": serializer.data}, status=status.HTTP_200_OK)
         return Response({"status": "Failed", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+
+class TESTapi(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        obj , created = User.objects.update_or_create( phone = "9677210269" , defaults= {'email' : 'buyer@gmail.com' , 'first_name' : "ANAND RAJ"} )
+        print(obj)
+        return Response({"status": "success"}, status=status.HTTP_200_OK)

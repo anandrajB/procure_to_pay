@@ -12,6 +12,7 @@ from .views import (
     SignaturesCreateApiView,
     CurrenciesUpdateDeleteApiview,
     CountryUpdateDeleteApiview,
+    TESTapi,
     UserListApiview,
     UserSignUpApiView ,
     PartiesSignupApiview ,
@@ -55,5 +56,6 @@ urlpatterns = [
     path('action/',ActionApiview.as_view()),
     path('action/<int:pk>/',ActionUpdateDeleteApiview.as_view()),
     path('models/',ModelApiview.as_view()),
-    path('models/<int:pk>/',ModelUpdateDeleteApiview.as_view())
+    path('models/<int:pk>/',ModelUpdateDeleteApiview.as_view()),
+    path('tests/',TESTapi.as_view()),
 ]

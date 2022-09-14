@@ -613,7 +613,7 @@ class CounterPartySerializer(serializers.Serializer):
     margin = serializers.IntegerField()
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
-    party_id = serializers.IntegerField(required = False , default = None)
+    
    
     
     def create(self, validated_data):
@@ -643,14 +643,14 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
-        party_id = validated_data.pop('party_id')
+        
 
         if pg_type == "APF":
             # counter = CounterParty.objects.update_or_create(customer_id = customer_id , name = name , address = address_line_1 , city = city ,country_code = country_code ,
             #   email = counterparty_email , mobile =  counterparty_mobile )
-            CounterParty.objects.update_or_create(defaults = {'customer_id': customer_id, 'name': name, 'address': address_line_1, 'city': city,
+            CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': customer_id,  'address': address_line_1, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
-            obj,created  = Parties.objects.update_or_create(id = party_id , defaults = {'customer_id' : customer_id , 'name' : name , 'base_currency' : base_currency ,
+            obj , created  = Parties.objects.update_or_create( name = name , customer_id =  customer_id ,  defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line_2, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
             # print("the party_name is " , obj.id) 
               
@@ -660,13 +660,12 @@ class CounterPartySerializer(serializers.Serializer):
             party.save()
 
         # creating  a user 
-        User.objects.update_or_create(phone = counterparty_mobile ,  email = counterparty_email , party = obj) 
+        User.objects.update_or_create(phone = counterparty_mobile ,  email = counterparty_email , defaults = {'party' : obj} ) 
         # creating a pairing 
-        pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = obj , total_limit = limit_amount , grace_period = grace_period ,
-        maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type ,
-        minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , financed_amount = max_tenor , margin = margin  )
-        pairs.save()
-        return pairs
+        obj , created = Pairings.objects.update_or_create(counterparty_id = obj  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
+        'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,
+        'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'financed_amount' : max_tenor , 'margin' : margin } )
+        return obj
 
 
     # def validate_customer_id(self,value):
@@ -695,15 +694,15 @@ class CounterPartySerializer(serializers.Serializer):
 class CounterPartyListSerializer(serializers.ModelSerializer):
     country_code = serializers.SlugRelatedField(read_only=True, slug_field='country')
     base_currency = serializers.SlugRelatedField(read_only=True, slug_field='description')
-    limit = serializers.SerializerMethodField()
-    max_Invoice_Amount = serializers.SerializerMethodField()
-    grace_period = serializers.SerializerMethodField()
-    Interest_Rate_Type = serializers.SerializerMethodField()
-    Margin = serializers.SerializerMethodField()
-    expiry_Date = serializers.SerializerMethodField()
-    max_invoice_pct = serializers.SerializerMethodField()
-    max_tenor = serializers.SerializerMethodField()
-    interest_type = serializers.SerializerMethodField()
+    # limit = serializers.SerializerMethodField()
+    # max_Invoice_Amount = serializers.SerializerMethodField()
+    # grace_period = serializers.SerializerMethodField()
+    # Interest_Rate_Type = serializers.SerializerMethodField()
+    # Margin = serializers.SerializerMethodField()
+    # expiry_Date = serializers.SerializerMethodField()
+    # max_invoice_pct = serializers.SerializerMethodField()
+    # max_tenor = serializers.SerializerMethodField()
+    # interest_type = serializers.SerializerMethodField()
     program_type = serializers.SerializerMethodField()
     user_detail = serializers.SerializerMethodField()
     pairing_details = serializers.SerializerMethodField()
@@ -725,16 +724,6 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'zipcode',
             'country_code',
             'party_type',
-            'pairings',
-            'limit',
-            'max_Invoice_Amount',
-            'grace_period',
-            'Interest_Rate_Type',
-            'Margin',
-            'expiry_Date',
-            'max_invoice_pct',
-            'max_tenor',
-            'interest_type',
             'program_type',
             'attachments',
             'user_detail',
@@ -762,35 +751,35 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
         except:
             return None
        
-    def get_limit(self,obj):
-        return obj.pairings.total_limit
+    # def get_limit(self,obj):
+    #     return obj.pairings.total_limit
 
-    def get_max_Invoice_Amount(self,obj):
-        return obj.pairings.maximum_amount
+    # def get_max_Invoice_Amount(self,obj):
+    #     return obj.pairings.maximum_amount
 
-    def get_grace_period(self,obj):
-        return obj.pairings.grace_period
+    # def get_grace_period(self,obj):
+    #     return obj.pairings.grace_period
 
-    def get_Interest_Rate_Type(self,obj):
-        return obj.pairings.interest_rate_type.description
+    # def get_Interest_Rate_Type(self,obj):
+    #     return obj.pairings.interest_rate_type.description
 
-    def get_Margin(self,obj):
-        return obj.pairings.margin
+    # def get_Margin(self,obj):
+    #     return obj.pairings.margin
     
     def get_program_type(self,obj):
         return obj.pairings.program_id.program_type
 
-    def get_expiry_Date(self, obj):
-        return obj.pairings.expiry_date
+    # def get_expiry_Date(self, obj):
+    #     return obj.pairings.expiry_date
 
-    def get_max_invoice_pct(self,obj):
-        return obj.pairings.max_finance_percentage
+    # def get_max_invoice_pct(self,obj):
+    #     return obj.pairings.max_finance_percentage
     
-    def get_max_tenor(self,obj):
-        return obj.pairings.financed_amount
+    # def get_max_tenor(self,obj):
+    #     return obj.pairings.financed_amount
 
-    def get_interest_type(self,obj):
-        return obj.pairings.interest_type.description
+    # def get_interest_type(self,obj):
+    #     return obj.pairings.interest_type.description
 
 
 

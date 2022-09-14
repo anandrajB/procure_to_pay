@@ -445,8 +445,16 @@ class CounterPartyApiview(APIView):
     serializer_class = CounterPartySerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        party_name = self.request.query_params.get("party_name",None)
+        if party_name :
+            queryset = Parties.objects.filter(name__icontains = party_name )
+        else:
+            queryset = Parties.objects.filter(party_type="SELLER" , pairings__program_id__party__name = self.request.user.party.name )   
+        return queryset
+
     def get(self, request):
-        queryset = Parties.objects.filter(party_type="SELLER" , pairings__program_id__party__name = request.user.party.name )
+        queryset = self.get_queryset()
         ser = CounterPartyListSerializer(queryset, many=True)
         return Response({"Status": "Success", "data": ser.data}, status=status.HTTP_200_OK)
 
