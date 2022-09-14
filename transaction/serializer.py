@@ -613,6 +613,7 @@ class CounterPartySerializer(serializers.Serializer):
     margin = serializers.IntegerField()
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
+    party_id = serializers.IntegerField(required = False , default = None)
    
     
     def create(self, validated_data):
@@ -642,23 +643,24 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
+        party_id = validated_data.pop('party_id')
 
         if pg_type == "APF":
             # counter = CounterParty.objects.update_or_create(customer_id = customer_id , name = name , address = address_line_1 , city = city ,country_code = country_code ,
             #   email = counterparty_email , mobile =  counterparty_mobile )
             CounterParty.objects.update_or_create(defaults = {'customer_id': customer_id, 'name': name, 'address': address_line_1, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
-            obj, created = Parties.objects.update_or_create(customer_id = customer_id , name = name , base_currency = base_currency ,
-            address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "SELLER" ,**validated_data) 
-            print("the party_name is " , obj.id) 
-            print("the created obje is " , created)   
+            obj,created  = Parties.objects.update_or_create(id = party_id , defaults = {'customer_id' : customer_id , 'name' : name , 'base_currency' : base_currency ,
+            'address_line_1' : 'address_line_1' , 'address_line_2' : address_line_2, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
+            # print("the party_name is " , obj.id) 
+              
         else:
             party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
             address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
             party.save()
 
         # creating  a user 
-        User.objects.update_or_create(defaults = { 'phone': counterparty_mobile , 'email' : counterparty_email , 'party' : obj }) 
+        User.objects.update_or_create(phone = counterparty_mobile ,  email = counterparty_email , party = obj) 
         # creating a pairing 
         pairs = Pairings.objects.create(program_id = program_id ,finance_request = finance_request_type, counterparty_id = obj , total_limit = limit_amount , grace_period = grace_period ,
         maximum_amount = max_invoice_amount , interest_type = interest_type , interest_rate_type=interest_rate_type ,

@@ -136,7 +136,7 @@ class Pairings(models.Model):
     ]
 
     program_id = models.ForeignKey(Programs, on_delete=models.CASCADE)
-    counterparty_id = models.OneToOneField("accounts.Parties", on_delete=models.CASCADE)
+    counterparty_id = models.ForeignKey("accounts.Parties", on_delete=models.CASCADE)
     finance_request = models.CharField(choices=finance_request_type, max_length=15, default=None,blank=True, null=True)
     currency = models.ForeignKey("accounts.Currencies", on_delete=models.DO_NOTHING, related_name='pairingscurrency',blank=True, null=True)
     total_limit = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
