@@ -71,11 +71,19 @@
 1. https://venzoscf.herokuapp.com/admin/
 
 
-## ADMIN CREDENTIALS **
+## CREDENTIALS
+
+### ADMIN ###
 
 ***phone*** : 1471471471\
 ***password*** : admin123\
 ***email*** : finflo@admin.com\
+**test purpose only
+
+### BUYER ###
+
+***phone*** : 9677210269\
+***email*** : buyer@gmail.com\
 **test purpose only
 
 
