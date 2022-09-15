@@ -15,6 +15,7 @@ schema_view = get_swagger_view(title='SCF API DOCUMENTATION')
 
 urlpatterns = [
     path('',index,name='home-page'),
+    path('description',index,name='description'),
     path('admin/', admin.site.urls,),
     path('rest-auth-client/',include('rest_framework.urls')),
     path('api-auth/',include('accounts.urls')),
