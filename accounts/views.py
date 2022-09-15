@@ -663,7 +663,7 @@ class CounterPartyListCreateAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
-        queryset = CounterParty.objects.all()
+        queryset = CounterParty.objects.filter(email = self.request.user.email )
         serializer = CounterpartyCreateSerializer(queryset, many=True)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 

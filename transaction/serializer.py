@@ -645,9 +645,8 @@ class CounterPartySerializer(serializers.Serializer):
         if pg_type == "APF":
             obj , created  = Parties.objects.update_or_create( name = name ,   defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
-            # print("the party_name is " , obj.id) 
             obj.customer_id = obj.id
-            print(obj.customer_id)
+            obj.save()
             obj2 , created = CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
             

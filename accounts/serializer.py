@@ -293,129 +293,75 @@ class userprocesscreateserializer(serializers.ModelSerializer):
 # UPDATED COUNTERPARTY SERIALIZER 12/9/22
 
 
-class CounterpartyCreateSerializer(serializers.Serializer):
+class CounterpartyCreateSerializer(serializers.ModelSerializer):
 
-    choices = [
-        ('DRAFT', 'DRAFT'),
-        ('SENT TO BANK', 'SENT TO BANK'),
-        ('SENT TO COUNTERPARTY', 'SENT TO COUNTERPARTY'),
-        ('COMPLETED', 'COMPLETED'),
-        ('REJECTED', 'REJECTED'),
-    ]
-    user_detail = serializers.SerializerMethodField()
-    pairing_details = serializers.SerializerMethodField()
-    attachments = serializers.SerializerMethodField()
-    buyer_details = serializers.SerializerMethodField()
     country_code = serializers.SlugRelatedField(read_only=True, slug_field='country')
     base_currency = serializers.SlugRelatedField(read_only=True, slug_field='description')
-
-    customer_id = serializers.CharField(required=True)
-    name = serializers.CharField(required=True)
-    address = serializers.CharField(required=True)
-    city = serializers.CharField(required=True)
-    country = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True)
-    mobile = serializers.CharField(required=True)
-    onboarding = serializers.ChoiceField(choices=choices)
-    gst_no = serializers.CharField(required=True)
-    pan_no = serializers.CharField(required=True)
+    # limit = serializers.SerializerMethodField()
+    # max_Invoice_Amount = serializers.SerializerMethodField()
+    # grace_period = serializers.SerializerMethodField()
+    # Interest_Rate_Type = serializers.SerializerMethodField()
+    # Margin = serializers.SerializerMethodField()
+    # expiry_Date = serializers.SerializerMethodField()
+    # max_invoice_pct = serializers.SerializerMethodField()
+    # max_tenor = serializers.SerializerMethodField()
+    # interest_type = serializers.SerializerMethodField()
+    # user_detail = serializers.SerializerMethodField()
+    buyer_details = serializers.SerializerMethodField()
 
     class Meta:
         model = CounterParty
-        fields = ['id', 'name', 'address', 'city', 'country_code',
-                  'email', 'mobile', 'onboarding', 'gst_no', 'pan_no', 'base_currency' , 'user_detail' , 'pairing_details' , 'attachments','buyer_details']
-        read_only_fields = ['id']
+        fields = [
+            'id',
+            'name',
+            'customer_id',
+            'address',
+            'onboarding',
+            'city',
+            'base_currency',
+            'country_code',
+            'email',
+            'mobile',
+            'gst_no',
+            'pan_no',
+            # 'user_detail',
+            'buyer_details',
+        ]
 
+    # def get_user_detail(self,obj):
+    #     try:
+    #         user_Data = User.objects.filter(party__name__contains = obj.name).first()
+    #         return {"user_email": user_Data.email, "user_phone": user_Data.phone}
+    #     except:
+    #         return None
 
-        def get_pairing_details(self,obj):
-            try:
-                pair = Pairings.objects.filter(id = obj.pairings.id).values()
-                return {"pairing":pair}
-            except:
-                return None
-
-        def get_attachments(self,obj):
-            try:
-                files = File.objects.filter(pairing = obj.pairings.id).values()
-                return {"file":files}
-            except:
-                return None
-
-        def get_user_detail(self,obj):
-            try:
-                user_Data = User.objects.filter(party__name__contains = obj.name).first()
-                return {"user_email": user_Data.email, "user_phone": user_Data.phone}
-            except:
-                return None
-
-        def get_buyer_details(self,obj):
-            try:
-                return {"buyer_id" : obj.pairings.program_id.party.id , 
-                "buyer_name" : obj.pairings.program_id.party.name , 
-                "buyer_address" : obj.pairings.program_id.party.address_line_1 ,
-                "program_type" : obj.pairings.program_id.program_type }
-            except:
-                pass
-
-    def create(self, validated_data):
-
-        customer_id = validated_data.pop('customer_id')
-        name = validated_data.pop('name')
-        address = validated_data.pop('address')
-        city = validated_data.pop('city')
-        country = validated_data.pop('country')
-        email = validated_data.pop('email')
-        mobile = validated_data.pop('mobile')
-        onboarding = validated_data.pop('onboarding')
-        gst_no = validated_data.pop('gst_no')
-        pan_no = validated_data.pop('pan_no')
-
-        counter_party = CounterParty.objects.create(id=customer_id,
-                                                    name=name,
-                                                    address=address,
-                                                    city=city,
-                                                    country=country,
-                                                    email=email,
-                                                    mobile=mobile,
-                                                    onboarding=onboarding,
-                                                    gst_no=gst_no,
-                                                    pan_no=pan_no)
-
-        # party = Parties.objects.create(
-        #     customer_id=customer_id, name=name, address_line_1=address, city=city, party_type="OTHER")
-        # # need to update status for parties 
-        # party.save()
-        counter_party.save()
-
-        return counter_party
-
-    def validate_name(self, value):
-        if Parties.objects.filter(name=value).exists():
-            raise serializers.ValidationError(
-                "Party with same name already exists.")
-        return value
+    def get_buyer_details(self,obj):
+        try:
+            return {"buyer_id" : obj.pairings.program_id.party.id , 
+            "buyer_name" : obj.pairings.program_id.party.name , 
+            "buyer_address" : obj.pairings.program_id.party.address_line_1 ,
+            "program_type" : obj.pairings.program_id.program_type }
+        except:
+            pass
 
 
 
 class CounterpartyUpdateSerializer(serializers.ModelSerializer):
     
+    class Meta:
+        model = CounterParty
+        fields = '__all__'
 
-    
 
         def update(self, instance, validated_data):
             instance.name = validated_data.get('name', instance.name)
-            instance.address = validated_data.get(
-                'address', instance.address)
+            instance.address = validated_data.get('address', instance.address)
             instance.city = validated_data.get('city', instance.city)
-            instance.country = validated_data.get(
-                'country', instance.country)
+            instance.country = validated_data.get('country', instance.country)
             instance.email = validated_data.get('email', instance.email)
-            instance.mobile = validated_data.get(
-                'mobile', instance.mobile)
-            instance.onboarding = validated_data.get(
-                'onboarding', instance.onboarding)
+            instance.mobile = validated_data.get('mobile', instance.mobile)
+            instance.onboarding = validated_data.get('onboarding', instance.onboarding)
             instance.gst_no = validated_data.get('gst_no', instance.gst_no)
             instance.pan_no = validated_data.get('pan_no', instance.pan_no)
-
             instance.save()
             return instance
