@@ -588,7 +588,7 @@ class CounterPartySerializer(serializers.Serializer):
         ('SOFOR', 'SOFOR')
     ]
     
-    customer_id = serializers.CharField()
+    customer_id = serializers.CharField(required = False , default = None)
     name = serializers.CharField()
     address_line_1 = serializers.CharField()
     address_line_2 = serializers.CharField()
@@ -617,7 +617,6 @@ class CounterPartySerializer(serializers.Serializer):
    
     
     def create(self, validated_data):
-        customer_id = validated_data.pop('customer_id')
         name = validated_data.pop('name')
         finance_request_type = validated_data.pop('finance_request_type')
         address_line_1 = validated_data.pop('address_line_1')
@@ -646,16 +645,15 @@ class CounterPartySerializer(serializers.Serializer):
         
 
         if pg_type == "APF":
-            # counter = CounterParty.objects.update_or_create(customer_id = customer_id , name = name , address = address_line_1 , city = city ,country_code = country_code ,
-            #   email = counterparty_email , mobile =  counterparty_mobile )
-            CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': customer_id,  'address': address_line_1, 'city': city,
-            'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
-            obj , created  = Parties.objects.update_or_create( name = name , customer_id =  customer_id ,  defaults = { 'base_currency' : base_currency ,
+            obj , created  = Parties.objects.update_or_create( name = name ,   defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line_2, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
             # print("the party_name is " , obj.id) 
-              
+            CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line_1, 'city': city,
+            'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
+            
+        # DF AND RF PROGRAM 
         else:
-            party = Parties.objects.create(customer_id = customer_id , name = name , base_currency = base_currency ,
+            party = Parties.objects.create(customer_id = None , name = name , base_currency = base_currency ,
             address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
             party.save()
 

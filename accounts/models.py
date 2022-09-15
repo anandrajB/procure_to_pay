@@ -77,8 +77,8 @@ class Parties(models.Model):
     ('OTHER','OTHER'),
     ]
 
-    customer_id = models.CharField(max_length=18)
-    name = models.CharField(max_length=35)
+    customer_id = models.BigIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=100)
     base_currency  = models.ForeignKey(Currencies,on_delete=models.CASCADE , blank=True, null=True)
     address_line_1 = models.CharField(max_length=35 , blank=True, null=True)
     address_line_2 = models.CharField(max_length=35 , blank=True, null=True)
@@ -95,14 +95,15 @@ class Parties(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = self.name.upper()
+        self.customer_id = self.id
         return super(Parties, self).save(*args, **kwargs)
 
     def __str__(self):
         return "%s   (%s)"%(self.name , self.party_type)
 
-    @property
-    def party_id(self):
-        return self.id
+    # @property
+    # def party_id(self):
+    #     return self.id
 
     
 
@@ -119,7 +120,7 @@ class CounterParty(models.Model):
         ('REJECTED', 'REJECTED'),
     ]
 
-    customer_id = models.CharField(max_length=18 , blank=True, null=True)
+    customer_id = models.BigIntegerField(blank=True, null=True)
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)

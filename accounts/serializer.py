@@ -50,7 +50,7 @@ class BankSerializer(serializers.ModelSerializer):
 class partieserializer(serializers.ModelSerializer):
     country_code = serializers.SlugRelatedField(read_only=True, slug_field='country')
     base_currency = serializers.SlugRelatedField(read_only=True, slug_field='description')
-    counter_party_details = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Parties
@@ -68,15 +68,9 @@ class partieserializer(serializers.ModelSerializer):
             'zipcode',
             'country_code',
             'party_type',
-            'counter_party_details'
         ]
 
-    def get_counter_party_details(self,obj):
-        try:
-            users = User.objects.get(party__name = obj.name)
-            return {"id" : users.id ,"email" : users.email, "phone" : users.phone}
-        except:
-            return None
+    
 
 
 # PARTY SIGNUP SERIALIZERS
@@ -86,6 +80,7 @@ class PartiesSignupSerailizer(serializers.ModelSerializer):
         model = Parties
         fields = '__all__'
         extra_kwargs = {
+        "customer_id" : {"required": False , "default" : None},
 		"address_line_1": {"required": False},
         "address_line_2": {"required": False},
         "city": {"required": False},
@@ -94,10 +89,10 @@ class PartiesSignupSerailizer(serializers.ModelSerializer):
 	    }
 
     # validators = [UniqueTogetherValidator(queryset=Parties.objects.all(),fields=['customer_id', 'name'])]
-    def validate_customer_id(self,value):
-        if Parties.objects.filter(customer_id = value).exists():
-            raise serializers.ValidationError("A party with this customer_id  already exists , try with other customer_id")
-        return value
+    # def validate_customer_id(self,value):
+    #     if Parties.objects.filter(customer_id = value).exists():
+    #         raise serializers.ValidationError("A party with this customer_id  already exists , try with other customer_id")
+    #     return value
 
     def validate_name(self,value):
         if Parties.objects.filter(name__contains = value).exists():

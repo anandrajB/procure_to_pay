@@ -701,6 +701,8 @@ class TESTapi(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def list(self, request):
-        obj , created = User.objects.update_or_create( phone = "9677210269" , defaults= {'email' : 'buyer@gmail.com' , 'first_name' : "ANAND RAJ"} )
-        print(obj)
+        myemail = None
+        random = "myname@xyz.com"
+        obj , created = User.objects.update_or_create( phone = "9677210269" , defaults= {'first_name' : myemail if myemail else random } )
+        print(obj.first_name)
         return Response({"status": "success"}, status=status.HTTP_200_OK)
