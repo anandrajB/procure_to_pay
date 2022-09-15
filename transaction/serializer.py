@@ -643,8 +643,9 @@ class CounterPartySerializer(serializers.Serializer):
 
 
         if pg_type == "APF":
+            print("apf working")
             obj , created  = Parties.objects.update_or_create( name = name ,   defaults = { 'base_currency' : base_currency ,
-            'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
+            'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" }) 
             obj.customer_id = obj.id
             obj.save()
             obj2 , created = CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
@@ -652,6 +653,7 @@ class CounterPartySerializer(serializers.Serializer):
             
         # DF AND RF PROGRAM 
         else:
+            print("working others")
             party = Parties.objects.create(customer_id = None , name = name , base_currency = base_currency ,
             address_line_1 = address_line , address_line_2 = address_line, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
             party.save()

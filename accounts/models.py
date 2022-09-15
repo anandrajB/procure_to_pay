@@ -95,7 +95,7 @@ class Parties(models.Model):
 
     def save(self, *args, **kwargs):
         self.name = self.name.upper()
-        self.customer_id = self.id
+        # self.customer_id = self.id
         return super(Parties, self).save(*args, **kwargs)
 
     def __str__(self):
