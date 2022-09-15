@@ -590,8 +590,7 @@ class CounterPartySerializer(serializers.Serializer):
     
     customer_id = serializers.CharField(required = False , default = None)
     name = serializers.CharField()
-    address_line_1 = serializers.CharField()
-    address_line_2 = serializers.CharField()
+    address_line = serializers.CharField()
     base_currency = serializers.PrimaryKeyRelatedField(queryset= Currencies.objects.all())
     city = serializers.CharField()
     state = serializers.CharField()
@@ -619,8 +618,7 @@ class CounterPartySerializer(serializers.Serializer):
     def create(self, validated_data):
         name = validated_data.pop('name')
         finance_request_type = validated_data.pop('finance_request_type')
-        address_line_1 = validated_data.pop('address_line_1')
-        address_line_2 = validated_data.pop('address_line_2')
+        address_line = validated_data.pop('address_line')
         base_currency = validated_data.pop('base_currency')
         city = validated_data.pop('city')
         state = validated_data.pop('state')
@@ -642,28 +640,30 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
-        
+
 
         if pg_type == "APF":
             obj , created  = Parties.objects.update_or_create( name = name ,   defaults = { 'base_currency' : base_currency ,
-            'address_line_1' : 'address_line_1' , 'address_line_2' : address_line_2, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
+            'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" },**validated_data) 
             # print("the party_name is " , obj.id) 
-            CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line_1, 'city': city,
+            obj.customer_id = obj.id
+            print(obj.customer_id)
+            obj2 , created = CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
             
         # DF AND RF PROGRAM 
         else:
             party = Parties.objects.create(customer_id = None , name = name , base_currency = base_currency ,
-            address_line_1 = address_line_1 , address_line_2 = address_line_2, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
+            address_line_1 = address_line , address_line_2 = address_line, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
             party.save()
 
         # creating  a user 
         User.objects.update_or_create(phone = counterparty_mobile ,  email = counterparty_email , defaults = {'party' : obj} ) 
         # creating a pairing 
-        obj , created = Pairings.objects.update_or_create(counterparty_id = obj  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
+        obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
         'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,
         'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'financed_amount' : max_tenor , 'margin' : margin } )
-        return obj
+        return obj3
 
 
     # def validate_customer_id(self,value):
@@ -707,21 +707,18 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
     buyer_details = serializers.SerializerMethodField()
 
     class Meta:
-        model = Parties
+        model = CounterParty
         fields = [
             'id',
             'name',
             'customer_id',
-            'address_line_1',
-            'address_line_2',
-            'onboarded',
-            'party_type',
+            'address',
+            'onboarding',
             'city',
             'base_currency',
-            'state',
-            'zipcode',
             'country_code',
-            'party_type',
+            'gst_no',
+            'pan_no',
             'pairings', 
             'attachments',
             'user_detail',
@@ -755,7 +752,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             return {"buyer_id" : obj.pairings.program_id.party.id , 
             "buyer_name" : obj.pairings.program_id.party.name , 
             "buyer_address" : obj.pairings.program_id.party.address_line_1 ,
-            "program_type" : obj.pairings.program_id.party.program_type }
+            "program_type" : obj.pairings.program_id.program_type }
         except:
             pass
        

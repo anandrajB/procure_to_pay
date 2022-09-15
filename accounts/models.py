@@ -128,14 +128,14 @@ class CounterParty(models.Model):
     email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=10)
     onboarding = models.CharField(choices=choices, max_length=25)
-    gst_no = models.CharField(max_length=18)
-    pan_no = models.CharField(max_length=18)
+    gst_no = models.CharField(max_length=18 , blank=True, null=True)
+    pan_no = models.CharField(max_length=18 , blank=True, null=True)
     
     # class Meta:
     #     pass
 
-    # def __str__(self):
-    #     return f"{self.name} <==> {self.email}"
+    def __str__(self):
+        return self.name
 
     # def random_generator(self):
     #     pass 

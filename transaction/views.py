@@ -1,5 +1,5 @@
 from rest_framework.pagination import PageNumberPagination
-from accounts.models import Currencies, Parties
+from accounts.models import CounterParty, Currencies, Parties
 import datetime
 from accounts.permission.base_permission import Is_Buyer, Is_Bank
 from transaction.FSM.invoice_bank import InvoiceBankFlow 
@@ -441,17 +441,17 @@ class PairingUpdateapiview(RetrieveUpdateDestroyAPIView):
 
 
 class CounterPartyApiview(APIView):
-    queryset = Parties.objects.all()
+    queryset = CounterParty.objects.all()
     serializer_class = CounterPartySerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         party_name = self.request.query_params.get("party_name",None)
         if party_name :
-            queryset = Parties.objects.filter(name__icontains = party_name  , party_type = "SELLER")
+            queryset = CounterParty.objects.filter(name__icontains = party_name )
         else:
             # pairings__program_id__party__name = self.request.user.party.name
-            queryset = Parties.objects.filter(party_type="SELLER" , pairings__counterparty_id__name = self.request.user.party.name )   
+            queryset = CounterParty.objects.filter(pairings__counterparty_id__name = self.request.user.party.name )   
         return queryset
 
     def get(self, request):

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 
 from transaction.models import Pairings
+from transaction.models import File
 from .models import (
     Action,
     Banks, 
@@ -11,7 +12,7 @@ from .models import (
     PhoneOTP, 
     signatures, 
     userprocessauth,
-    Models 
+    Models , 
 )  
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
@@ -301,6 +302,12 @@ class CounterpartyCreateSerializer(serializers.Serializer):
         ('COMPLETED', 'COMPLETED'),
         ('REJECTED', 'REJECTED'),
     ]
+    user_detail = serializers.SerializerMethodField()
+    pairing_details = serializers.SerializerMethodField()
+    attachments = serializers.SerializerMethodField()
+    buyer_details = serializers.SerializerMethodField()
+    country_code = serializers.SlugRelatedField(read_only=True, slug_field='country')
+    base_currency = serializers.SlugRelatedField(read_only=True, slug_field='description')
 
     customer_id = serializers.CharField(required=True)
     name = serializers.CharField(required=True)
@@ -312,6 +319,43 @@ class CounterpartyCreateSerializer(serializers.Serializer):
     onboarding = serializers.ChoiceField(choices=choices)
     gst_no = serializers.CharField(required=True)
     pan_no = serializers.CharField(required=True)
+
+    class Meta:
+        model = CounterParty
+        fields = ['id', 'name', 'address', 'city', 'country_code',
+                  'email', 'mobile', 'onboarding', 'gst_no', 'pan_no', 'base_currency' , 'user_detail' , 'pairing_details' , 'attachments','buyer_details']
+        read_only_fields = ['id']
+
+
+        def get_pairing_details(self,obj):
+            try:
+                pair = Pairings.objects.filter(id = obj.pairings.id).values()
+                return {"pairing":pair}
+            except:
+                return None
+
+        def get_attachments(self,obj):
+            try:
+                files = File.objects.filter(pairing = obj.pairings.id).values()
+                return {"file":files}
+            except:
+                return None
+
+        def get_user_detail(self,obj):
+            try:
+                user_Data = User.objects.filter(party__name__contains = obj.name).first()
+                return {"user_email": user_Data.email, "user_phone": user_Data.phone}
+            except:
+                return None
+
+        def get_buyer_details(self,obj):
+            try:
+                return {"buyer_id" : obj.pairings.program_id.party.id , 
+                "buyer_name" : obj.pairings.program_id.party.name , 
+                "buyer_address" : obj.pairings.program_id.party.address_line_1 ,
+                "program_type" : obj.pairings.program_id.program_type }
+            except:
+                pass
 
     def create(self, validated_data):
 
@@ -337,10 +381,10 @@ class CounterpartyCreateSerializer(serializers.Serializer):
                                                     gst_no=gst_no,
                                                     pan_no=pan_no)
 
-        party = Parties.objects.create(
-            customer_id=customer_id, name=name, address_line_1=address, city=city, party_type="OTHER")
-        # need to update status for parties 
-        party.save()
+        # party = Parties.objects.create(
+        #     customer_id=customer_id, name=name, address_line_1=address, city=city, party_type="OTHER")
+        # # need to update status for parties 
+        # party.save()
         counter_party.save()
 
         return counter_party
@@ -354,12 +398,9 @@ class CounterpartyCreateSerializer(serializers.Serializer):
 
 
 class CounterpartyUpdateSerializer(serializers.ModelSerializer):
+    
 
-    class Meta:
-        model = CounterParty
-        fields = ['id', 'name', 'address', 'city', 'country',
-                  'email', 'mobile', 'onboarding', 'gst_no', 'pan_no']
-        read_only_fields = ['id']
+    
 
         def update(self, instance, validated_data):
             instance.name = validated_data.get('name', instance.name)
