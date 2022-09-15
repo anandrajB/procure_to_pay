@@ -203,8 +203,8 @@ class ProgramListserializer(serializers.ModelSerializer):
     workflowitems = Workitemserializer(read_only=True)
     workevents = Workeventsserializer(read_only=True)
     party = serializers.SlugRelatedField(read_only=True, slug_field='name')
-    created_by = serializers.SerializerMethodField()
     wf_item_id = serializers.SerializerMethodField()
+    created_by = serializers.SlugRelatedField(read_only=True, slug_field='email')
     interest_type = serializers.SlugRelatedField(read_only=True, slug_field='description')
     interest_rate_type = serializers.SlugRelatedField(read_only=True, slug_field='description')
     attachments = serializers.SerializerMethodField()
@@ -245,8 +245,8 @@ class ProgramListserializer(serializers.ModelSerializer):
             'workevents',
         ]
 
-    def get_created_by(self,obj):
-        return obj.workflowitems.user.email
+    # def get_created_by(self,obj):
+        # return obj.workflowitems.user.email
     
     def get_attachments(self,obj):
         try:
@@ -354,7 +354,7 @@ class Programcreateserializer(serializers.Serializer):
                 settlement_currency=settlement_currency, expiry_date=expiry_date, max_finance_percentage=max_finance_percentage,
                 max_invoice_age_for_funding=max_invoice_age_for_funding,  maximum_amount=maximum_amount,
                 grace_period=grace_period, interest_rate_type=interest_rate_type,  
-                interest_type=interest_type, margin=margin , comments = comments , is_locked = True
+                interest_type=interest_type, margin=margin , comments = comments , is_locked = True , created_by = user 
         )
 
         
@@ -701,10 +701,10 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
     # max_invoice_pct = serializers.SerializerMethodField()
     # max_tenor = serializers.SerializerMethodField()
     # interest_type = serializers.SerializerMethodField()
-    program_type = serializers.SerializerMethodField()
     user_detail = serializers.SerializerMethodField()
     pairing_details = serializers.SerializerMethodField()
     attachments = serializers.SerializerMethodField()
+    buyer_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Parties
@@ -722,9 +722,10 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'zipcode',
             'country_code',
             'party_type',
-            'program_type',
+            'pairings', 
             'attachments',
             'user_detail',
+            'buyer_details',
             'pairing_details',
         ]
 
@@ -748,6 +749,15 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             return {"user_email": user_Data.email, "user_phone": user_Data.phone}
         except:
             return None
+
+    def get_buyer_details(self,obj):
+        try:
+            return {"buyer_id" : obj.pairings.program_id.party.id , 
+            "buyer_name" : obj.pairings.program_id.party.name , 
+            "buyer_address" : obj.pairings.program_id.party.address_line_1 ,
+            "program_type" : obj.pairings.program_id.party.program_type }
+        except:
+            pass
        
     # def get_limit(self,obj):
     #     return obj.pairings.total_limit
@@ -764,8 +774,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
     # def get_Margin(self,obj):
     #     return obj.pairings.margin
     
-    def get_program_type(self,obj):
-        return obj.pairings.program_id.program_type
+    
 
     # def get_expiry_Date(self, obj):
     #     return obj.pairings.expiry_date

@@ -4,9 +4,10 @@ from datetime import date
 from django.contrib.postgres.fields import ArrayField
 from transaction.states import StateChoices
 from accounts.file_path import manage_scf_attachments
+from django.contrib.auth import get_user_model
 
 
-
+User = get_user_model()
 
 #  MODELS RELATED TO TRANSACTION
 
@@ -93,7 +94,7 @@ class Programs(models.Model):
     status = models.CharField(max_length=155,blank=True, null=True)
     is_locked = models.BooleanField(default=None,blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
-
+    created_by = models.ForeignKey(User , on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Program"
@@ -136,7 +137,7 @@ class Pairings(models.Model):
     ]
 
     program_id = models.ForeignKey(Programs, on_delete=models.CASCADE)
-    counterparty_id = models.OneToOneField("accounts.Parties", on_delete=models.CASCADE)
+    counterparty_id = models.OneToOneField("accounts.Parties", on_delete=models.DO_NOTHING)
     finance_request = models.CharField(choices=finance_request_type, max_length=15, default=None,blank=True, null=True)
     currency = models.ForeignKey("accounts.Currencies", on_delete=models.DO_NOTHING, related_name='pairingscurrency',blank=True, null=True)
     total_limit = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
@@ -202,7 +203,7 @@ class Invoices(models.Model):
     financed_amount = models.DecimalField(max_digits=8, decimal_places=1,blank=True, null=True)
     bank_loan_id = models.CharField(max_length=55,blank=True,null=True)
     created_date = models.DateTimeField(auto_now_add=True)
-
+    
     
     class Meta:
         verbose_name_plural = "Invoice"
