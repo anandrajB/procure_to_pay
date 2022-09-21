@@ -63,6 +63,7 @@ class partieserializer(serializers.ModelSerializer):
             'address_line_2',
             'onboarded',
             'party_type',
+            'status',
             'city',
             'base_currency',
             'state',
@@ -87,6 +88,7 @@ class PartiesSignupSerailizer(serializers.ModelSerializer):
         "city": {"required": False},
         "state": {"required": False},
         "zipcode": {"required": False},
+        "status" : {"required": False},
 	    }
 
     # validators = [UniqueTogetherValidator(queryset=Parties.objects.all(),fields=['customer_id', 'name'])]

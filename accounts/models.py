@@ -67,7 +67,7 @@ class Banks(models.Model):
 # PARTIES 
 
 class Parties(models.Model):
-
+    
     party_type_choices = [
     ('CUSTOMER','CUSTOMER'),
     ('BANK','BANK'),
@@ -75,6 +75,13 @@ class Parties(models.Model):
     ('SELLER','SELLER'),
     ('BUYER','BUYER'),
     ('OTHER','OTHER'),
+    ]
+
+    STATUS_CHOICES = [
+    ('NEW','NEW'),
+    ('IN_PROGRESS','IN_PROGRESS'),
+    ('ONBOARDED','ONBOARDED'),
+    ('DEACTIVATED','DEACTIVATED'),
     ]
 
     customer_id = models.BigIntegerField(blank=True, null=True)
@@ -88,6 +95,7 @@ class Parties(models.Model):
     country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING , blank=True, null=True)
     onboarded = models.BooleanField(default=False)
     party_type = models.CharField(choices = party_type_choices , max_length=25)
+    status = models.CharField(choices = STATUS_CHOICES ,  default = STATUS_CHOICES[0], max_length=255 )
 
     class Meta:
         verbose_name_plural = "Party"

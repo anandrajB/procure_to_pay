@@ -42,4 +42,6 @@ class StateChoices(TextChoices):
     INITIAL_STATE = 'INITIAL_STATE',_('INITIAL_STATE')
     # end of action
     NONE = 'NONE',_('NONE')
-    
+
+
+
