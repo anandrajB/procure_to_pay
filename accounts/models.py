@@ -95,7 +95,7 @@ class Parties(models.Model):
     country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING , blank=True, null=True)
     onboarded = models.BooleanField(default=False)
     party_type = models.CharField(choices = party_type_choices , max_length=25)
-    status = models.CharField(choices = STATUS_CHOICES ,  default = STATUS_CHOICES[0], max_length=255 )
+    status = models.CharField(choices = STATUS_CHOICES ,  default = STATUS_CHOICES[0][0], max_length=255 )
 
     class Meta:
         verbose_name_plural = "Party"
