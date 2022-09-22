@@ -612,6 +612,8 @@ class CounterPartySerializer(serializers.Serializer):
     margin = serializers.IntegerField()
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
+    gst_no = serializers.CharField(required = False)
+    pan_no = serializers.CharField(required = False)
     
    
     
@@ -640,6 +642,8 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
+        gst_no = validated_data.pop('gst_no')
+        pan_no = validated_data.pop('pan_no')
 
 
         if pg_type == "APF":
@@ -649,7 +653,7 @@ class CounterPartySerializer(serializers.Serializer):
             obj.customer_id = obj.id
             obj.save()
             obj2 , created = CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
-            'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile})
+            'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile , 'gst_no' : gst_no , 'pan_no' : pan_no})
             
         # DF AND RF PROGRAM 
         else:

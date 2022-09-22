@@ -348,25 +348,29 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
 
 
 
-class CounterpartyUpdateSerializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model = CounterParty
-        fields = '__all__'
+class CounterpartyUpdateSerializer(serializers.Serializer):
 
+    ON_BOARDING_STATUS = [
+    ('DRAFT', 'DRAFT'),
+    ('SENT_TO_BANK','SENT_TO_BANK'),
+    ('SENT_TO_CUSTOMER','SENT_TO_CUSTOMER'),
+    ('COMPLETE','COMPLETE'),
+    ]
 
-        def update(self, instance, validated_data):
-            instance.name = validated_data.get('name', instance.name)
-            instance.address = validated_data.get('address', instance.address)
-            instance.city = validated_data.get('city', instance.city)
-            instance.country = validated_data.get('country', instance.country)
-            instance.email = validated_data.get('email', instance.email)
-            instance.mobile = validated_data.get('mobile', instance.mobile)
-            instance.onboarding = validated_data.get('onboarding', instance.onboarding)
-            instance.gst_no = validated_data.get('gst_no', instance.gst_no)
-            instance.pan_no = validated_data.get('pan_no', instance.pan_no)
-            instance.save()
-            return instance
+    onboarding = serializers.ChoiceField( choices = ON_BOARDING_STATUS )
+
+    def update(self, instance, validated_data):
+            # instance.name = validated_data.get('name', instance.name)
+            # instance.address = validated_data.get('address', instance.address)
+            # instance.city = validated_data.get('city', instance.city)
+            # instance.country = validated_data.get('country', instance.country)
+            # instance.email = validated_data.get('email', instance.email)
+            # instance.mobile = validated_data.get('mobile', instance.mobile)
+        instance.onboarding = validated_data.get('onboarding', instance.onboarding)
+        # instance.gst_no = validated_data.get('gst_no', instance.gst_no)
+        # instance.pan_no = validated_data.get('pan_no', instance.pan_no)
+        instance.save()
+        return instance
 
 
 
