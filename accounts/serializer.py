@@ -367,3 +367,21 @@ class CounterpartyUpdateSerializer(serializers.ModelSerializer):
             instance.pan_no = validated_data.get('pan_no', instance.pan_no)
             instance.save()
             return instance
+
+
+
+class PartyStatusUpdateserializer(serializers.Serializer):
+    STATUS_CHOICES = [
+    ('NONE','NONE'),
+    ('NEW','NEW'),
+    ('IN_PROGRESS','IN_PROGRESS'),
+    ('ONBOARDED','ONBOARDED'),
+    ('DEACTIVATED','DEACTIVATED'),
+    ]
+    status = serializers.ChoiceField(choices = STATUS_CHOICES)
+    
+
+    def update(self, instance, validated_data):
+        instance.status = validated_data.get('status', instance.status)   
+        instance.save()
+        return instance
