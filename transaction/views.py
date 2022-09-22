@@ -401,8 +401,8 @@ class PairingApiview(APIView):
         if data is not None:
             qs = Pairings.objects.filter(program_id=data)
         else:
-            # qs = Pairings.objects.filter(counterparty_id=user.party.id)
-            qs = Pairings.objects.all()
+            qs = Pairings.objects.filter(counterparty_id__name=user.party.name)
+            # qs = Pairings.objects.all()
         return qs
 
     def get(self, request):
