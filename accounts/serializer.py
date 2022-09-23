@@ -420,7 +420,7 @@ class ChatUsersSerializer(serializers.ModelSerializer):
             else:
                 program = Programs.objects.get(party = obj.party)
                 pairings = Pairings.objects.get(program_id = program.id )
-                Users = User.objects.filter(party__name = pairings.counterparty_id).values('party__name','email','is_active')
+                Users = User.objects.filter(party__name = pairings.counterparty_id).values('party__name','email','phone','is_active')
                 bank_user = User.objects.filter(party__party_type = "BANK").values('party__name','email','phone','is_active')
                 return {"counterparty_users" : Users , "bank_user" : bank_user}
         except:
