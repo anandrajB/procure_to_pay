@@ -422,7 +422,7 @@ class ChatUsersSerializer(serializers.ModelSerializer):
                 # counterparty -> buyers
                 pairings = Pairings.objects.get(counterparty_id__name = obj.party.name )
                 buyer_user = User.objects.filter(party__name = pairings.program_id.party.name).values('party__name','email','is_active')
-                Users = User.objects.filter(party__name = pairings.counterparty_id).exclude(id = obj.id).values('party__name','email','is_active')
+                # Users = User.objects.filter(party__name = pairings.counterparty_id).exclude(id = obj.id).values('party__name','email','is_active')
                 return {"buyer_user" : buyer_user , "bank_user" : base_list_2}
             else:
                 # buyers -> counterparty
