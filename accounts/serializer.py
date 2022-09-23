@@ -393,6 +393,7 @@ class PartyStatusUpdateserializer(serializers.Serializer):
 
 class ChatUsersSerializer(serializers.ModelSerializer):
     chat_users = serializers.SerializerMethodField()
+    party_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -400,19 +401,27 @@ class ChatUsersSerializer(serializers.ModelSerializer):
             'phone',
             'email',
             'party',
+            'party_name',
             'is_active',
             'chat_users'
         ]
 
+    def get_party_name(self,obj):
+        return obj.party.name
+
     def get_chat_users(self,obj):
         try:
-            program = Programs.objects.get(party = obj.party)
-            # print(program)
-            pairings = Pairings.objects.get(program_id = program.id )
-            # print(pairings)
-            Users = User.objects.filter(party__name = pairings.counterparty_id).values('party','email','is_active')
-            bank_user = User.objects.filter(party__party_type = "BANK").values('email','phone','is_active')
-            print(bank_user)
-            return {"counterparty_users" : Users , "bank_user" : bank_user}
+            if obj.party.party_type == "SELLER" :
+                pairings = Pairings.objects.get(counterparty_id__name = obj.party.name )
+                buyer_user = User.objects.filter(party__name = pairings.program_id.party.name).values('party__name','email','phone','is_active')
+                Users = User.objects.filter(party__name = pairings.counterparty_id).exclude(id = obj.id).values('party__name','email','phone','is_active')
+                bank_user = User.objects.filter(party__party_type = "BANK").values('party__name','email','phone','is_active')
+                return {"counterparty_users" : Users , "buyer_user" : buyer_user , "bank_user" : bank_user}
+            else:
+                program = Programs.objects.get(party = obj.party)
+                pairings = Pairings.objects.get(program_id = program.id )
+                Users = User.objects.filter(party__name = pairings.counterparty_id).values('party__name','email','is_active')
+                bank_user = User.objects.filter(party__party_type = "BANK").values('party__name','email','phone','is_active')
+                return {"counterparty_users" : Users , "bank_user" : bank_user}
         except:
             return None
