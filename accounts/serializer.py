@@ -390,6 +390,7 @@ class PartyStatusUpdateserializer(serializers.Serializer):
 
 
 
+# UPDATED CHAT_USER LIST API # 23-9-2022
 
 class ChatUsersSerializer(serializers.ModelSerializer):
     chat_users = serializers.SerializerMethodField()
@@ -411,20 +412,26 @@ class ChatUsersSerializer(serializers.ModelSerializer):
 
     def get_chat_users(self,obj):
         base_list = []
+        base_list_2 = []
+        bank = Parties.objects.filter(party_type = "BANK").values('name')
+        for iters in bank:
+            data = {"bank_name" : iters['name'] , 'users' : list(User.objects.filter(party__name = iters["name"]).values_list('email',flat = True))} 
+            base_list_2.append(data)
         try:
             if obj.party.party_type == "SELLER" :
+                # counterparty -> buyers
                 pairings = Pairings.objects.get(counterparty_id__name = obj.party.name )
                 buyer_user = User.objects.filter(party__name = pairings.program_id.party.name).values('party__name','email','is_active')
                 Users = User.objects.filter(party__name = pairings.counterparty_id).exclude(id = obj.id).values('party__name','email','is_active')
-                bank_user = User.objects.filter(party__party_type = "BANK").values('party__name','email','is_active')
-                return {"counterparty_users" : Users , "buyer_user" : buyer_user , "bank_user" : bank_user}
+                return {"buyer_user" : buyer_user , "bank_user" : base_list_2}
             else:
+                # buyers -> counterparty
                 program = Programs.objects.get(party = obj.party)
                 pairings = Pairings.objects.filter(program_id = program.id ).values('counterparty_id__name')
                 for users in pairings:        
-                    Users = User.objects.filter(party__name = users["counterparty_id__name"]).values('party__name','email','is_active') 
-                    base_list.append(Users)
-                    bank_user = User.objects.filter(party__party_type = "BANK").values('party__name','email','is_active')
-                return {"counterparty_users" : base_list , "bank_user" : bank_user}
+                    # Users = User.objects.filter(party__name = users["counterparty_id__name"]).values('party__name','email','is_active') 
+                    data = {"party_name" : users['counterparty_id__name'] , 'users' : list(User.objects.filter(party__name = users["counterparty_id__name"]).values_list('email',flat = True))} 
+                    base_list.append(data)
+                return {"counterparty_users" : base_list , "bank_user" : base_list_2}
         except:
             return None
