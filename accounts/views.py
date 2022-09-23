@@ -168,6 +168,8 @@ class PartyDetailsUpdateDeleteApiview(RetrieveUpdateDestroyAPIView):
         return Response({"status": "failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
 
+# UPDATING PARTY STATUS 
+
 class PartyStatusUpdateApiview(RetrieveUpdateDestroyAPIView):
     queryset = Parties.objects.all()
     serializer_class = PartyStatusUpdateserializer
