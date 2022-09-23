@@ -28,6 +28,7 @@ from accounts.email import email_to
 from .serializer import (
     Actionserializer,
     BankSerializer,
+    ChatUsersSerializer,
     Countriesserializer,
     CurrenciesSerializer,
     GetUserSerilaizer,
@@ -732,3 +733,19 @@ class TESTapi(ListAPIView):
         obj , created = User.objects.update_or_create( phone = "9677210269" , defaults= {'first_name' : myemail if myemail else random } )
         print(obj.first_name)
         return Response({"status": "success"}, status=status.HTTP_200_OK)
+
+
+
+
+
+# CHATBOT_API USER LISTS #
+
+class ChatUserListApi(ListAPIView):
+    queryset =  User.objects.all()
+    serializer_class = ChatUsersSerializer
+
+    def get(self, request):
+        model = User.objects.filter(party = self.request.user.party)
+        serializer = ChatUsersSerializer(model, many=True)
+        return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
+

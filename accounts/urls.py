@@ -29,7 +29,8 @@ from .views import (
     UserProcessAuthUpdateApiview,
     ActionApiview,
     PartyDetailsUpdateDeleteApiview,
-    UserProfileApiView
+    UserProfileApiView,
+    ChatUserListApi
 )
 
 urlpatterns = [
@@ -39,6 +40,7 @@ urlpatterns = [
     path('party-status/<int:pk>/',PartyStatusUpdateApiview.as_view()),
     path('counterparty/', CounterPartyListCreateAPIView.as_view()),
     path('counterparty/<int:pk>/', CounterPartynewUpdateDeleteAPIView.as_view()),
+    path('chatusers/',ChatUserListApi.as_view()),
     path('signup/', UserSignUpApiView.as_view() ,name='user-signup'),
     path('login/',csrf_exempt(UserLoginView.as_view()),name = 'user-login'),
     path('logout/',UserLogoutView.as_view(),name='user-logout'),

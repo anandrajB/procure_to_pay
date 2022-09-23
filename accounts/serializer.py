@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
-
-from transaction.models import Pairings
-from transaction.models import File
+from transaction.models import (
+    Pairings,
+    Programs
+)
 from .models import (
     Action,
     Banks, 
@@ -145,10 +146,7 @@ class UserSignupSerializer(serializers.Serializer):
             raise serializers.ValidationError("user with this phone number already exists")
         return attrs
 
-    def validate_party(self, attrs):
-        if Parties.objects.filter(party__iexact = attrs).exists():
-            raise serializers.ValidationError("Party with this name already exists")
-        return attrs
+    
 
     
 # LOGIN SERIALIZER
@@ -389,3 +387,32 @@ class PartyStatusUpdateserializer(serializers.Serializer):
         instance.status = validated_data.get('status', instance.status)   
         instance.save()
         return instance
+
+
+
+
+class ChatUsersSerializer(serializers.ModelSerializer):
+    chat_users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'phone',
+            'email',
+            'party',
+            'is_active',
+            'chat_users'
+        ]
+
+    def get_chat_users(self,obj):
+        try:
+            program = Programs.objects.get(party = obj.party)
+            # print(program)
+            pairings = Pairings.objects.get(program_id = program.id )
+            # print(pairings)
+            Users = User.objects.filter(party__name = pairings.counterparty_id).values('party','email','is_active')
+            bank_user = User.objects.filter(party__party_type = "BANK").values('email','phone','is_active')
+            print(bank_user)
+            return {"counterparty_users" : Users , "bank_user" : bank_user}
+        except:
+            return None

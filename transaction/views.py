@@ -452,8 +452,8 @@ class CounterPartyApiview(APIView):
             queryset = CounterParty.objects.filter(name__icontains = party_name )
         else:
             # pairings__program_id__party__name = self.request.user.party.name
-            # queryset = CounterParty.objects.filter(pairings__counterparty_id__name = self.request.user.party.name )  
-            queryset = CounterParty.objects.all() 
+            queryset = CounterParty.objects.filter(pairings__program_id__party__name = self.request.user.party.name )  
+            # queryset = CounterParty.objects.all() 
         return queryset
 
     def get(self, request):
@@ -751,3 +751,7 @@ class FileUploadApiView(ListCreateAPIView):
             serializer.save()
             return Response({"status": "success"},status=status.HTTP_200_OK)
         return Response({"status": "failure"},status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+
+
