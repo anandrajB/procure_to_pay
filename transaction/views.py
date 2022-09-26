@@ -452,7 +452,7 @@ class CounterPartyApiview(APIView):
             queryset = CounterParty.objects.filter(name__icontains = party_name )
         else:
             # pairings__program_id__party__name = self.request.user.party.name
-            queryset = CounterParty.objects.filter(pairings__program_id__party__name = self.request.user.party.name )  
+            queryset = CounterParty.objects.filter(Q(pairings__program_id__party__name = self.request.user.party.name) | Q(pairings__counterparty_id__name = self.request.user.party.name) )  
             # queryset = CounterParty.objects.all() 
         return queryset
 
