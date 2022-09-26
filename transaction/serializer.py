@@ -610,11 +610,11 @@ class CounterPartySerializer(serializers.Serializer):
     interest_type = serializers.PrimaryKeyRelatedField(queryset=InterestChoice.objects.all(),required = False)
     interest_rate_type = serializers.PrimaryKeyRelatedField(queryset=InterestRateType.objects.all(),required = False)
     margin = serializers.IntegerField()
-    comments = serializers.CharField(required = False)
+    comments = serializers.CharField(required = False , default = None )
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
-    gst_no = serializers.CharField(required = False)
-    pan_no = serializers.CharField(required = False)
+    gst_no = serializers.CharField(required = False , default = None)
+    pan_no = serializers.CharField(required = False , default = None)
     
    
     
