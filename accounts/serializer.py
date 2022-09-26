@@ -308,6 +308,7 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
     # interest_type = serializers.SerializerMethodField()
     # user_detail = serializers.SerializerMethodField()
     buyer_details = serializers.SerializerMethodField()
+    pairings_details = serializers.SerializerMethodField()
 
     class Meta:
         model = CounterParty
@@ -326,6 +327,7 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
             'pan_no',
             # 'user_detail',
             'buyer_details',
+            'pairings_details'
         ]
 
     # def get_user_detail(self,obj):
@@ -343,6 +345,14 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
             "program_type" : obj.pairings.program_id.program_type }
         except:
             pass
+    
+
+    def get_pairings_details(self,obj):
+        try:
+            pair = Pairings.objects.filter(id = obj.pairings.id).values()
+            return {"pairing":pair}
+        except:
+            return None
 
 
 
