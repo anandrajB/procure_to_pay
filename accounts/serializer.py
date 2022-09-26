@@ -432,10 +432,13 @@ class ChatUsersSerializer(serializers.ModelSerializer):
         try:
             if obj.party.party_type == "SELLER" :
                 # counterparty -> buyers
-                pairings = Pairings.objects.get(counterparty_id__name = obj.party.name )
-                buyer_user = User.objects.filter(party__name = pairings.program_id.party.name).values('party__name','email','is_active')
-                # Users = User.objects.filter(party__name = pairings.counterparty_id).exclude(id = obj.id).values('party__name','email','is_active')
-                return {"buyer_user" : buyer_user , "bank_user" : base_list_2}
+                pairings = Pairings.objects.filter(counterparty_id__name = obj.party.name ).values('program_id__party__name')
+                # # buyer_user = User.objects.filter(party__name = pairings.program_id.party.name).values('party__name','email','is_active')
+                # # Users = User.objects.filter(party__name = pairings.counterparty_id).exclude(id = obj.id).values('party__name','email','is_active')
+                for users in pairings:
+                    data = {"party_name" : users['program_id__party__name'] ,'users' : list(User.objects.filter(party__name = users['program_id__party__name']).values_list('email',flat = True))}
+                    base_list.append(data)
+                return {"buyer_user" : base_list , "bank_user" : base_list_2}
             else:
                 # buyers -> counterparty
                 program = Programs.objects.get(party = obj.party)
