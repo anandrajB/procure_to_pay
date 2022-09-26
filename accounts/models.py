@@ -101,14 +101,16 @@ class Parties(models.Model):
     class Meta:
         verbose_name_plural = "Party"
         ordering = ['id']
+        unique_together = (('name', 'city'))
 
     def save(self, *args, **kwargs):
-        self.name = self.name.upper()
-        # self.customer_id = self.id
+        self.name , self.city = self.name.upper() , self.city.lower()
         return super(Parties, self).save(*args, **kwargs)
 
     def __str__(self):
         return "%s   (%s)"%(self.name , self.party_type)
+
+    
 
     # @property
     # def party_id(self):
@@ -145,6 +147,13 @@ class CounterParty(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = "CounterParty"
+        ordering = ['id']
+        unique_together = ('name', 'city')
+
+    
 
     # def random_generator(self):
     #     pass 

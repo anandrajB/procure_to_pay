@@ -91,18 +91,26 @@ class PartiesSignupSerailizer(serializers.ModelSerializer):
         "zipcode": {"required": False},
         "status" : {"required": False},
 	    }
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Parties.objects.all(),
+                fields=['name', 'city'],
+                message = "Party with this city already exists"
+            )
+        ]
+    
+    # def to_representation(self, instance):
+    #     data = super(PartiesSignupSerailizer, self).to_representation(instance=instance)
+    #     data['city'] = data['city'].lower() if data['city'] else data['city']
+    #     return data
 
     # validators = [UniqueTogetherValidator(queryset=Parties.objects.all(),fields=['customer_id', 'name'])]
-    # def validate_customer_id(self,value):
-    #     if Parties.objects.filter(customer_id = value).exists():
+    # def validate_name(value):
+    #     if Parties.objects.filter(name__contains = self.name , city = self.city).exists():
     #         raise serializers.ValidationError("A party with this customer_id  already exists , try with other customer_id")
-    #     return value
 
-    def validate_name(self,value):
-        if Parties.objects.filter(name__contains = value).exists():
-            raise serializers.ValidationError("A party with this name already exists , try with other name")
-        return value
-
+  
+        
     
         
 

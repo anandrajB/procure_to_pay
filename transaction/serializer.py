@@ -4,6 +4,7 @@ from transaction.custom_validators import (
     validate_file_extension , 
     validate_invoice_extension
 )
+from rest_framework.validators import UniqueTogetherValidator
 from .models import (
     File,
     InterestChoice,
@@ -616,7 +617,16 @@ class CounterPartySerializer(serializers.Serializer):
     gst_no = serializers.CharField(required = False , default = None)
     pan_no = serializers.CharField(required = False , default = None)
     
-   
+    # class Meta:
+    #     model = CounterParty
+    #     fields = '__all__'
+    #     validators = [
+    #         UniqueTogetherValidator(
+    #             queryset=Parties.objects.all(),
+    #             fields=['name', 'city'],
+    #             message = "A Party with this city already exists , try with other city"
+    #         )
+    #     ]
     
     def create(self, validated_data):
         name = validated_data.pop('name')
@@ -650,11 +660,11 @@ class CounterPartySerializer(serializers.Serializer):
 
         if pg_type == "APF":
             print("apf working")
-            obj , created  = Parties.objects.update_or_create( name = name ,   defaults = { 'base_currency' : base_currency ,
+            obj , created  = Parties.objects.update_or_create( name = name , city = city.lower() ,  defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" }) 
             obj.customer_id = obj.id
             obj.save()
-            obj2 , created = CounterParty.objects.update_or_create(name = name, defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
+            obj2 , created = CounterParty.objects.update_or_create(name = name, city = city.lower() , defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile , 'gst_no' : gst_no , 'pan_no' : pan_no})
             
         # DF AND RF PROGRAM 
@@ -670,11 +680,14 @@ class CounterPartySerializer(serializers.Serializer):
         obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
         'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,
         'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'max_finance_percentage' : max_invoice_percent ,'financed_amount' : max_tenor , 'margin' : margin , 'comments' : comments } )
+        print(created)
         return obj3
+    
+    
 
 
-    # def validate_customer_id(self,value):
-    #     if Parties.objects.filter(customer_id = value).exists():
+    # def validate_customer_id(self,value , source ):
+    #     if Parties.objects.filter(name__contains = value , city = value['city'].lower()).exists():
     #         raise serializers.ValidationError("A party with this customer_id / account already exists , try with other customer_id")
     #     return value
 
