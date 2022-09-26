@@ -90,7 +90,7 @@ class Programs(models.Model):
     interest_rate_type = models.ForeignKey(InterestRateType,on_delete=models.DO_NOTHING)
     interest_rate = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
     margin = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
-    comments = models.CharField(max_length=155,blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=155,blank=True, null=True)
     is_locked = models.BooleanField(default=None,blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -159,6 +159,7 @@ class Pairings(models.Model):
     interest_rate_type = models.ForeignKey(InterestRateType,on_delete=models.DO_NOTHING)
     interest_rate = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
     margin = models.DecimalField(max_digits=8, decimal_places=2,blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:

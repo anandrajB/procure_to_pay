@@ -610,6 +610,7 @@ class CounterPartySerializer(serializers.Serializer):
     interest_type = serializers.PrimaryKeyRelatedField(queryset=InterestChoice.objects.all(),required = False)
     interest_rate_type = serializers.PrimaryKeyRelatedField(queryset=InterestRateType.objects.all(),required = False)
     margin = serializers.IntegerField()
+    comments = serializers.CharField(required = False)
     program_id = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all())
     program_type = serializers.CharField(required = False)
     gst_no = serializers.CharField(required = False)
@@ -642,6 +643,7 @@ class CounterPartySerializer(serializers.Serializer):
         program_id = validated_data.pop('program_id')
         margin = validated_data.pop('margin')
         pg_type = validated_data.pop('program_type')
+        comments = validated_data.pop('comments')
         gst_no = validated_data.pop('gst_no')
         pan_no = validated_data.pop('pan_no')
 
@@ -667,7 +669,7 @@ class CounterPartySerializer(serializers.Serializer):
         # creating a pairing 
         obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
         'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,
-        'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'financed_amount' : max_tenor , 'margin' : margin } )
+        'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'financed_amount' : max_tenor , 'margin' : margin , 'comments' : comments } )
         return obj3
 
 
