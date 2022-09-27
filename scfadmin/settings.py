@@ -236,7 +236,6 @@ if PRODUCTION :
             'PORT': '',
         }
     }
-    
 else:
     # heroku test environment database
     DATABASES = {
