@@ -225,7 +225,7 @@ WSGI_APPLICATION = 'scfadmin.wsgi.application'
 # SETUP : 1
 
 if PRODUCTION :
-    # digital ocean droplet database 
+#     # digital ocean droplet database 
     DATABASES = {
         'default': {
             'ENGINE': 'django_tenants.postgresql_backend',

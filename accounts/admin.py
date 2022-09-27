@@ -39,9 +39,6 @@ admin_site = MyAdminSite()
 class UserAdmin(admin.ModelAdmin):
 
     
-
-    
-
     fieldsets = (
         (None, {'fields': ('email', 'phone', 'first_name','last_name','display_name')}),
         ('profile picture', {'fields': ('profile_tags',)}),
@@ -56,6 +53,18 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone', 'party','is_supervisor', "is_administrator" ,'is_active')
     search_fields = ['email','phone','party__name']
     # list_filter = ('is_supervisor','is_administrator','is_active')
+
+
+
+
+# class CounterpartyModelAdmin(admin.ModelAdmin):
+    
+#     def get_actions(self, request):
+#         actions = super().get_actions(request)
+#         if 'delete_selected' in actions:
+#                 del actions['delete_selected']
+#                 print(request)
+#         return actions
 
 
 
