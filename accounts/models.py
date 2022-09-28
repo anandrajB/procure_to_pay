@@ -233,7 +233,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     display_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True, blank = False)
     is_supervisor = models.BooleanField(default=False)
-    profile_img = models.ImageField(upload_to = profile_img_path , default = 'static/images/avatar.jpg' , blank = True ,  null = True)
+    profile_img = models.ImageField(upload_to = profile_img_path , blank = True ,  null = True)
     is_administrator = models.BooleanField(default=False)
     is_master_admin = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -268,10 +268,11 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     ## for admin panel showing profile_img
     def profile_tags(self):
-        try:
+        print(self.profile_img)
+        if self.profile_img :
             return mark_safe('<img src="/media/%s" width="150" height="150" />' % (self.profile_img))
-        except:
-            return mark_safe('<p> no images found </p>')
+        else:
+            return 'No image found'
 
     profile_tags.short_description = 'Image'
 
