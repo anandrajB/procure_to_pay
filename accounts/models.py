@@ -148,6 +148,10 @@ class CounterParty(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.name , self.city = self.name.upper() , self.city.lower()
+        return super(CounterParty, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name_plural = "CounterParty"
         ordering = ['id']
@@ -159,10 +163,7 @@ class CounterParty(models.Model):
     #     pass 
 
 
-    def save(self, *args, **kwargs):
-        self.name = self.name.upper()
-        # self.customer_id  = CounterParty.random_generator()
-        return super(CounterParty, self).save(*args, **kwargs)
+    
 
 
 

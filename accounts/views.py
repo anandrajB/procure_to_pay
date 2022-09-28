@@ -710,7 +710,7 @@ class CounterPartynewUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, pk=None):
         queryset = CounterParty.objects.all()
         user = get_object_or_404(queryset, pk=pk)
-        serializer = CounterpartyUpdateSerializer(user)
+        serializer = CounterpartyCreateSerializer(user)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
     def update(self, request, pk=None):
@@ -722,6 +722,15 @@ class CounterPartynewUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
             return Response({"status": "successfully updated", "data": serializer.data}, status=status.HTTP_200_OK)
         return Response({"status": "Failed", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
+    def delete(self, request, pk=None):
+        queryset = CounterParty.objects.all()
+        counterpartys = get_object_or_404(queryset, pk=pk)
+        try:
+            Parties.objects.filter(name = counterpartys , city = counterpartys.city).delete()
+        except:
+            pass
+        counterpartys.delete()
+        return Response({"status": "success","data" : "deleted successfully"}, status=status.HTTP_200_OK)
 
 
 class TESTapi(ListAPIView):
