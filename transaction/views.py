@@ -82,7 +82,7 @@ class ProgramCreateApiView(ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        name = self.request.query_params.get('name')
+        name = self.request.query_params.get('party_name')
         if user.party.party_type == "BANK":
             queryset = Programs.objects.all().order_by('created_date')
         elif name:
