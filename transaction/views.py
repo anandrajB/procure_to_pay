@@ -456,8 +456,11 @@ class CounterPartyApiview(APIView):
 
     def get_queryset(self):
         party_name = self.request.query_params.get("party_name",None)
+        buyer_name = self.request.query_params.get("buyer_name",None) 
         if party_name :
             queryset = CounterParty.objects.filter(name__icontains = party_name )
+        elif buyer_name:
+            queryset = CounterParty.objects.filter(pairings__program_id__party__name = buyer_name)
         else:
             # pairings__program_id__party__name = self.request.user.party.name
             queryset = CounterParty.objects.filter(Q(pairings__program_id__party__name = self.request.user.party.name) | Q(pairings__counterparty_id__name = self.request.user.party.name) )  
