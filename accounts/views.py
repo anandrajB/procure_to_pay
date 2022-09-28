@@ -758,3 +758,17 @@ class ChatUserListApi(ListAPIView):
         serializer = ChatUsersSerializer(model, many=True)
         return Response({"status": "success", "data": serializer.data}, status=status.HTTP_200_OK)
 
+
+
+
+class PartiesCheckApiView(APIView):
+    queryset = Parties.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        account_number = request.data.get('account_number')
+        customer_id = request.data.get('customer_id')
+        party = Parties.objects.filter(Q(account_number=account_number) | Q(customer_id=customer_id)).values()
+        if party:
+            return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+        return Response({"Status": "Failure", "data": "No party found in this customer_id / account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

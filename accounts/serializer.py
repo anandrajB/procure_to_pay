@@ -458,3 +458,6 @@ class ChatUsersSerializer(serializers.ModelSerializer):
                 return {"counterparty_users" : base_list , "bank_user" : base_list_2}
         except:
             return None
+
+
+
