@@ -761,7 +761,6 @@ class ChatUserListApi(ListAPIView):
 
 
 
-from transaction.models import Programs
 class PartiesCheckApiView(APIView):
     queryset = Parties.objects.all()
     serializer_class = PartieSearchserializer
@@ -772,9 +771,9 @@ class PartiesCheckApiView(APIView):
         customer_id = request.data.get("customer_id")
         if customer_id:
             party = Parties.objects.filter(customer_id=customer_id).values()
+            return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
         elif account_number :
             party = Parties.objects.filter(account_number=account_number).values()
-        if party:
-            # program = Programs.objects.get(party = party)
             return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
-        return Response({"Status": "Failure", "data": "No party found in this customer_id / account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        else:
+            return Response({"Status": "Failure", "data": "No party found in this customer_id / account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
