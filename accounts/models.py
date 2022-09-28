@@ -268,7 +268,6 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     ## for admin panel showing profile_img
     def profile_tags(self):
-        print(self.profile_img)
         if self.profile_img :
             return mark_safe('<img src="/media/%s" width="150" height="150" />' % (self.profile_img))
         else:
