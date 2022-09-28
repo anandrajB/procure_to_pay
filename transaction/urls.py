@@ -28,6 +28,7 @@ from .views import (
     InboxNotificationCountApiView,
     InterestApiview,
     FileUploadApiView,
+    InvoiceCreationProcessApiView
     # FileListApiView
 )
 from transaction.api.InvoiceUploadTransition import (
@@ -62,6 +63,7 @@ urlpatterns = [
     #--INVOICE CRUD URLS
     path('invoice/', InvoiceCreateApiView.as_view(), name='invoice-manual-no-set(lifecycle)-create-api'),
     path('invoice/<int:pk>/', InvoiceUpdateDeleteApiview.as_view(),name='invoice-update'),
+    path('invoicetest/',InvoiceCreationProcessApiView.as_view()),
     
     #--INVOICE MANUAL UPLOAD CRUD URLS
     path('invoiceupload/',InvoiceUploadCreateApiView.as_view(),name='invoice-manual-upload-create'),

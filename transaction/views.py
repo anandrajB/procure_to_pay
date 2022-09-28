@@ -51,6 +51,11 @@ from .serializer import (
     Workitemserializer,
     csvserializer
 )
+from .query import (
+    gets_currencies,
+    gets_pairings,
+    gets_party
+)
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -754,4 +759,42 @@ class FileUploadApiView(ListCreateAPIView):
 
 
 
+class InvoiceCreationProcessApiView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        id = self.request.query_params.get('id')
+        if id:
+            queryset = Invoiceuploads.objects.get(id = id)
+            pg_type = queryset.program_type
+            for i in queryset.invoices:
+
+                if pg_type == "APF":
+
+                    invoice = Invoices.objects.create(program_type=pg_type, pairing=gets_pairings(i["buyerId"]), finance_currency_type=gets_currencies(i['financingCurrency']),
+                                                      party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
+                                                      invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
+
+                    # work = workflowitems.objects.create(
+                    #     invoice=invoice, current_from_party=gets_party(i['counterparty_id']), type="INVOICE", action = "SUBMIT" ,current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, final_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
+                    # work.save()
+
+                    # event = workevents.objects.create(
+                    #     workitems=work, from_party=gets_party(i['counterparty_id']), action = "SUBMIT" ,final = 'YES',to_party=gets_party(i['buyerName']), event_user=user, type="INVOICE", interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, to_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
+                    # event.save()
+
+                else:
+
+                    invoice = Invoices.objects.create(program_type=pg_type, finance_currency_type=gets_currencies(i['financingCurrency']),
+                                                      party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
+                                                      invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
+
+                    # work = workflowitems.objects.create(
+                    #     invoice=invoice, current_from_party=gets_party(i['counterparty_id']), action = "SUBMIT" ,type="INVOICE",current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_FINANCE_REQUESTED, final_state=StateChoices.STATUS_FINANCE_REQUESTED)
+                    # work.save()
+
+                    # event = workevents.objects.create(
+                    #     workitems=work, from_party=gets_party(i['counterparty_id']), action = "SUBMIT" ,final = 'YES',to_party=gets_party(i['buyerName']), event_user=user, type="INVOICE", interim_state=StateChoices.STATUS_FINANCE_REQUESTED, to_state=StateChoices.STATUS_FINANCE_REQUESTED)
+                    # event.save()
+
+        return Response({"Status": "Success", "data": "ok" }, status=status.HTTP_200_OK)
