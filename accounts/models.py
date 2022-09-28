@@ -274,6 +274,10 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     profile_tags.short_description = 'Image'
 
+    class Meta:
+        ordering = ['id']
+        unique_together = ('phone', 'email')
+
     
 
 
