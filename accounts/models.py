@@ -84,8 +84,8 @@ class Parties(models.Model):
     ('ONBOARDED','ONBOARDED'),
     ('DEACTIVATED','DEACTIVATED'),
     ]
-    
-    account_number = models.CharField(max_length = 500 , blank=True, null=True)
+
+    account_number = models.BigIntegerField(blank=True, null=True)
     customer_id = models.BigIntegerField(blank=True, null=True)
     name = models.CharField(max_length=100)
     base_currency  = models.ForeignKey(Currencies,on_delete=models.CASCADE , blank=True, null=True)

@@ -461,3 +461,7 @@ class ChatUsersSerializer(serializers.ModelSerializer):
 
 
 
+class PartieSearchserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Parties
+        fields = ['account_number', 'customer_id']
