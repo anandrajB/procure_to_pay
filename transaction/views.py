@@ -766,15 +766,16 @@ class InvoiceCreationProcessApiView(APIView):
         id = self.request.query_params.get('id')
         if id:
             queryset = Invoiceuploads.objects.get(id = id)
-            pg_type = queryset.program_type
             for i in queryset.invoices:
 
-                if pg_type == "APF":
+                if queryset.program_type == "APF":
 
-                    invoice = Invoices.objects.create(program_type=pg_type, pairing=gets_pairings(i["buyerId"]), finance_currency_type=gets_currencies(i['financingCurrency']),
+                    invoice = Invoices.objects.create(program_type=queryset.program_type, pairing=gets_pairings(i["buyerId"]), finance_currency_type=gets_currencies(i['financingCurrency']),
                                                       party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
                                                       invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
-
+                    invoice.save()
+                    # TransitionManager.objects.get(t_id = invoice.id)
+                    # Finflotransition(source = )
                     # work = workflowitems.objects.create(
                     #     invoice=invoice, current_from_party=gets_party(i['counterparty_id']), type="INVOICE", action = "SUBMIT" ,current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, final_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
                     # work.save()
@@ -785,10 +786,10 @@ class InvoiceCreationProcessApiView(APIView):
 
                 else:
 
-                    invoice = Invoices.objects.create(program_type=pg_type, finance_currency_type=gets_currencies(i['financingCurrency']),
+                    invoice = Invoices.objects.create(program_type=queryset.program_type, finance_currency_type=gets_currencies(i['financingCurrency']),
                                                       party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
                                                       invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
-
+                    invoice.save()
                     # work = workflowitems.objects.create(
                     #     invoice=invoice, current_from_party=gets_party(i['counterparty_id']), action = "SUBMIT" ,type="INVOICE",current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_FINANCE_REQUESTED, final_state=StateChoices.STATUS_FINANCE_REQUESTED)
                     # work.save()
