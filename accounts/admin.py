@@ -51,7 +51,7 @@ class UserAdmin(admin.ModelAdmin):
         'user_permissions',
     )
     readonly_fields = ['profile_tags']
-    list_display = ('email', 'phone', 'party','is_supervisor', "is_administrator" ,'is_active')
+    list_display = ('phone', 'email', 'party','is_supervisor', "is_administrator" ,'is_active')
     search_fields = ['email','phone','party__name']
     # list_filter = ('is_supervisor','is_administrator','is_active')
 
