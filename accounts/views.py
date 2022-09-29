@@ -227,6 +227,10 @@ class UserLoginView(CreateAPIView):
                 if user.is_active == False:
                     return Response({"status": "failure", "data": "This user is_inactive , please contact customer support team finflosupport@xyz.com"},status = status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
                 else:
+                    try:
+                        counterparty_onboarding = user.counterparty.onboarding
+                    except:
+                        counterparty_onboarding = None
                     login(request, user)
                     token, created = Token.objects.get_or_create(user=user)
                     data = {
@@ -237,7 +241,7 @@ class UserLoginView(CreateAPIView):
                         "party" : user.party.name,
                         "party_type" : user.party.party_type,
                         "status" : user.party.status,
-                        "onboarding" : user.counterparty.onboarding,
+                        "on_boarding" : counterparty_onboarding,
                         "party_id": user.party.id,
                         "display_name": user.display_name,
                         "is_active" : user.is_active,

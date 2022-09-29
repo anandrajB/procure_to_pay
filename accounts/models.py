@@ -139,7 +139,7 @@ class CounterParty(models.Model):
     country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING , blank=True, null=True)
     email = models.EmailField(unique=True)
     mobile = models.CharField(max_length=10)
-    onboarding = models.CharField(choices=choices, max_length=25)
+    onboarding = models.CharField(choices=choices, max_length=25 , blank=True, null=True)
     gst_no = models.CharField(max_length=18 , blank=True, null=True)
     pan_no = models.CharField(max_length=18 , blank=True, null=True)
     
