@@ -229,6 +229,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     phone = models.CharField(max_length=16, unique=True)
     email = models.EmailField(unique=True)
     party = models.ForeignKey(Parties,on_delete=models.CASCADE,blank=True, null=True)
+    counterparty = models.ForeignKey(CounterParty,on_delete=models.CASCADE,blank=True, null=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=255)

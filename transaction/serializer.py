@@ -675,7 +675,7 @@ class CounterPartySerializer(serializers.Serializer):
             party.save()
 
         # creating  a user 
-        User.objects.update_or_create(phone = counterparty_mobile , defaults = {'party' : obj , 'email' : counterparty_email} ) 
+        User.objects.update_or_create(phone = counterparty_mobile , defaults = {'party' : obj , 'counterparty' : obj2 , 'email' : counterparty_email} ) 
         # creating a pairing 
         obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
         'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,

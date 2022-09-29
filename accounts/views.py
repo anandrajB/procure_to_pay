@@ -237,6 +237,7 @@ class UserLoginView(CreateAPIView):
                         "party" : user.party.name,
                         "party_type" : user.party.party_type,
                         "status" : user.party.status,
+                        "onboarding" : user.counterparty.onboarding,
                         "party_id": user.party.id,
                         "display_name": user.display_name,
                         "is_active" : user.is_active,
