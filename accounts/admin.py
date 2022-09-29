@@ -44,6 +44,7 @@ class UserAdmin(admin.ModelAdmin):
         ('profile picture', {'fields': ('profile_tags',)}),
         ('Permissions', {'fields': ('is_active','is_supervisor', 'is_administrator',)}),
         ('Party', {'fields': ('party',)}),
+        ('CounterParty', {'fields': ('counterparty',)}),
         ('Important Dates', {'fields': ('last_login',)}),
     )
     filter_horizontal = (
