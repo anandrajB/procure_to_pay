@@ -3,16 +3,16 @@
 ```mermaid
   graph TD
       A[DRAFT] -->|submit's| B(SUBMIT)
-      B --> |customer submit's|C{bank}
+      B --> |buyer submit's|C{bank}
       C --> |bank approve's|D[APPROVE]
       C -->|bank can submit again| B[SUBMIT]
       C -->|bank reject's| F[REJECT]
       C --> |bank return's |E[RETURN]
       E --> A 
-      D --> G{customer }
-      G --> |customer accept's|H[ACCEPT]
-      G --> |customer reject's|I[REJECT]
-      G --> |customer return's|E
+      D --> G{BUYER }
+      G --> |buyer accept's|H[ACCEPT]
+      G --> |buyer reject's|I[REJECT]
+      G --> |buyer return's|E
       
 ```
 
