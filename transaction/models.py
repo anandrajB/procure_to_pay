@@ -239,6 +239,7 @@ class workflowitems(models.Model):
     program = models.OneToOneField(Programs, on_delete=models.CASCADE,blank=True, null=True)
     invoice = models.OneToOneField(Invoices,on_delete=models.CASCADE,blank=True, null=True)
     uploads = models.OneToOneField(Invoiceuploads,on_delete=models.CASCADE,blank=True, null=True)
+    counterparty = models.OneToOneField('accounts.CounterParty',on_delete =models.CASCADE , blank=True, null=True)
     initial_state = models.CharField(max_length=50, default=StateChoices.STATUS_DRAFT)
     interim_state = models.CharField(max_length=50, default=StateChoices.STATUS_DRAFT)
     final_state = models.CharField(max_length=50, default=StateChoices.STATUS_DRAFT)
