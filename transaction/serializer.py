@@ -663,10 +663,14 @@ class CounterPartySerializer(serializers.Serializer):
             obj , created  = Parties.objects.update_or_create( name = name , city = city.lower() ,  defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" }) 
             obj.customer_id = obj.id
+            if created:
+                obj.status = "NEW"
             obj.save()
             obj2 , created = CounterParty.objects.update_or_create(name = name, city = city.lower() , defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile , 'gst_no' : gst_no , 'pan_no' : pan_no})
-            # print(obj2)
+            if created:
+                obj.status = "DRAFT"
+            obj2.save()
         # DF AND RF PROGRAM 
         else:
             # print("working others")
