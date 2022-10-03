@@ -4,6 +4,7 @@ from transaction.custom_validators import (
     validate_file_extension , 
     validate_invoice_extension
 )
+from django.db.models import Q
 from rest_framework.validators import UniqueTogetherValidator
 from .models import (
     File,
@@ -831,6 +832,7 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
     program = serializers.PrimaryKeyRelatedField(queryset = Programs.objects.all() , source = 'workitems.program')
     invoice = serializers.PrimaryKeyRelatedField(queryset = Invoices.objects.all() , source = 'workitems.invoice')
     invoice_upload = serializers.PrimaryKeyRelatedField(queryset = Invoiceuploads.objects.all() , source = 'workitems.uploads')
+    counterparty = serializers.PrimaryKeyRelatedField(queryset = CounterParty.objects.all() , source = 'workitems.counterparty')
     status = serializers.SerializerMethodField()
     display_name = serializers.SerializerMethodField()
     record_datas = serializers.SerializerMethodField()
@@ -847,6 +849,7 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
             'program',
             'invoice_upload',
             'invoice',
+            'counterparty',
             'record_datas',
             'from_state',
             'to_state',
@@ -974,6 +977,7 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
             'program',
             'invoice', 
             'uploads',
+            'counterparty',
             'initial_state',
             'interim_state',
             'final_state',
@@ -997,13 +1001,15 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
     def get_record_datas(self,obj):
         try:
             
-            pair = Pairings.objects.filter(program_id = obj.program).values()
+            pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(counterparty_id = obj.counterparty.id)).values()
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "INVOICE":
                 qs = Invoices.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = obj.id).values()
+            elif obj.type == "COUNTERPARTY_ONBOARING":
+                qs = CounterParty.objects.filter(workflowitems = obj.id).values()
             return {"model": qs, "pairing": pair }
         except:
             return None
@@ -1057,14 +1063,16 @@ class WorkFlowitemsEnquirySerializer(serializers.ModelSerializer):
 
     def get_record_datas(self,obj):
         try:
-            pair = Pairings.objects.filter(program_id = obj.program).values()
+            pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(counterparty_id = obj.counterparty.id)).values()
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "INVOICE":
                 qs = Invoices.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = obj.id).values()
-            return {"model": qs, "pairing": pair}
+            elif obj.type == "COUNTERPARTY_ONBOARING":
+                qs = CounterParty.objects.filter(workflowitems = obj.id).values()
+            return {"model": qs, "pairing": pair }
         except:
             return None
 

@@ -9,7 +9,6 @@ from transaction.views import (
     WorkEventHistoryListAPI,
     
 )
-from transaction.api.CounterPartyAPI import CounterPartyMessageListApiViw
 
 # ------------------------------------------------------------------------------------------
 
@@ -24,6 +23,5 @@ urlpatterns = [
     path('draft/',DraftListApiview.as_view()),
     path('aw_ap/',AwaitingApprovalMessageApiView.as_view()),
     path('sent_awap/',SentAwaitingSignApiview.as_view()),
-    path('counterparty/',CounterPartyMessageListApiViw.as_view()),
     path('workflow-history/',WorkEventHistoryListAPI.as_view(),name='workflow_history'),
 ]

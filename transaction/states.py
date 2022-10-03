@@ -40,8 +40,16 @@ class StateChoices(TextChoices):
     SUBMIT = 'SUBMIT',_('SUBMIT')
     MAKER = 'MAKER',_('MAKER')
     INITIAL_STATE = 'INITIAL_STATE',_('INITIAL_STATE')
+    # counterparty
+    SENT_TO_BANK = 'SENT_TO_BANK',_('SENT_TO_BANK')
+    SENT_TO_COUNTERPARTY = 'SENT_TO_COUNTERPARTY',_('SENT_TO_COUNTERPARTY')
+    # party
+    NEW = 'NEW',_('NEW')
+    IN_PROGRESS = 'IN_PROGRESS',_('IN_PROGRESS')
+    ONBOARDED = 'ONBOARDED',_('ONBOARDED')
+    DEACTIVATED = 'DEACTIVATED',_('DEACTIVATED')
+
     # end of action
     NONE = 'NONE',_('NONE')
-
 
 

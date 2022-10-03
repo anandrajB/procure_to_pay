@@ -1,5 +1,5 @@
 from django.urls import path, include
-from transaction.api.CounterPartyAPI import CounterPartyTransitionAPIView
+from transaction.api.CounterPartyAPI import CounterPartyTransitionAPIView, CounterPartyTransitionApiCoreView
 from transaction.api.InvoiceTransition import (
     InvoiceOverdueTransitionApi,
     InvoiceSettleTransitionApi,
@@ -119,5 +119,5 @@ urlpatterns = [
     path('invoiceupload/transition/return/<int:pk>/',InvoiceUploadReturnTransitionview.as_view(), name='invoice-upload-return'),
     
     # COUNTERPARTY TRANSITION
-    path('counterparty/transition/<int:pk>/',CounterPartyTransitionAPIView.as_view(), name='counterparty')
+    path('counterparty/transition/<int:pk>/',CounterPartyTransitionApiCoreView.as_view(), name='counterparty')
 ]   
