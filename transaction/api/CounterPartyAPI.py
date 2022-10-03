@@ -78,7 +78,6 @@ class counterpartymessageserializer(serializers.ModelSerializer):
     def get_wf_item_id(self,obj):
         return obj.id
 
-
     def get_record_datas(self,obj):
         try:
             pair = Pairings.objects.filter(counterparty_id = obj.counterparty.id).values()
