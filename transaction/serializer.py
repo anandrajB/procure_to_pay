@@ -850,7 +850,6 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
             'invoice_upload',
             'invoice',
             'counterparty',
-            'record_datas',
             'from_state',
             'to_state',
             'created_by',
@@ -864,7 +863,8 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
             'next_transition',
             'display_name',
             'status',
-            'created_date'
+            'created_date',
+            'record_datas'
         ]
 
     def get_created_by(self,obj):
@@ -873,7 +873,7 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
     
     def get_record_datas(self,obj):
         try:
-            pair = Pairings.objects.filter(program_id = obj.workitems.program).values()
+            pair = Pairings.objects.filter(Q(program_id = obj.workitems.program)| Q(counterparty_id = obj.workitems.counterparty.id)).values()
             item_id = obj.workitems
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = item_id).values()
@@ -881,7 +881,9 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
                 qs = Invoices.objects.filter(workflowitems = item_id).values()
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = item_id).values()
-            return {"model": qs, "pairing": pair}
+            elif obj.type == "COUNTERPARTY_ONBOARING":
+                qs = CounterParty.objects.filter(workflowitems = item_id).values()
+            return {"model": qs, "pairing": pair }
         except:
             return None
 
@@ -987,20 +989,17 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
             'user',
             'created_date',
             'action',
-            'record_datas',
             'type',
             'subaction',
             'previous_action',
-
+            'record_datas'
         ]
 
     def get_wf_item_id(self,obj):
         return obj.id
 
-
     def get_record_datas(self,obj):
         try:
-            
             pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(counterparty_id = obj.counterparty.id)).values()
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = obj.id).values()

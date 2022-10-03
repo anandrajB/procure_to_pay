@@ -270,7 +270,8 @@ class InboxListApiview(APIView, PageNumberPagination):
                 interim_state='FINANCED'), current_to_party__name__contains=user.party.name, type="INVOICE").order_by('created_date')
         
         elif record_type == "COUNTERPARTY_ONBOARING":
-            queryset = workflowitems.objects.filter(interim_state = "testing",type="COUNTERPARTY_ONBOARING").order_by('created_date')
+            queryset = workflowitems.objects.filter(final_state='SENT_TO_BANK',type="COUNTERPARTY_ONBOARING").order_by('created_date')
+        
         elif record_type == "AW_SIGN":
             queryset = workflowitems.objects.filter(current_from_party__name__contains=request.user.party.name, next_available_transitions__isnull='')
 
@@ -306,7 +307,7 @@ class SentListApiview(APIView, PageNumberPagination):
                 interim_state='FINANCED'), from_party__name__contains=user.party.name, type='INVOICE',  final="YES").order_by('created_date')
         
         elif record_type == "COUNTERPARTY_ONBOARING":
-            queryset = workevents.objects.filter(Q(interim_state='FINANCE_REQUESTED') | Q(interim_state='FINANCE_REJECTED') | Q(
+            queryset = workevents.objects.filter(Q(initial_state ='SENT_TO_BANK') | Q(interim_state='FINANCE_REJECTED') | Q(
                 interim_state='FINANCED'), from_party__name__contains=user.party.name, type='COUNTERPARTY_ONBOARING').order_by('created_date')
         
         return queryset.filter(from_party__name__contains=user.party.name, final="YES").exclude(interim_state='DRAFT').order_by('created_date')
