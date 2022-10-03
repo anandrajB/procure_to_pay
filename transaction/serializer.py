@@ -669,7 +669,7 @@ class CounterPartySerializer(serializers.Serializer):
             # print(obj2)
         # DF AND RF PROGRAM 
         else:
-            print("working others")
+            # print("working others")
             party = Parties.objects.create(customer_id = None , name = name , base_currency = base_currency ,
             address_line_1 = address_line , address_line_2 = address_line, city = city , state = state , zipcode = zipcode, country_code = country_code , party_type = "BUYER" ,**validated_data)
             party.save()
