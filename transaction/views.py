@@ -480,7 +480,7 @@ class CounterPartyApiview(APIView):
     def post(self, request):
         serializer = CounterPartySerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user = self.request.user)
             return Response({"Status": "Success", }, status=status.HTTP_201_CREATED)
         return Response({"Status": "Failed", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
