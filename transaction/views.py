@@ -270,7 +270,7 @@ class InboxListApiview(APIView, PageNumberPagination):
                 interim_state='FINANCED'), current_to_party__name__contains=user.party.name, type="INVOICE").order_by('created_date')
         
         elif record_type == "COUNTERPARTY_ONBOARING":
-            queryset = workflowitems.objects.filter(final_state='SENT_TO_BANK',type="COUNTERPARTY_ONBOARING").order_by('created_date')
+            queryset = workflowitems.objects.filter(current_to_party__name__contains=user.party.name ,interim_state='SENT_TO_BANK',type="COUNTERPARTY_ONBOARING").order_by('created_date')
         
         elif record_type == "AW_SIGN":
             queryset = workflowitems.objects.filter(current_from_party__name__contains=request.user.party.name, next_available_transitions__isnull='')
