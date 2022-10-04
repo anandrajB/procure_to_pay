@@ -619,7 +619,7 @@ class CounterPartySerializer(serializers.Serializer):
     program_type = serializers.CharField(required = False)
     gst_no = serializers.CharField(required = False , default = None)
     pan_no = serializers.CharField(required = False , default = None)
-    user = serializers.PrimaryKeyRelatedField(queryset = User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset = User.objects.all() , required = False)
     
     # class Meta:
     #     model = CounterParty
