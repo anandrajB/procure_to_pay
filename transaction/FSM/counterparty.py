@@ -41,7 +41,7 @@ class CounterPartyFlow(object):
         
         self.workflowitems.final_state = StateChoices.STATUS_COMPLETED
         self.workflowitems.interim_state = StateChoices.STATUS_DRAFT
-        Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.NEW)
+        Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.IN_PROGRESS)
         self.workflowitems.counterparty.onboarding = StateChoices.STATUS_DRAFT
         self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
         cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,comments = self.workflowitems.comments,
