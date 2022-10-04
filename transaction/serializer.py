@@ -675,14 +675,15 @@ class CounterPartySerializer(serializers.Serializer):
             obj2 , created = CounterParty.objects.update_or_create(name = name, city = city.lower() , defaults = {'customer_id': obj.id,  'address': address_line, 'city': city,
             'country_code': country_code ,'email': counterparty_email, 'mobile': counterparty_mobile , 'gst_no' : gst_no , 'pan_no' : pan_no})
             if created:
-                obj2.onboarding = StateChoices.STATUS_DRAFT
+                # obj2.onboarding = StateChoices.STATUS_DRAFT
                 #   WF WE creation process
                 wf = workflowitems.objects.create(counterparty = obj2 ,initial_state = StateChoices.STATUS_DRAFT , interim_state = StateChoices.STATUS_DRAFT ,
-                    final_state = StateChoices.STATUS_COMPLETED , user = user , current_from_party =  user.party , current_to_party = user.party  , type="COUNTERPARTY_ONBOARING")
-                we = workevents.objects.create(workitems=wf, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,
-                    comments = comments,interim_state=StateChoices.STATUS_DRAFT, from_party= user.party, to_party= user.party)
+                    final_state = StateChoices.STATUS_DRAFT , user = user , current_from_party =  user.party , current_to_party = user.party  , type="COUNTERPARTY_ONBOARING")
                 wf.save()
-                we.save()
+                # we = workevents.objects.create(workitems=wf, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,
+                #     comments = comments,interim_state=StateChoices.STATUS_DRAFT, from_party= user.party, to_party= user.party)
+                # wf.save()
+                # we.save()
                 # end of wf we
             obj2.save()
             
