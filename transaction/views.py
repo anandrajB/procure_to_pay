@@ -2,7 +2,8 @@ from rest_framework.pagination import PageNumberPagination
 from accounts.models import CounterParty, Currencies, Parties
 import datetime
 from accounts.permission.base_permission import Is_Buyer, Is_Bank
-from transaction.FSM.invoice_bank import InvoiceBankFlow 
+from transaction.FSM.invoice_bank import InvoiceBankFlow
+from transaction.states import StateChoices 
 from .models import (
     File,
     InterestChoice,
@@ -270,12 +271,13 @@ class InboxListApiview(APIView, PageNumberPagination):
                 interim_state='FINANCED'), current_to_party__name__contains=user.party.name, type="INVOICE").order_by('created_date')
         
         elif record_type == "COUNTERPARTY_ONBOARING":
-            queryset = workflowitems.objects.filter(current_to_party__name__contains=user.party.name ,interim_state='SENT_TO_BANK',type="COUNTERPARTY_ONBOARING").order_by('created_date')
+            queryset = workflowitems.objects.filter(Q(interim_state= StateChoices.SENT_TO_BANK) | Q(interim_state= StateChoices.STATUS_REJECTED) 
+            | Q(interim_state= StateChoices.STATUS_COMPLETED ),current_to_party__name__contains=user.party.name ,type="COUNTERPARTY_ONBOARING").order_by('created_date')
         
         elif record_type == "AW_SIGN":
             queryset = workflowitems.objects.filter(current_from_party__name__contains=request.user.party.name, next_available_transitions__isnull='')
 
-        return queryset.filter(current_to_party__name__contains=user.party.name).exclude(Q(interim_state='DRAFT') | Q(interim_state='COMPLETED')).order_by('created_date')
+        return queryset.filter(current_to_party__name__contains=user.party.name).exclude(interim_state='DRAFT').order_by('created_date')
 
     def get(self, request, *args, **kwargs):
         datas = self.get_queryset(request)
@@ -307,8 +309,7 @@ class SentListApiview(APIView, PageNumberPagination):
                 interim_state='FINANCED'), from_party__name__contains=user.party.name, type='INVOICE',  final="YES").order_by('created_date')
         
         elif record_type == "COUNTERPARTY_ONBOARING":
-            queryset = workevents.objects.filter(Q(initial_state ='SENT_TO_BANK') | Q(interim_state='FINANCE_REJECTED') | Q(
-                interim_state='FINANCED'), from_party__name__contains=user.party.name, type='COUNTERPARTY_ONBOARING').order_by('created_date')
+            queryset = workevents.objects.filter(interim_state = StateChoices.SENT_TO_COUNTERPARTY , type='COUNTERPARTY_ONBOARING').order_by('created_date')
         
         return queryset.filter(from_party__name__contains=user.party.name, final="YES").exclude(interim_state='DRAFT').order_by('created_date')
 
