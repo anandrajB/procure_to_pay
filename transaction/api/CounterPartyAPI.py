@@ -115,7 +115,7 @@ class CounterPartyTransitionApiCoreView(APIView):
             obj.save()
             return Response({"status": "success", "data": "success"},status= status.HTTP_200_OK)
         if type == "sent_to_counterparty":
-            flow.sent_to_bank(request)
+            flow.sent_to_counterparty(request)
             obj.save()
             return Response({"status": "success", "data": "success"},status= status.HTTP_200_OK)
         if type == "complete":
