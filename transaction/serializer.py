@@ -745,7 +745,6 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
     pairing_details = serializers.SerializerMethodField()
     attachments = serializers.SerializerMethodField()
     buyer_details = serializers.SerializerMethodField()
-    wf_item_id = serializers.SerializerMethodField()
 
     class Meta:
         model = CounterParty
@@ -760,7 +759,6 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
             'country_code',
             'gst_no',
             'pan_no',
-            'wf_item_id',
             'pairings', 
             'attachments',
             'user_detail',
@@ -769,10 +767,7 @@ class CounterPartyListSerializer(serializers.ModelSerializer):
         ]
 
     
-    def get_wf_item_id(self,obj):
-        try:
-            return obj.workflowitems.id
-        except: pass
+   
 
     def get_pairing_details(self,obj):
         try:

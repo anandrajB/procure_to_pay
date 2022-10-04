@@ -317,6 +317,7 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
     # user_detail = serializers.SerializerMethodField()
     buyer_details = serializers.SerializerMethodField()
     pairings_details = serializers.SerializerMethodField()
+    wf_item_id = serializers.SerializerMethodField()
 
     class Meta:
         model = CounterParty
@@ -334,6 +335,7 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
             'gst_no',
             'pan_no',
             # 'user_detail',
+            'wf_item_id',
             'buyer_details',
             'pairings_details'
         ]
@@ -344,6 +346,10 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
     #         return {"user_email": user_Data.email, "user_phone": user_Data.phone}
     #     except:
     #         return None
+    def get_wf_item_id(self,obj):
+        try:
+            return obj.workflowitems.id
+        except: pass
 
     def get_buyer_details(self,obj):
         try:
