@@ -380,8 +380,8 @@ class CounterpartyUpdateSerializer(serializers.Serializer):
     ]
 
     onboarding = serializers.ChoiceField( choices = ON_BOARDING_STATUS , required = False)
-    gst_no = serializers.CharField(required = False)
-    pan_no = serializers.CharField(required = False)
+    gst_no = serializers.CharField()
+    pan_no = serializers.CharField()
 
     def update(self, instance, validated_data):
             # instance.name = validated_data.get('name', instance.name)
