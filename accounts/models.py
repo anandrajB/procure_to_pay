@@ -382,5 +382,32 @@ class userprocessauth(models.Model):
 
 
 
+#  MISC FOR SIGNUP_PROCESS ( 3RD PARTY ) MISC
 
 
+class signupprocess(models.Model):
+    
+    party_type_choices = [
+    ('BUYER','BUYER'),
+    ]
+
+    STATUS_CHOICES = [
+    ('NONE','NONE'),
+    ('NEW','NEW'),
+    ('IN_PROGRESS','IN_PROGRESS'),
+    ('ONBOARDED','ONBOARDED'),
+    ('DEACTIVATED','DEACTIVATED'),
+    ]
+
+    account_number = models.BigIntegerField(blank=True, null=True)
+    customer_id = models.BigIntegerField(blank=True, null=True)
+    name = models.CharField(max_length=100)
+    base_currency  = models.ForeignKey(Currencies,on_delete=models.CASCADE , blank=True, null=True)
+    address = models.CharField(max_length=35 , blank=True, null=True)
+    city = models.CharField(max_length=35)
+    state = models.CharField(max_length=35)
+    zipcode = models.CharField(max_length=6 , blank=True, null=True)
+    country_code = models.ForeignKey(Countries,on_delete=models.DO_NOTHING , blank=True, null=True)
+    onboarded = models.BooleanField(default=False)
+    party_type = models.CharField(default = "BUYER", max_length=25 , blank=True, null=True)
+    status = models.CharField(choices = STATUS_CHOICES ,  max_length=255 , blank=True, null=True)

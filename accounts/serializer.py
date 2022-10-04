@@ -11,7 +11,8 @@ from .models import (
     Parties, 
     CounterParty, 
     PhoneOTP, 
-    signatures, 
+    signatures,
+    signupprocess, 
     userprocessauth,
     Models , 
 )  
@@ -471,3 +472,45 @@ class PartieSearchserializer(serializers.ModelSerializer):
     class Meta:
         model = Parties
         fields = ['account_number', 'customer_id']
+
+
+
+
+#  MISC FOR SIGNUPO_PROCESS
+
+
+class SignupProcessSerializer(serializers.Serializer):
+    account_number = serializers.CharField(required = False )
+    customer_id = serializers.CharField(required = False)
+    name = serializers.CharField()
+    city = serializers.CharField()
+    currency = serializers.PrimaryKeyRelatedField(queryset = Currencies.objects.all())
+    country = serializers.PrimaryKeyRelatedField(queryset = Countries.objects.all())
+    zipcode = serializers.CharField()
+    party = serializers.PrimaryKeyRelatedField(queryset = Parties.objects.all().filter(party_type = "BUYER") , required = False )
+    address = serializers.CharField()
+    state = serializers.CharField()
+    email = serializers.EmailField(required = False)
+    phone = serializers.IntegerField(required =  False)
+
+    def create(self , validated_data):
+        account_number = validated_data.pop('account_number')
+        customer_id = validated_data.pop('customer_id')
+        name = validated_data.pop('name')
+        city = validated_data.pop('city')
+        country = validated_data.pop('country')
+        currency = validated_data.pop('currency')
+        zipcode = validated_data.pop('zipcode')
+        party = validated_data.pop('party')
+        address = validated_data.pop('address')
+        state = validated_data.pop('state')
+        email = validated_data.pop('email')
+        phone = validated_data.pop('phone')
+
+        signupprocess.objects.update_or_create(account_number = account_number, address = address, state = state ,
+                    customer_id = customer_id , name = name, currency = currency , country = country ,
+                    zipcode = zipcode  , city = city )
+        obj , created = Parties.objects.get_or_create( name = name , city = city.lower() , account_number = account_number  , customer_id = customer_id ,
+        defaults = { 'base_currency' : currency ,'address_line_1' : address , 'address_line_2' : address, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country , 'party_type' : "BUYER" })
+        User.objects.create(phone = phone , party = obj , email = email)
+        # creating a pairing 

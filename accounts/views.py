@@ -21,7 +21,8 @@ from accounts.models import (
     Parties, 
     CounterParty,
     PhoneOTP, 
-    signatures, 
+    signatures,
+    signupprocess, 
     userprocessauth
 )
 from accounts.email import email_to
@@ -37,6 +38,7 @@ from .serializer import (
     PartieSearchserializer,
     PartiesSignupSerailizer,
     PartyStatusUpdateserializer,
+    SignupProcessSerializer,
     UserSignupSerializer,
     UserSignupSerializer,
     LoginSerializer,
@@ -127,8 +129,11 @@ class PartiesSignupApiview(ListAPIView):
     
     def get_queryset(self):
         party_name = self.request.query_params.get("party_name",None)
+        party_type = self.request.query_params.get("party_type",None)
         if party_name :
             queryset = Parties.objects.filter(name__icontains = party_name )
+        elif party_type:
+            queryset = Parties.objects.filter(party_type = party_type.upper())
         else:
             queryset = Parties.objects.all().order_by('id')    
         return queryset
@@ -782,3 +787,24 @@ class PartiesCheckApiView(APIView):
             return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
         else:
             return Response({"Status": "Failure", "data": "No party found in this customer_id / account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
+
+
+
+#  MISC FOR SIGNUP PROCESS
+
+
+
+class SignupProcessCreateApiView(APIView):
+    queryset = signupprocess.objects.all()
+    serializer_class = SignupProcessSerializer
+    permission_classes = [IsAuthenticated]
+
+
+    def post(self, request):
+        serializer = SignupProcessSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"Status": "success", "data": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response({"status": "Failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+
