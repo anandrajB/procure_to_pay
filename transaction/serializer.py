@@ -678,7 +678,7 @@ class CounterPartySerializer(serializers.Serializer):
                 # obj2.onboarding = StateChoices.STATUS_DRAFT
                 #   WF WE creation process
                 wf = workflowitems.objects.create(counterparty = obj2 ,initial_state = StateChoices.STATUS_DRAFT , interim_state = StateChoices.STATUS_DRAFT ,
-                    final_state = StateChoices.STATUS_DRAFT , user = user , current_from_party =  user.party , current_to_party = user.party  , type="COUNTERPARTY_ONBOARING")
+                    final_state = StateChoices.STATUS_DRAFT , user = user , current_from_party = obj , current_to_party = obj  , type="COUNTERPARTY_ONBOARING")
                 wf.save()
                 # we = workevents.objects.create(workitems=wf, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,
                 #     comments = comments,interim_state=StateChoices.STATUS_DRAFT, from_party= user.party, to_party= user.party)
