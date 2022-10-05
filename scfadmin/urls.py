@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
 from rest_framework_swagger.views import get_swagger_view
-from accounts.views import index , endpoint
+from accounts.views import index , endpoint , description
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -14,7 +14,7 @@ schema_view = get_swagger_view(title='SCF API DOCUMENTATION')
 
 urlpatterns = [
     path('',index,name='home-page'),
-    path('description',index,name='description'),
+    path('description',description,name='description'),
     path('api-urls/',endpoint ,name = 'api-end-points'),
     path('admin/', admin.site.urls,),
     path('rest-auth-client/',include('rest_framework.urls')),

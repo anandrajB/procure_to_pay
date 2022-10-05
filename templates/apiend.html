@@ -15,8 +15,9 @@
           <ul class="lists bottom-line">
             <li><a href="/api-auth/login">Login</a></li>
             <li><a href="/api-auth/logout">Logout</a></li>
+            <li><a href="/api-auth/profile">Profile</a></li>
             <li><a href="/api-auth/signup">signup</a></li>
-            <li><a href="/api-auth/user">user</a></li>
+            <li><a href="/api-auth/user">users</a></li>
             <li><a href="/api-auth/inactive_user">inactive-user</a></li>
             <li><a href="/api-auth/otp">otp sending</a></li>
             <li><a href="/api-auth/otp-v/?email=xyz@gmail.com&phone=9000">otp-verify</a></li>
@@ -32,6 +33,7 @@
           <h5 class="card-title h3 mb-3">PARTY</h5>
           <ul class="lists bottom-line">
             <li><a href="/api-auth/party">Party</a></li>
+            <li><a href="/api-auth/party-check">Party-check</a></li>
             <li><a href="/api-auth/bank">Bank</a></li>
             <li><a href="/api-auth/currency">currency</a></li>
             <li><a href="/api-auth/country">country</a></li>
@@ -78,6 +80,7 @@
              <li><a href="/api/invoice/transition/settle/1/">invoice_settle</a></li>
              <li><a href="/api/invoice/transition/overdue/1/">invoice_overdue</a></li>
              <li><a href="/api/invoice/transition/return/1/">invoice_return</a></li>
+             <li><a href="/api/counterparty/transition/1/">counterparty_transition</a></li>
            </ul>
          </div>
        </div>
@@ -89,13 +92,13 @@
           <h5 class="card-title h3 mb-3">INBOX</h5>
           <ul class="lists bottom-line">
             <li><a href="/api/messages/inbox/">Inbox</a></li>
-            <li><a href="/api/messages/inbox/?record_type=PROGRAM">Inbox-program</a></li>
-            <li><a href="/api/messages/inbox/?record_type=INVOICE">Inbox-finance-request</a></li>
-            <li><a href="/api/messages/inbox/?record_type=INVOICE_UPLOAD">Inbox-invoice</a></li>
-            <li><a href="/api/messages/inbox/?record_type=AW_AP">Inbox-awaiting-approval</a></li>
             <li><a href="/api/messages/workflow-history/?wf-item=1">workflow-History-list</a></li>
-            <li><a href="/api/messages/draft">draft</a></li>
-            <li><a href="/api/messages/sent">sent</a></li>
+            <li><a href="/api/messages/draft/">draft</a></li>
+            <li><a href="/api/messages/sent/">sent</a></li>
+            <li><a href="/api/messages/aw_ap/">awaiting approval</a></li>
+            <li><a href="/api/messages/sent_awap/">sent_for_awaiting approval</a></li>
+            <li><a href="/api/enquiry/">enquiry</a></li>
+            <li><a href="/api/notification/">Message count</a></li>
           </ul>
         </div>
       </div>
@@ -106,7 +109,9 @@
         <div class="card-body">
         <h5 class="card-title h3 mb-3">OTHERS</h5>
         <ul class="lists bottom-line">
-          <li><a href="/graphql">Graph_QL</a></li> 
+          <li><a href="/graphql/">Graph_QL</a></li> 
+          <li><a href="/api/file/">Attachments</a></li> 
+          <li><a href="/choices/">Choices</a></li>
         </ul>
       </div>
     </div>

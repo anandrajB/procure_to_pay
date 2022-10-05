@@ -83,6 +83,10 @@ def index(request):
     return render(request,'index.html')
 
 
+def description(request):
+    return render(request,'description.html')
+
+
 # CUSTOM 404 PAGE ( USE IN PRODUCTION  )
 def error_404_view(request, exception):
     return render(request,'404.html')
