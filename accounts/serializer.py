@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from transaction.models import (
+    File,
     Pairings,
     Programs
 )
@@ -321,6 +322,7 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
     buyer_details = serializers.SerializerMethodField()
     pairings_details = serializers.SerializerMethodField()
     wf_item_id = serializers.SerializerMethodField()
+    attachments = serializers.SerializerMethodField()
 
     class Meta:
         model = CounterParty
@@ -340,7 +342,8 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
             # 'user_detail',
             'wf_item_id',
             'buyer_details',
-            'pairings_details'
+            'pairings_details',
+            'attachments'
         ]
 
     # def get_user_detail(self,obj):
@@ -353,6 +356,13 @@ class CounterpartyCreateSerializer(serializers.ModelSerializer):
         try:
             return obj.workflowitems.id
         except: pass
+    
+    def get_attachments(self,obj):
+        try:
+            files = File.objects.filter(pairing = obj.id).values()
+            return {"file":files}
+        except:
+            return None
 
     def get_buyer_details(self,obj):
         try:
