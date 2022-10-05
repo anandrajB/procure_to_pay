@@ -60,6 +60,7 @@ class partieserializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
+            'account_number',
             'customer_id',
             'address_line_1',
             'address_line_2',
@@ -84,6 +85,7 @@ class PartiesSignupSerailizer(serializers.ModelSerializer):
         model = Parties
         fields = '__all__'
         extra_kwargs = {
+        'account_number': {'required': False, 'default': None},
         "customer_id" : {"required": False , "default" : None},
 		"address_line_1": {"required": False},
         "address_line_2": {"required": False},
