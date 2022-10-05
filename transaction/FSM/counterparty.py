@@ -132,10 +132,12 @@ class CounterPartyFlow(object):
         self.workflowitems.final_state = StateChoices.STATUS_COMPLETED
         self.workflowitems.interim_state = StateChoices.STATUS_COMPLETED
         self.workflowitems.current_from_party = self.bank
-        self.workflowitems.current_to_party = user.party
+        cs = CounterParty.objects.get(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city)
+        cs.onboarding = StateChoices.STATUS_COMPLETED
+        cs.save()
+        self.workflowitems.current_to_party = cs
         Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.ONBOARDED)
-        CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.STATUS_COMPLETED)
-        cs = workevents.objects.create(workitems=ws, from_state=StateChoices.SENT_TO_BANK, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,comments = self.workflowitems.comments,
+        we = workevents.objects.create(workitems=ws, from_state=StateChoices.SENT_TO_BANK, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,comments = self.workflowitems.comments,
                                   interim_state=StateChoices.STATUS_COMPLETED ,from_party = self.bank , to_party= user.party)
         # to_party goes to bank
-        cs.save()
+        we.save()
