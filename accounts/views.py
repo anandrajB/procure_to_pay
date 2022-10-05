@@ -785,10 +785,14 @@ class PartiesCheckApiView(APIView):
         customer_id = request.data.get("customer_id")
         if customer_id:
             party = Parties.objects.filter(customer_id=customer_id).values()
-            return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+            if party:
+                return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+            return Response({"Status": "Failure", "data": "No party found in this customer_id"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         elif account_number :
             party = Parties.objects.filter(account_number=account_number).values()
-            return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+            if party:
+                return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+            return Response({"Status": "Failure", "data": "No party found in this account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         else:
             return Response({"Status": "Failure", "data": "No party found in this customer_id / account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
