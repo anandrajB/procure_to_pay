@@ -277,7 +277,7 @@ class InboxListApiview(APIView, PageNumberPagination):
         elif record_type == "AW_SIGN":
             queryset = workflowitems.objects.filter(current_from_party__name__contains=request.user.party.name, next_available_transitions__isnull='')
 
-        return queryset.filter(current_to_party__name__contains=user.party.name).exclude(interim_state='DRAFT').order_by('created_date')
+        return queryset.filter(current_to_party__name__contains=user.party.name).exclude(Q(interim_state='DRAFT')|Q(interim_state = StateChoices.STATUS_COMPLETED)).order_by('created_date')
 
     def get(self, request, *args, **kwargs):
         datas = self.get_queryset(request)
@@ -660,12 +660,18 @@ class WorkFlowItemUpdateApi(RetrieveUpdateAPIView):
     def update(self, request, pk=None):
         queryset = workflowitems.objects.all()
         state = request.data.get('state')
+        interest_rate = request.data.get('interest_rate',None)
+        interest_amount = request.data.get('interest_amount',None)
+        financed_amount = request.data.get('financed_amount',None)
+        settlement_amount = request.data.get('settlement_amount',None)
         user = get_object_or_404(queryset, pk=pk)
         serializer = Workitemserializer(user, data=request.data)
+    
         if serializer.is_valid():
             serializer.save()
             obj = generics.get_object_or_404(queryset, id=serializer.data['id'])
             flow = InvoiceBankFlow(obj)
+            # obj.invoice.interest_rate , obj.invoice.financed_amount = interest_rate , financed_amount
             if state == "FINANCED":
                 flow.approve_invoice(request)
                 obj.save()
