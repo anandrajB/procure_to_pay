@@ -105,6 +105,7 @@ class CounterPartyTransitionApiCoreView(APIView):
     def post(self, request, pk, *args, **kwargs):
         obj = generics.get_object_or_404(workflowitems, id=pk)
         type = self.request.query_params.get('type')
+        obj.user = self.request.user
         flow = CounterPartyFlow(obj)
         if type == "draft" :
             flow.Draft_flow(request)
