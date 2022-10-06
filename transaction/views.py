@@ -55,7 +55,8 @@ from .serializer import (
 from .query import (
     gets_currencies,
     gets_pairings,
-    gets_party
+    gets_party,
+    gets_party_id
 )
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
@@ -102,8 +103,8 @@ class ProgramCreateApiView(ListCreateAPIView):
         party = request.data.get('party')
         serializer = Programcreateserializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(from_party= party , user=user,
-                            to_party= party, event_user=user, party= party)
+            serializer.save(from_party= gets_party_id(party) , user=user,
+                            to_party= gets_party_id(party), event_user=user, party = gets_party_id(party))
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response({"status": "failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
