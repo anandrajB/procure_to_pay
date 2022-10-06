@@ -801,7 +801,7 @@ class PartiesCheckApiView(APIView):
             # 3rd party bank -> parties table creation
             if party2.exists():
                 instance = signupprocess.objects.get(account_number = account_number)
-                extra_kwargs = model_to_dict(instance, exclude=['id'])
+                extra_kwargs = model_to_dict(instance, exclude=['id','email','phone'])
                 obj , created = Parties.objects.update_or_create(account_number = account_number , defaults={**extra_kwargs})
                 User.objects.update_or_create(party = obj , email = instance.email , phone = instance.phone)
             if party1.exists() or party2.exists():
@@ -813,7 +813,7 @@ class PartiesCheckApiView(APIView):
             # 3rd party bank -> parties table creation
             if party2.exists():
                 instance = signupprocess.objects.get(account_number = account_number , customer_id = customer_id)
-                extra_kwargs = model_to_dict(instance, exclude=['id'])
+                extra_kwargs = model_to_dict(instance, exclude=['id','email','phone'])
                 obj , created = Parties.objects.update_or_create(account_number = account_number, customer_id = customer_id , defaults={**extra_kwargs})
                 User.objects.update_or_create(party = obj , email = instance.email , phone = instance.phone)
             if party1.exists() or party2.exists():
