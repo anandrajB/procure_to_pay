@@ -89,20 +89,37 @@
 
 
 
-
-
-#### ***NOTE 1*** : The ** indicated one are important and required commands
-
-#### ***NOTE 2*** : Before running this project , check [PRODUCTION.md](https://github.com/venzo-tech/scfbackend/blob/master/PRODUCTION.md) file
-
-
-
 ## WORKING ENVIRONMENTS
 
 - [TESTING](http://venzoscf.herokuapp.com)
 
 - [PRODUCTION](http://167.71.238.26/)
 
+
+## Environment Variables
+
+- To run this project, you will need to add the following environment variables to your .env file
+- Modify the following environment variables for your database setup
+
+    - `ENGINE`
+    - `NAME`
+    - `USER`
+    - `PASSWORD`
+    - `HOST` 
+
+- #### example 
+```
+DATABASES = {
+    'default': {
+        'ENGINE': 'django_tenants.postgresql_backend',
+        'NAME': 'name',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+```
 
 
 ## SUPPORTED VERSIONS
@@ -118,3 +135,10 @@
 - [@anandrajB](https://github.com/anandrajB)
 - [@Mohamed-Sheik-Ali](https://github.com/Mohamed-Sheik-Ali)
 
+
+
+## Appendix
+
+#### ***NOTE 1*** : The ** indicated one are important and required commands
+
+#### ***NOTE 2*** : Before running this project , check [PRODUCTION.md](https://github.com/venzo-tech/scfbackend/blob/master/PRODUCTION.md) file
