@@ -114,11 +114,11 @@ class CounterPartyTransitionApiCoreView(APIView):
         if type == "sent_to_bank":
             flow.sent_to_bank(request)
             obj.save()
-            return Response({"status": "success", "data": "success"},status= status.HTTP_200_OK)
+            return Response({"status": "success", "data": "sent to bank"},status= status.HTTP_200_OK)
         if type == "sent_to_counterparty":
             flow.sent_to_counterparty(request)
             obj.save()
-            return Response({"status": "success", "data": "success"},status= status.HTTP_200_OK)
+            return Response({"status": "success", "data": "sent to counterparty"},status= status.HTTP_200_OK)
         if type == "complete":
             flow.complete(request)
             obj.save()
@@ -126,7 +126,7 @@ class CounterPartyTransitionApiCoreView(APIView):
         if type == "reject":
             flow.reject(request)
             obj.save()
-            return Response({"status": "success",  "data": "success"},status= status.HTTP_200_OK)
+            return Response({"status": "success",  "data": "rejected"},status= status.HTTP_200_OK)
 
         return Response({"status": "failure", "data": "success"},status= status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
