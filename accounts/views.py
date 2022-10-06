@@ -25,6 +25,7 @@ from accounts.models import (
     signupprocess, 
     userprocessauth
 )
+from django.forms import model_to_dict
 from accounts.email import email_to
 from .serializer import (
     Actionserializer,
@@ -784,14 +785,36 @@ class PartiesCheckApiView(APIView):
         account_number = request.data.get("account_number")
         customer_id = request.data.get("customer_id")
         if customer_id:
-            party = Parties.objects.filter(customer_id=customer_id).values()
-            if party:
-                return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+            party1 = Parties.objects.filter(customer_id=customer_id).values()
+            party2 = signupprocess.objects.filter(customer_id = customer_id).values()
+            if party2.exists():
+                instance = signupprocess.objects.get(customer_id = customer_id)
+                extra_kwargs = model_to_dict(instance, exclude=['id'])
+                Parties.objects.update_or_create(customer_id = customer_id , defaults={**extra_kwargs})
+            if party1.exists() or party2.exists():
+                return Response({"Status": "Success", "data": party1.values() or party2.values() , "detail" : "your company is already signed-up, please login with the registered email id or mobile number"}, status=status.HTTP_200_OK)
             return Response({"Status": "Failure", "data": "No party found in this customer_id"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         elif account_number :
-            party = Parties.objects.filter(account_number=account_number).values()
-            if party:
-                return Response({"Status": "Success", "data": party}, status=status.HTTP_200_OK)
+            party1 = Parties.objects.filter(account_number=account_number)
+            party2 = signupprocess.objects.filter(account_number=account_number)
+            # 3rd party bank -> parties table creation
+            if party2.exists():
+                instance = signupprocess.objects.get(account_number = account_number)
+                extra_kwargs = model_to_dict(instance, exclude=['id'])
+                Parties.objects.update_or_create(account_number = account_number , defaults={**extra_kwargs})
+            if party1.exists() or party2.exists():
+                return Response({"Status": "Success", "data": party1.values() or party2.values() , "detail" : "your company is already signed-up, please login with the registered email id or mobile number"}, status=status.HTTP_200_OK)
+            return Response({"Status": "Failure", "data": "No party found in this account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
+        elif customer_id and account_number:
+            party1 = Parties.objects.filter(account_number=account_number , customer_id = customer_id)
+            party2 = signupprocess.objects.filter(account_number=account_number , customer_id = customer_id)
+            # 3rd party bank -> parties table creation
+            if party2.exists():
+                instance = signupprocess.objects.get(account_number = account_number , customer_id = customer_id)
+                extra_kwargs = model_to_dict(instance, exclude=['id'])
+                Parties.objects.update_or_create(account_number = account_number, customer_id = customer_id , defaults={**extra_kwargs})
+            if party1.exists() or party2.exists():
+                return Response({"Status": "Success", "data": party1.values() or party2.values() , "detail" : "your company is already signed-up, please login with the registered email id or mobile number"}, status=status.HTTP_200_OK)
             return Response({"Status": "Failure", "data": "No party found in this account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
         else:
             return Response({"Status": "Failure", "data": "No party found in this customer_id / account number"}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

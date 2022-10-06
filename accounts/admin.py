@@ -11,6 +11,7 @@ from .models import (
     User ,
     Parties,
     signatures,
+    signupprocess,
     userprocessauth ,
     Action
 )
@@ -80,5 +81,5 @@ admin.site.register(CounterParty)
 admin.site.register(signatures)
 # admin.site.unregister(Token)
 admin.site.unregister(Group)
-
+admin.site.register(signupprocess)
 

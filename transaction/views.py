@@ -383,10 +383,12 @@ class TestApiview(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        print(user.party.name)
-        qs = Parties.objects.get(party_type="SELLER",pairings__program_id__party__name = request.user.party.name)
-        print(qs)
+        # user = request.user
+        # print(user.party.name)
+        # qs = Parties.objects.get(party_type="SELLER",pairings__program_id__party__name = request.user.party.name)
+        # print(qs)
+        qs = gets_pairings(15)
+        print(qs.interest_rate)
         return Response({"data":"success"})
 
 
@@ -662,6 +664,8 @@ class WorkFlowItemUpdateApi(RetrieveUpdateAPIView):
         state = request.data.get('state')
         interest_rate = request.data.get('interest_rate',None)
         interest_amount = request.data.get('interest_amount',None)
+        finance_currency_type = request.data.get('finance_currency_type',None)
+        settlement_currency_type = request.data.get('settlement_currency_type',None)
         financed_amount = request.data.get('financed_amount',None)
         settlement_amount = request.data.get('settlement_amount',None)
         user = get_object_or_404(queryset, pk=pk)
@@ -671,7 +675,9 @@ class WorkFlowItemUpdateApi(RetrieveUpdateAPIView):
             serializer.save()
             obj = generics.get_object_or_404(queryset, id=serializer.data['id'])
             flow = InvoiceBankFlow(obj)
-            # obj.invoice.interest_rate , obj.invoice.financed_amount = interest_rate , financed_amount
+            obj.invoice.interest_rate , obj.invoice.financed_amount , \
+            = interest_rate , financed_amount
+            obj.save()
             if state == "FINANCED":
                 flow.approve_invoice(request)
                 obj.save()

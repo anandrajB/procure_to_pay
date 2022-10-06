@@ -112,7 +112,7 @@ class UploadFlow(object):
 
                     invoice = Invoices.objects.create(program_type=pg_type, pairing=gets_pairings(i["buyerId"]), finance_currency_type=gets_currencies(i['financingCurrency']),
                                                       party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
-                                                      invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
+                                                      invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'] , interest_rate = gets_pairings(i["buyerId"]).interest_rate)
 
                     work = workflowitems.objects.create(
                         invoice=invoice, current_from_party=gets_party(i['counterparty_id']), type="INVOICE", action = "SUBMIT" ,current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, final_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
@@ -177,7 +177,7 @@ class UploadFlow(object):
 
                     invoice = Invoices.objects.create(program_type=pg_type, pairing=gets_pairings(i["buyerId"]), finance_currency_type=gets_currencies(i['financingCurrency']),
                                                       party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
-                                                      invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
+                                                      invoice_no=i['invoiceNo'],  amount=i['invoiceAmount']  , interest_rate = gets_pairings(i["buyerId"]).interest_rate )
 
                     work = workflowitems.objects.create(
                         invoice=invoice, current_from_party=gets_party(i['counterparty_id']),action = "SUBMIT" ,type="INVOICE", current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, final_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
@@ -232,7 +232,7 @@ class UploadFlow(object):
 
                 invoice = Invoices.objects.create(program_type=pg_type, pairing=gets_pairings(i["buyerId"]), finance_currency_type=gets_currencies(i['financingCurrency']),
                                                   party=gets_party(i['counterparty_id']), invoice_currency=gets_currencies(i['invoiceType']), settlement_currency_type=gets_currencies(i['settlementCurrency']),
-                                                  invoice_no=i['invoiceNo'],  amount=i['invoiceAmount'])
+                                                  invoice_no=i['invoiceNo'],  amount=i['invoiceAmount']  ,  interest_rate = gets_pairings(i["buyerId"]).interest_rate )
 
                 work = workflowitems.objects.create(
                     invoice=invoice, current_from_party=gets_party(i['counterparty_id']),action = "SUBMIT" , type="INVOICE",current_to_party=gets_party(i['buyerName']), user=user, interim_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL, final_state=StateChoices.STATUS_AWAITING_BUYER_APPROVAL )
