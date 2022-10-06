@@ -900,7 +900,7 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = item_id).values()
             elif obj.type == "COUNTERPARTY_ONBOARING":
-                qs = CounterParty.objects.filter(workflowitems = item_id).values()
+                 qs = Programs.objects.filter(id = item_id.counterparty.pairings.program_id.id).values()
             return {"model": qs, "pairing": pair }
         except:
             return None
@@ -1026,7 +1026,7 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "COUNTERPARTY_ONBOARING":
-                qs = CounterParty.objects.filter(workflowitems = obj.id).values()
+                qs = Programs.objects.filter(id = obj.counterparty.pairings.program_id.id).values()
             return {"model": qs, "pairing": pair }
         except:
             return None
@@ -1088,7 +1088,7 @@ class WorkFlowitemsEnquirySerializer(serializers.ModelSerializer):
             elif obj.type == "UPLOAD":
                 qs = Invoiceuploads.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "COUNTERPARTY_ONBOARING":
-                qs = CounterParty.objects.filter(workflowitems = obj.id).values()
+                 qs = Programs.objects.filter(id = obj.counterparty.pairings.program_id.id).values()
             return {"model": qs, "pairing": pair }
         except:
             return None
