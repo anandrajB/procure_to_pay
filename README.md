@@ -1,110 +1,119 @@
 # SCF_BACKEND  
 
-# BUILD WITH DJANGO==3.2.5 LTS
-
+## TECHNOLOGY STACK
+![python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![DJANGO](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white) 
+![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)
 
 ## INSTALLATION AND RUNNING **
-
-1. pip install -r requirements.txt
-2. python manage.py migrate
-3. python manage.py migrate --run-syncdb
-4. python manage.py runserver
-
+```
+- pip install -r requirements.txt
+- python manage.py migrate
+- python manage.py migrate --run-syncdb
+- python manage.py runserver
+```
 ## TENANT PROCESS 
-
-1. python manage.py migrate_schemas  ( for schmeas migration )
-2. python manage.py create_tenant_superuser  ( superuser for tenant's )
-
+```
+- python manage.py migrate_schemas  ( for schmeas migration )
+- python manage.py create_tenant_superuser  ( superuser for tenant's )
+```
 
 ## NEW DB CONFIG (POSTGRES) **
-
-1. python manage.py migrate 
-2. python manage.py makemigrations 
-3. python manage.py migrate --run-syncdb
-
+```
+- python manage.py migrate 
+- python manage.py makemigrations 
+- python manage.py migrate --run-syncdb
+```
 ## DUMP TEST DATA 
 
 #### test credentials 
-1. python manage.py loaddata fixtures/accounts.json
-2. python manage.py loaddata fixtures/transactions.json
-
+```
+- python manage.py loaddata fixtures/accounts.json
+- python manage.py loaddata fixtures/transactions.json
+```
 #### common
-3. python manage.py loaddata fixtures/data.json   
-
+```
+- python manage.py loaddata fixtures/data.json   
+```
 #### misc
-4. python manage.py loaddata fixtures/actions.json  
-5. python manage.py loaddata fixtures/currencies.json 
-6. python manage.py loaddata fixtures/countries.json 
+```
+- python manage.py loaddata fixtures/actions.json  
+- python manage.py loaddata fixtures/currencies.json 
+- python manage.py loaddata fixtures/countries.json 
+```
 
-## TABLE DATA'S DUMPING - TESTING
-
-1. heroku run -a venzoscf python manage.py loaddata fixtures/data.json\
 \
-***important NOTE:*** *The data.json maintains all the currencies , countries , actions data*
+***Important NOTE:*** *The data.json maintains all the currencies , countries , actions data*
 
 ## RUNNING TEST CASES **
+```
+- python manage.py test accounts
+- python manage.py test transaction
+```
+## IMPORTANT LINKS
 
-1. python manage.py test accounts
-2. python manage.py test transaction
+- [DB Diagram](https://dbdiagram.io/d/61b82d3b8c901501c0ef1a4f)
 
-## DB DIAGRAM
+- [Postman collection](https://www.getpostman.com/collections/74a150a6a4ee22543b8c)
 
-1. https://dbdiagram.io/d/61b82d3b8c901501c0ef1a4f
+- [Documentation](https://documenter.getpostman.com/view/11858287/Uyr5pf1h)
 
+- [Base url](https://venzoscf.herokuapp.com/)
 
-## POSTMAN COLLECTION FOR API TESTING
+- [Admin panel](https://venzoscf.herokuapp.com/admin/)
 
-1. https://www.getpostman.com/collections/74a150a6a4ee22543b8c
-
-
-## DOCUMENTATION LINK
-
-1. https://documenter.getpostman.com/view/11858287/Uyr5pf1h
-
-
-## HOME URL
-
-1. https://venzoscf.herokuapp.com/
-
-## ADMIN PANEL 
-
-1. https://venzoscf.herokuapp.com/admin/
+- [API-URL's](https://venzoscf.herokuapp.com/api-urls/)
 
 
 ## CREDENTIALS
 
-### ADMIN ###
+#### ADMIN
 
-***phone*** : 1471471471\
-***password*** : admin123\
-***email*** : finflo@admin.com\
-**test purpose only
-
-### BUYER ###
-
-***phone*** : 9677210269\
-***email*** : buyer@gmail.com\
-**test purpose only
+| version  | Details |
+| ------------- | ------------- |
+| phone | 1471471471 |
+| password  | admin123  |
+| email | finflo@admin.com |
 
 
-## API END_POINTS
+#### BUYER
 
-1. https://venzoscf.herokuapp.com/api-urls/
-
+| version  | Details |
+| ------------- | ------------- |
+| phone | 9677210269 |
+| password  | admin123  |
+| email | buyer@gmail.com |
 
 
 
 
-### ***NOTE 1*** : The ** indicated one are important and required commands
 
-### ***NOTE 2*** : Before running this project , check PRODUCTION.md file
+#### ***NOTE 1*** : The ** indicated one are important and required commands
+
+#### ***NOTE 2*** : Before running this project , check [PRODUCTION.md](https://github.com/venzo-tech/scfbackend/blob/master/PRODUCTION.md) file
 
 
 
 ## WORKING ENVIRONMENTS
 
-1. TESTING_1    :  http://venzoscf.herokuapp.com 
+- [TESTING](http://venzoscf.herokuapp.com)
 
-2. TESTING_2    :  https://scftestenv.herokuapp.com/
+- [PRODUCTION](http://167.71.238.26/)
 
-2. PRODUCTION   :  http://167.71.238.26/
+
+
+## SUPPORTED VERSIONS
+
+| version  | End of support |
+| ------------- | ------------- |
+| django 3.2.5 LTS | April 2023 |
+| python 3.8  | october 2024  |
+|Django REST|-|
+
+## Authors
+
+- [@anandrajB](https://github.com/anandrajB)
+- [@Mohamed-Sheik-Ali](https://github.com/Mohamed-Sheik-Ali)
+
