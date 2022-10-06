@@ -99,10 +99,11 @@ class ProgramCreateApiView(ListCreateAPIView):
 
     def post(self, request):
         user = request.user
+        party = request.data.get('party')
         serializer = Programcreateserializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(from_party=user.party, user=user,
-                            to_party=user.party, event_user=user, party=user.party)
+            serializer.save(from_party= party , user=user,
+                            to_party= party, event_user=user, party= party)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response({"status": "failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
