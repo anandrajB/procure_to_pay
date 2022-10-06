@@ -13,7 +13,7 @@ schema_view = get_swagger_view(title='SCF API DOCUMENTATION')
 
 
 urlpatterns = [
-    path('',index,name='home-page'),
+    path('',description,name='home-page'),
     path('description',description,name='description'),
     path('api-urls/',endpoint ,name = 'api-end-points'),
     path('admin/', admin.site.urls,),
