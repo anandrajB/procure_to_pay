@@ -289,7 +289,7 @@ class Programcreateserializer(serializers.Serializer):
     total_limit_amount = serializers.DecimalField(max_digits=8, decimal_places=2)
     # finance_currency = serializers.CharField(required=False)
     settlement_currency = serializers.CharField()
-    expiry_date = serializers.DateField(format="%d-%m-%Y")
+    expiry_date = serializers.DateField(format="%d-%m-%Y",input_formats=['%d-%m-%Y'])
     max_finance_percentage = serializers.DecimalField(max_digits=8, decimal_places=2)
     max_invoice_age_for_funding = serializers.IntegerField()
     # max_age_for_repayment = serializers.IntegerField(required = False)
@@ -697,10 +697,11 @@ class CounterPartySerializer(serializers.Serializer):
         # creating  a user 
         User.objects.update_or_create(phone = counterparty_mobile , defaults = {'party' : obj , 'counterparty' : obj2 , 'email' : counterparty_email} ) 
         # creating a pairing 
-        obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , program_id = program_id , finance_request = finance_request_type, 
-        total_limit = limit_amount , grace_period = grace_period , maximum_amount  = max_invoice_amount , interest_type = interest_type , interest_rate_type = interest_rate_type ,
-        minimum_amount_currency = str(limit_amount_type) , expiry_date = expiry_date , max_finance_percentage =  max_invoice_percent ,financed_amount = max_tenor , margin =  margin , comments = comments )
+        obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , program_id = program_id ,defaults = {  'finance_request' : finance_request_type, 
+        'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,
+        'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'max_finance_percentage' : max_invoice_percent ,'financed_amount' : max_tenor , 'margin' : margin , 'comments' : comments } )
         # print(created)
+        obj3.save()
         return obj3
     
     
