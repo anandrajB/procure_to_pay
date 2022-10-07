@@ -94,6 +94,7 @@ class CounterPartyFlow(object):
         self.workflowitems.interim_state = StateChoices.SENT_TO_COUNTERPARTY
         self.workflowitems.current_from_party = self.gets_bank()
         self.workflowitems.current_to_party = self.gets_parties()
+        CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.STATUS_DRAFT)
         self.workflowitems.final = "YES"
         Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.IN_PROGRESS)
         CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.SENT_TO_COUNTERPARTY)
