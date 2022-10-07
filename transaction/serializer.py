@@ -886,14 +886,14 @@ class Workeventsmessageserializer(serializers.ModelSerializer):
             'created_date',
             'record_datas'
         ]
-
+    
     def get_created_by(self,obj):
         return obj.workitems.user.email
 
     
     def get_record_datas(self,obj):
         try:
-            pair = Pairings.objects.filter(Q(program_id = obj.workitems.program)| Q(counterparty_id = obj.workitems.counterparty)).values()
+            pair = Pairings.objects.filter(Q(program_id = obj.workitems.program)| Q(program_id = obj.workitems.invoice.pairing.program_id) | Q(counterparty_id = obj.workitems.counterparty)).values()
             item_id = obj.workitems
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = item_id).values()
@@ -1020,7 +1020,7 @@ class Workitemsmessagesawapserializer(serializers.ModelSerializer):
 
     def get_record_datas(self,obj):
         try:
-            pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(counterparty_id = obj.counterparty)).values()
+            pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(program_id = obj.invoice.pairing.program_id) | Q(counterparty_id = obj.counterparty)).values()
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "INVOICE":
@@ -1082,7 +1082,7 @@ class WorkFlowitemsEnquirySerializer(serializers.ModelSerializer):
 
     def get_record_datas(self,obj):
         try:
-            pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(counterparty_id = obj.counterparty)).values()
+            pair = Pairings.objects.filter(Q(program_id = obj.program) | Q(program_id = obj.invoice.pairing.program_id) | Q(counterparty_id = obj.counterparty)).values()
             if obj.type == "PROGRAM":
                 qs = Programs.objects.filter(workflowitems = obj.id).values()
             elif obj.type == "INVOICE":

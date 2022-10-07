@@ -112,7 +112,7 @@ class ProgramCreateApiView(ListCreateAPIView):
 class ProgramUpdateDeleteApiview(RetrieveUpdateDestroyAPIView):
     queryset = Programs.objects.all()
     serializer_class = ProgramListserializer
-    permission_classes = [Is_Buyer | Is_Bank]
+    permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, pk=None):
         queryset = Programs.objects.all()
