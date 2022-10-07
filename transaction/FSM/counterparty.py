@@ -23,7 +23,7 @@ class CounterPartyFlow(object):
         return self.workflowitems.initial_state
 
 
-    def gets_bank():
+    def gets_bank(self):
         query = Parties.objects.get(party_type = "BANK")
         return query
 
