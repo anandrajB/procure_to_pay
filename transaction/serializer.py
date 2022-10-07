@@ -289,7 +289,7 @@ class Programcreateserializer(serializers.Serializer):
     total_limit_amount = serializers.DecimalField(max_digits=8, decimal_places=2)
     # finance_currency = serializers.CharField(required=False)
     settlement_currency = serializers.CharField()
-    expiry_date = serializers.DateField(format="%d-%m-%Y",input_formats=['%d-%m-%Y'])
+    expiry_date = serializers.DateField(format="%d-%m-%Y")
     max_finance_percentage = serializers.DecimalField(max_digits=8, decimal_places=2)
     max_invoice_age_for_funding = serializers.IntegerField()
     # max_age_for_repayment = serializers.IntegerField(required = False)
