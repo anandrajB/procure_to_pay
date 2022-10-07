@@ -592,7 +592,7 @@ class CounterPartySerializer(serializers.Serializer):
         ('SOFOR', 'SOFOR')
     ]
     
-    customer_id = serializers.CharField(required = False , default = None)
+    customer_id = serializers.CharField(required = False )
     name = serializers.CharField()
     address_line = serializers.CharField()
     base_currency = serializers.PrimaryKeyRelatedField(queryset= Currencies.objects.all())
@@ -639,6 +639,7 @@ class CounterPartySerializer(serializers.Serializer):
         base_currency = validated_data.pop('base_currency')
         city = validated_data.pop('city')
         state = validated_data.pop('state')
+        customer_id = validated_data.pop('customer_id')
         zipcode = validated_data.pop('zipcode')
         country_code  = validated_data.pop('country_code')
         counterparty_email = validated_data.pop('counterparty_email')
@@ -667,8 +668,8 @@ class CounterPartySerializer(serializers.Serializer):
             # print("apf working")
             obj , created  = Parties.objects.update_or_create( name = name , city = city.lower() ,  defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" }) 
-            obj.customer_id = obj.id
             if created:
+                obj.customer_id = obj.id if obj.id else customer_id
                 obj.status = StateChoices.NEW
                 
             obj.save()
