@@ -73,7 +73,7 @@ class CounterPartyFlow(object):
         self.workflowitems.interim_state = StateChoices.SENT_TO_BANK
         self.workflowitems.current_from_party = user.party
         self.workflowitems.current_to_party = self.gets_bank()
-        Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.DEACTIVATED)
+        Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.IN_PROGRESS)
         CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.SENT_TO_BANK)
         cs = workevents.objects.create(workitems=ws, from_state=StateChoices.STATUS_DRAFT, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,
         comments = self.workflowitems.comments,final = "YES" , interim_state=StateChoices.SENT_TO_BANK, from_party=self.workflowitems.current_from_party, to_party= self.gets_bank())
@@ -97,7 +97,7 @@ class CounterPartyFlow(object):
         CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.STATUS_DRAFT)
         self.workflowitems.final = "YES"
         Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.IN_PROGRESS)
-        CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.SENT_TO_COUNTERPARTY)
+        CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.STATUS_DRAFT)
         cs = workevents.objects.create(workitems=ws, from_state=StateChoices.SENT_TO_BANK, to_state=StateChoices.STATUS_COMPLETED, type="COUNTERPARTY_ONBOARING", event_user = user ,comments = self.workflowitems.comments,
                                   interim_state=StateChoices.SENT_TO_COUNTERPARTY, final = "YES" , from_party = self.gets_bank() , to_party= self.gets_parties())
         # to_party goes to bank
@@ -116,6 +116,8 @@ class CounterPartyFlow(object):
         ws = gets_wf_item_id(self.workflowitems.id)
         self.workflowitems.final_state = StateChoices.STATUS_REJECTED
         self.workflowitems.interim_state = StateChoices.STATUS_REJECTED
+        Parties.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(status = StateChoices.NEW)
+        CounterParty.objects.filter(name = self.workflowitems.counterparty.name , city = self.workflowitems.counterparty.city).update(onboarding = StateChoices.STATUS_DRAFT)
         self.workflowitems.current_from_party , self.workflowitems.current_to_party = self.gets_bank() , self.gets_parties()
         cs = workevents.objects.create(workitems=ws, from_state=StateChoices.SENT_TO_BANK, to_state=StateChoices.STATUS_REJECTED, type="COUNTERPARTY_ONBOARING", event_user = user ,comments = self.workflowitems.comments,
                                   interim_state=StateChoices.STATUS_REJECTED, from_party = self.gets_bank() , to_party= self.gets_parties())
