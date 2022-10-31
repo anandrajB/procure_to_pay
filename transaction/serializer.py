@@ -592,7 +592,7 @@ class CounterPartySerializer(serializers.Serializer):
         ('SOFOR', 'SOFOR')
     ]
     
-    # customer_id = serializers.CharField(required = False )
+    customer_id = serializers.CharField(required = False , default = None)
     name = serializers.CharField()
     address_line = serializers.CharField()
     base_currency = serializers.PrimaryKeyRelatedField(queryset= Currencies.objects.all())
@@ -639,7 +639,6 @@ class CounterPartySerializer(serializers.Serializer):
         base_currency = validated_data.pop('base_currency')
         city = validated_data.pop('city')
         state = validated_data.pop('state')
-        # customer_id = validated_data.pop('customer_id')
         zipcode = validated_data.pop('zipcode')
         country_code  = validated_data.pop('country_code')
         counterparty_email = validated_data.pop('counterparty_email')
@@ -668,8 +667,8 @@ class CounterPartySerializer(serializers.Serializer):
             # print("apf working")
             obj , created  = Parties.objects.update_or_create( name = name , city = city.lower() ,  defaults = { 'base_currency' : base_currency ,
             'address_line_1' : 'address_line_1' , 'address_line_2' : address_line, 'city' : city , 'state' : state , 'zipcode' : zipcode, 'country_code' : country_code , 'party_type' : "SELLER" }) 
+            obj.customer_id = obj.id
             if created:
-                obj.customer_id = obj.id 
                 obj.status = StateChoices.NEW
                 
             obj.save()
@@ -698,11 +697,10 @@ class CounterPartySerializer(serializers.Serializer):
         # creating  a user 
         User.objects.update_or_create(phone = counterparty_mobile , defaults = {'party' : obj , 'counterparty' : obj2 , 'email' : counterparty_email} ) 
         # creating a pairing 
-        obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , program_id = program_id ,defaults = {  'finance_request' : finance_request_type, 
+        obj3, created = Pairings.objects.update_or_create(counterparty_id = obj2  , defaults = { 'program_id' : program_id , 'finance_request' : finance_request_type, 
         'total_limit' : limit_amount , 'grace_period' : grace_period , 'maximum_amount'  : max_invoice_amount , 'interest_type' : interest_type , 'interest_rate_type' : interest_rate_type ,
         'minimum_amount_currency' : str(limit_amount_type) , 'expiry_date' : expiry_date , 'max_finance_percentage' : max_invoice_percent ,'financed_amount' : max_tenor , 'margin' : margin , 'comments' : comments } )
         # print(created)
-        obj3.save()
         return obj3
     
     

@@ -100,11 +100,11 @@ class ProgramCreateApiView(ListCreateAPIView):
 
     def post(self, request):
         user = request.user
-        party_id = request.data.get('party_id')
+        party = request.data.get('party')
         serializer = Programcreateserializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(from_party= gets_party_id(party_id) if party_id else user.party, user=user,
-                            to_party= gets_party_id(party_id) if party_id else user.party, event_user=user, party = gets_party_id(party_id) if party_id else user.party)
+            serializer.save(from_party= gets_party_id(party) or user.party, user=user,
+                            to_party= gets_party_id(party) or user.party, event_user=user, party = gets_party_id(party) or user.party)
             return Response({"status": "success", "data": serializer.data}, status=status.HTTP_201_CREATED)
         return Response({"status": "failure", "data": serializer.errors}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
 
@@ -112,7 +112,7 @@ class ProgramCreateApiView(ListCreateAPIView):
 class ProgramUpdateDeleteApiview(RetrieveUpdateDestroyAPIView):
     queryset = Programs.objects.all()
     serializer_class = ProgramListserializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [Is_Buyer | Is_Bank]
 
     def retrieve(self, request, pk=None):
         queryset = Programs.objects.all()

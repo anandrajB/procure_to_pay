@@ -40,7 +40,7 @@ AUTH_USER_MODEL = 'accounts.User'
 DEBUG = True
 
 # if production false , the project uses heroku db
-PRODUCTION = False
+PRODUCTION = True
 
 # ALLOWED_HOSTS = ['tfxworld.com','*','*.tfxworld.com','.tfxworld.com','icici.tfxworld.com','142.93.218.145']
 
@@ -224,46 +224,49 @@ WSGI_APPLICATION = 'scfadmin.wsgi.application'
 
 # SETUP : 1
 
-if PRODUCTION :
-#     # digital ocean droplet database 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django_tenants.postgresql_backend',
-            'NAME': 'scf',
-            'USER': 'anand',
-            'PASSWORD': 'password',
-            'HOST': 'localhost',
-            'PORT': '',
-        }
-    }
-else:
-    # heroku test environment database
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django_tenants.postgresql_backend',
-            'NAME': 'da0oesk9k524m6',
-            'USER': 'bneyoefyrsqnbt',
-            'PASSWORD': 'e9b31e4f2a78949ef2a1117725ddd54a7269283e696dc7c6224e3c44316a2ca7',
-            'HOST': 'ec2-52-54-212-232.compute-1.amazonaws.com',
-            'PORT': '5432',
-        }
-    }
-
-
-
-
-# # SETUP : 2 ( localhost )
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django_tenants.postgresql_backend',
-#         'NAME': 'scfcore',
-#         'USER': 'postgres',
-#         'PASSWORD': 'root',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+# if PRODUCTION :
+# #     # digital ocean droplet database 
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django_tenants.postgresql_backend',
+#             'NAME': 'scf',
+#             'USER': 'anand',
+#             'PASSWORD': 'password',
+#             'HOST': 'localhost',
+#             'PORT': '',
+#         }
 #     }
-# }
+# else:
+#     # heroku test environment database
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django_tenants.postgresql_backend',
+#             'NAME': 'da0oesk9k524m6',
+#             'USER': 'bneyoefyrsqnbt',
+#             'PASSWORD': 'e9b31e4f2a78949ef2a1117725ddd54a7269283e696dc7c6224e3c44316a2ca7',
+#             'HOST': 'ec2-52-54-212-232.compute-1.amazonaws.com',
+#             'PORT': '5432',
+#         }
+#     }
+
+
+
+
+# # SETUP : 3 ( HEROKU VENZT )
+
+# postgresql-silhouetted-09106
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django_tenants.postgresql_backend',
+        'NAME': 'd95dbnlhj4q2s1',
+        'USER': 'arnthrvkvphimg',
+        'PASSWORD': '9d744b254705ca462643023fbfdf887f21e952581f8053f113dd1009fcec631d',
+        'HOST': 'ec2-44-207-133-100.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
 
 
 
@@ -385,7 +388,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated",
                                    'rest_framework.permissions.AllowAny'],
 
-    # "DATE_INPUT_FORMATS": ["%d-%m-%Y"],
+    # "DATE_INPUT_FORMATS": ["%d-%m-%Y"]
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     # 'EXCEPTION_HANDLER': 'accounts.exception_handler.custom_exception_handler'
