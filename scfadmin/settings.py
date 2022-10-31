@@ -260,11 +260,11 @@ WSGI_APPLICATION = 'scfadmin.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django_tenants.postgresql_backend',
-        'NAME': 'd95dbnlhj4q2s1',
-        'USER': 'arnthrvkvphimg',
-        'PASSWORD': '9d744b254705ca462643023fbfdf887f21e952581f8053f113dd1009fcec631d',
-        'HOST': 'ec2-44-207-133-100.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'kBCwSG7om9W33SxH8okn',
+        'HOST': 'containers-us-west-110.railway.app',
+        'PORT': '6830',
     }
 }
 
