@@ -390,7 +390,7 @@ class InvoiceOverdueTransitionApi(APIView):
 class InvoiceReturnTransitionApiView(APIView):
     queryset = workflowitems.objects.all()
     serializer_class = Workitemserializer
-    permission_classes = [Is_Bank | Is_Buyer]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, pk, *args, **kwargs):
         obj = generics.get_object_or_404(workflowitems, id=pk)
