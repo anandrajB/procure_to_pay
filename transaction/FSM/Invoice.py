@@ -39,7 +39,7 @@ class InvoiceFlow(object):
         self.workflowitems.final_state = StateChoices.STATUS_DRAFT
         self.workflowitems.current_from_party = self.workflowitems.current_to_party = user.party
         self.workflowitems.action , self.workflowitems.subaction = StateChoices.RETURN , StateChoices.INITIAL_STATE
-        cs = workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.STATUS_INITIAL_STATE, type="INVOICE", event_user = user , action = StateChoices.RETURN,subaction = StateChoices.INITIAL_STATE,comments = self.workflowitems.comments,
+        cs = workevents.objects.create(workitems=ws, from_state=self.workflowitems.interim_state, to_state=StateChoices.INITIAL_STATE, type="INVOICE", event_user = user , action = StateChoices.RETURN,subaction = StateChoices.INITIAL_STATE,comments = self.workflowitems.comments,
                                   interim_state=StateChoices.STATUS_DRAFT, from_party=self.workflowitems.current_from_party, to_party=self.workflowitems.current_to_party)
         cs.save()
         self.workflowitems.interim_state = StateChoices.STATUS_DRAFT
